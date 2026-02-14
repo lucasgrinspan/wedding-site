@@ -8,6 +8,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         details: resolve(__dirname, 'details.html'),
         mango: resolve(__dirname, 'mango.html'),
+        journey: resolve(__dirname, 'journey.html'),
       },
     },
   },

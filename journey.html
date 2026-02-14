@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Journey - Lucas & Lianne</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@400;700&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <header>
+    <div class="logo-container">
+      <div class="logo">Lucas & Lianne</div>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/details.html">Details</a></li>
+        <li><a href="/journey.html" class="active">Journey</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="journey-container">
+    <div id="timeline" class="timeline-sidebar">
+      <h2>Timeline</h2>
+      <!-- Timeline items will be injected here -->
+      <ul id="timeline-list"></ul>
+    </div>
+
+    <div id="map-container">
+      <div id="map"></div>
+
+      <!-- Info Card Overlay -->
+      <div id="info-card" class="info-card hidden">
+        <button id="close-card" class="close-btn">&times;</button>
+        <img id="card-image" src="" alt="Location Photo">
+        <div class="card-content">
+          <h3 id="card-title">Title</h3>
+          <p id="card-date">Date</p>
+          <p id="card-caption">Caption goes here...</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2027 Lucas & Lianne <a href="/mango.html" style="text-decoration: none; margin-left: 10px;">🥭</a></p>
+  </footer>
+
+  <script type="module" src="/src/journey.ts"></script>
+</body>
+
+</html>
