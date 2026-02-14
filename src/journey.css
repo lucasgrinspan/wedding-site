@@ -240,10 +240,10 @@ footer {
 @media (max-width: 768px) {
 
   /* On mobile allow header to be normal again if needed, or keep centered logo */
-  nav {
-    position: relative;
-    right: auto;
-    margin-top: 10px;
+  /* Hide nav and footer on mobile */
+  nav,
+  footer {
+    display: none;
   }
 
   header {
@@ -261,7 +261,7 @@ footer {
   .journey-container {
     flex-direction: column-reverse;
     /* Timeline below map */
-    margin-top: 100px;
+    margin-top: 60px;
     /* Adjust for taller header on mobile */
     height: auto;
     /* Allow Scroll on mobile */
@@ -287,5 +287,7 @@ footer {
     right: 5%;
     bottom: 20px;
     top: auto;
+    max-height: 80%;
+    overflow-y: auto;
   }
 }
