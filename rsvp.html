@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RSVP - Lucas & Lianne's Wedding</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@400;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body>
+  <header class="centered-header">
+    <a href="/" class="logo" style="text-decoration: none;">Lucas & Lianne</a>
+  </header>
+
+  <main>
+    <section class="container" style="padding-top: 120px;">
+      <h1>RSVP</h1>
+      <p style="margin-bottom: 2rem;">Please let us know if you can make it by December 1, 2026.</p>
+
+      <div class="card" style="max-width: 600px; margin: 0 auto; text-align: left;">
+        <form action="https://formspree.io/f/mojndlqj" method="POST">
+          <input type="hidden" name="_next" value="/thanks.html">
+
+          <div class="form-group">
+            <label for="names">Guest Name(s)</label>
+            <input type="text" id="names" name="names" placeholder="e.g. Lucas Grinspan & Lianne D'Arcy" required>
+            <small>Please include first and last names of all guests in your party.</small>
+          </div>
+
+          <div class="form-group">
+            <label>Will you be attending?</label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="attending" value="yes" required>
+                <span>Joyfully Accept</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="attending" value="no">
+                <span>Regretfully Decline</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="guests">Number of Guests</label>
+            <select id="guests" name="guest_count" required>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="dietary">Dietary Restrictions Or Songs You'd Like to Request?</label>
+            <textarea id="dietary" name="message" rows="4" placeholder="Vegetarian, allergies, etc."></textarea>
+          </div>
+
+          <div style="text-align: center; margin-top: 2rem;">
+            <button type="submit" class="btn btn-dark-green">Submit RSVP</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>&copy; 2027 Lucas & Lianne <a href="/mango.html" style="text-decoration: none; margin-left: 10px;">🥭</a></p>
+  </footer>
+
+</body>
+
+</html>
