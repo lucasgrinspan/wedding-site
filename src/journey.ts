@@ -1,7 +1,20 @@
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import './style.css'; // Global styles
 import './journey.css'; // Page specific styles
-import L from 'leaflet';
+
+// Import marker icons
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+
+// Fix Leaflet's default icon path issues with Vite
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: iconRetinaUrl,
+  iconUrl: iconUrl,
+  shadowUrl: shadowUrl,
+});
 
 import coralReefImg from '../images/journey/coral-reef.JPG';
 import highSchoolPromImg from '../images/journey/high-school-prom.JPG';
