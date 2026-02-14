@@ -1,9 +1,13 @@
 :root {
-  --primary-color: #2E4A3D; /* Deep Jungle Green */
-  --secondary-color: #8B5A2B; /* Earthy Brown */
-  --accent-color: #D2B48C; /* Tan/Beige */
+  --primary-color: #2E4A3D;
+  /* Deep Jungle Green */
+  --secondary-color: #8B5A2B;
+  /* Earthy Brown */
+  --accent-color: #D2B48C;
+  /* Tan/Beige */
   --text-color: #333;
-  --bg-color: #F9F5F0; /* Off-white/Sand */
+  --bg-color: #F9F5F0;
+  /* Off-white/Sand */
   --font-heading: 'Playfair Display', serif;
   --font-body: 'Lato', sans-serif;
 }
@@ -21,7 +25,9 @@ body {
   line-height: 1.6;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--font-heading);
   color: var(--primary-color);
 }
@@ -44,16 +50,21 @@ header {
   width: 100%;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.centered-header {
+  justify-content: center;
 }
 
 .logo {
   font-size: 1.5rem;
   font-weight: bold;
   color: var(--primary-color);
+  font-family: var(--font-heading);
 }
 
 nav ul {
@@ -64,8 +75,11 @@ nav ul {
 
 /* Hero Section */
 .hero {
-  height: 100vh;
-  background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/hero.JPG');
+  height: 100dvh;
+  /* Use dynamic viewport height for mobile browsers */
+  min-height: 100vh;
+  /* Fallback */
+  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/hero.JPG');
   background-size: cover;
   background-position: center;
   display: flex;
@@ -81,13 +95,19 @@ nav ul {
   font-size: 4rem;
   color: #fff;
   margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero p {
   font-size: 1.5rem;
   margin-bottom: 2rem;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.push-down-content {
+  justify-content: flex-end;
+  padding-bottom: 10vh;
+  /* Adjust this value to move text 'slightly down' but keep it visible */
 }
 
 .btn {
@@ -103,6 +123,16 @@ nav ul {
 .btn:hover {
   background-color: var(--primary-color);
   color: white;
+}
+
+.btn-dark-green {
+  background-color: var(--primary-color);
+  /* Dark green from variables */
+}
+
+.btn-dark-green:hover {
+  background-color: #1a2e24;
+  /* Even darker on hover */
 }
 
 /* Container */
@@ -130,7 +160,7 @@ section {
   background: white;
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-top: 4px solid var(--primary-color);
 }
 
