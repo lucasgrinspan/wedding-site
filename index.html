@@ -12,24 +12,15 @@
 </head>
 
 <body>
-  <header class="site-header site-header-home">
-    <div class="logo-container">
-      <a href="/" class="logo">Lucas & Lianne</a>
-    </div>
-    <nav class="site-nav">
-      <ul>
-        <li><a href="/" class="active">Home</a></li>
-        <li><a href="/details.html">Details</a></li>
-        <li><a href="/journey.html">Journey</a></li>
-      </ul>
-    </nav>
-  </header>
-
   <main>
     <section class="hero-section">
       <div class="hero-image-container">
-        <img src="/hero-wide.png" alt="Lucas & Lianne" class="hero-image" />
+        <picture class="hero-picture">
+          <source srcset="/hero.JPG" media="(max-width: 767px)" />
+          <img src="/hero-wide.png" alt="Lucas & Lianne" class="hero-image" />
+        </picture>
       </div>
+      <div class="hero-gradient-overlay"></div>
       <div class="hero-layout-container">
         <div class="hero-content-wrapper">
           <div class="hero-content">
@@ -39,12 +30,18 @@
               <p class="wedding-countdown" id="countdown-wrapper"><span id="countdown">--- DAYS TO GO!</span></p>
             </div>
             <div class="hero-cta-container">
-              <a href="#details" class="btn btn-hero">RSVP & Details</a>
+              <a href="#details" class="btn btn-hero">Details</a>
             </div>
           </div>
         </div>
       </div>
     </section>
+
+    <!-- Centered leafy branches above details cards -->
+    <div class="ornament-container">
+      <img src="/leafy-branch.png" alt="Leafy branch left" class="ornament-branch" />
+      <img src="/leafy-branch.png" alt="Leafy branch right" class="ornament-branch ornament-flipped" />
+    </div>
 
     <section id="details" class="container">
       <div class="details-grid">
@@ -81,7 +78,7 @@
   </main>
 
   <footer>
-    <p>&copy; 2027 Lucas & Lianne <a href="/mango.html" style="text-decoration: none; margin-left: 10px;">🥭</a></p>
+    <p>Love, Lianne & Lucas <a href="/mango.html" style="text-decoration: none; margin-left: 10px;">🥭</a></p>
   </footer>
 
   <script type="module" src="/src/main.ts"></script>
