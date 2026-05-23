@@ -359,8 +359,8 @@ nav a.active {
     height: auto;
     min-height: auto;
     background-color: transparent;
-    padding: 3.5rem 1.5rem 1rem 1.5rem;
-    /* Padding around layout */
+    padding: 0 0 2.5rem 0;
+    /* Remove padding so image is full-width, add bottom padding for spacing */
     gap: 2rem;
   }
 
@@ -370,8 +370,8 @@ nav a.active {
   }
 
   .hero-layout-container {
-    order: 1;
-    /* Text first */
+    order: 2;
+    /* Text second */
     width: 100%;
     height: auto;
     margin: 0;
@@ -389,7 +389,7 @@ nav a.active {
   .hero-content {
     width: 100%;
     max-width: 100%;
-    padding: 0;
+    padding: 0 1.5rem; /* Add side padding so text doesn't touch screen edges */
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -425,34 +425,20 @@ nav a.active {
     letter-spacing: 2px;
   }
 
-  .hero-content .btn-hero {
-    margin-top: 1.5rem;
-    font-size: 0.85rem;
-    padding: 12px 35px;
-    background-color: var(--primary-color);
-    color: white;
-    border: 1px solid var(--primary-color);
-  }
-
-  .hero-content .btn-hero:hover {
-    background-color: #1a2e24;
-    color: white;
-    border-color: #1a2e24;
-    box-shadow: 0 4px 12px rgba(46, 74, 61, 0.15);
+  .hero-content .hero-cta-container {
+    display: none; /* Details button has no use on mobile, hide it */
   }
 
   .hero-image-container {
-    order: 2;
-    /* Image second */
+    order: 1;
+    /* Image first */
     position: relative;
     width: 100%;
     height: auto;
     z-index: 1;
     overflow: hidden;
     border-radius: 0;
-    /* Clean rounded corners for the photo card */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    /* Subtle frame shadow */
+    box-shadow: none; /* No frame shadow needed for edge-to-edge layout */
   }
 
   .hero-picture,
