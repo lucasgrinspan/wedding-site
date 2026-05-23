@@ -1,14 +1,17 @@
 :root {
   --primary-color: #2E4A3D;
-  /* Deep Jungle Green */
+  /* Forest Green */
   --secondary-color: #8B5A2B;
   /* Earthy Brown */
-  --accent-color: #D2B48C;
-  /* Tan/Beige */
-  --text-color: #333;
-  --bg-color: #F9F5F0;
-  /* Off-white/Sand */
+  --accent-color: #8B2635;
+  /* Berry Red */
+  --text-color: #2C3531;
+  /* Soft Dark Slate */
+  --bg-color: #ECEBE9;
+  /* Soft Warm Gray / Off-white from Mockup */
   --font-heading: 'Playfair Display', serif;
+  --font-editorial: 'Cormorant Garamond', serif;
+  /* Luxurious Serif for Names */
   --font-body: 'Lato', sans-serif;
 }
 
@@ -23,6 +26,8 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
@@ -42,72 +47,137 @@ a:hover {
   color: var(--primary-color);
 }
 
-/* Header/Nav */
-header {
-  padding: 1rem 2rem;
-  background-color: rgba(255, 255, 255, 0.9);
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.centered-header {
-  justify-content: center;
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-  font-family: var(--font-heading);
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-}
-
-/* Hero Section */
-.hero {
-  height: 100dvh;
-  /* Use dynamic viewport height for mobile browsers */
-  min-height: 100vh;
-  /* Fallback */
-  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/hero.JPG');
-  background-size: cover;
-  background-position: center;
+/* Home Page Header (Editorial, Centered Layout) */
+.wedding-header {
+  padding: 5rem 2rem 2.5rem 2rem;
+  background-color: transparent;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   text-align: center;
-  color: white;
-  padding: 0 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  animation: fadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.hero h1 {
-  font-size: 4rem;
-  color: #fff;
-  margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+.garland-placeholder {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2.2rem;
+  --image-width: 200px;
+  gap: calc(var(--image-width) / 2);
 }
 
-.hero p {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+.leafy-illustration {
+  width: var(--image-width);
+  height: auto;
+  opacity: 0.95;
+  mix-blend-mode: multiply;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.push-down-content {
-  justify-content: flex-end;
-  padding-bottom: 10vh;
-  /* Adjust this value to move text 'slightly down' but keep it visible */
+.leafy-flipped {
+  transform: scaleX(-1);
+}
+
+
+.wedding-names {
+  font-family: var(--font-editorial);
+  font-size: 3rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  line-height: 1.2;
+}
+
+.wedding-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.wedding-date-location {
+  font-family: var(--font-editorial);
+  font-size: 1rem;
+  font-weight: 500;
+  color: #4A5650;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.wedding-countdown {
+  font-family: var(--font-editorial);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #7A8B82;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+/* Main Couples Photo Section */
+.hero-image-section {
+  padding: 0 2rem 4rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  animation: slideUpFade 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.hero-image-container {
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  position: relative; /* Establish relative positioning context for overlay child */
+}
+
+.leaf-banner-overlay {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: auto;
+  pointer-events: none; /* Let pointer events bypass the overlay graphic */
+  z-index: 5;
+  
+  /* Alignment: Bottom aligned by default */
+  bottom: 0;
+  
+  /* TOP RULE: Uncomment and edit this top position rule to align the banner manually */
+  /* top: 80%; */
+}
+
+.clean-hero-img {
+  width: 100%;
+  max-height: 80vh;
+  object-fit: cover;
+  display: block;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .btn {
@@ -118,59 +188,81 @@ nav ul {
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-block;
 }
 
 .btn:hover {
   background-color: var(--primary-color);
   color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(46, 74, 61, 0.15);
 }
 
 .btn-dark-green {
   background-color: var(--primary-color);
-  /* Dark green from variables */
 }
 
 .btn-dark-green:hover {
   background-color: #1a2e24;
-  /* Even darker on hover */
 }
 
 /* Container */
 .container {
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 4rem 2rem;
 }
 
 /* Section */
 section {
-  padding: 4rem 0;
+  padding: 2rem 0;
   text-align: center;
 }
 
 .details-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 2rem;
-  margin-top: 3rem;
+  margin-top: 1rem;
   text-align: left;
 }
 
 .card {
-  background: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border-top: 4px solid var(--primary-color);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 2.2rem 2rem;
+  border-radius: 4px;
+  border: 1px solid rgba(46, 74, 61, 0.08);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.02);
+  transition: all 0.4s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.04);
 }
 
 .card h3 {
   margin-bottom: 1rem;
+  font-family: var(--font-editorial);
+  font-size: 1.4rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: #4A5650;
+  margin-bottom: 0.5rem;
 }
 
 footer {
   text-align: center;
-  padding: 2rem;
+  padding: 2.5rem;
   background-color: var(--primary-color);
   color: white;
   margin-top: auto;
@@ -178,8 +270,32 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
-  .hero h1 {
-    font-size: 2.5rem;
+  .hero {
+    justify-content: center;
+    padding: 0 1.5rem;
+  }
+
+  .hero-bg-img {
+    left: 0;
+    width: 100%;
+    object-position: center;
+  }
+
+  .hero-overlay {
+    background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35));
+  }
+
+  .hero-content h1 {
+    font-size: 2.25rem;
+  }
+
+  .hero-content h1::after {
+    margin: 1.25rem auto;
+  }
+
+  .hero-content p {
+    font-size: 1.15rem;
+    margin-bottom: 2rem;
   }
 }
 
