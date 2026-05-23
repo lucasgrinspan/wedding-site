@@ -404,23 +404,24 @@ nav a.active {
   /* Reset typography colors back to dark primary colors since background is light off-white */
   .hero-content .wedding-names {
     color: var(--primary-color);
-    font-size: 2.5rem;
-    /* Large and beautiful */
-    letter-spacing: 4px;
+    font-size: clamp(1.6rem, 7.5vw, 2.2rem);
+    /* Large and beautiful, scaled dynamically to fit in a single line */
+    letter-spacing: 3px;
     margin-bottom: 0.8rem;
+    white-space: nowrap;
   }
 
   .hero-content .wedding-date-location {
     color: #4A5650;
     opacity: 1;
-    font-size: 0.95rem;
+    font-size: 1.2rem;
     letter-spacing: 2px;
-    margin-bottom: 0.3rem;
+    margin-bottom: 0;
   }
 
   .hero-content .wedding-countdown {
     color: #7A8B82;
-    font-size: 0.85rem;
+    font-size: 1.05rem;
     letter-spacing: 2px;
   }
 
@@ -428,15 +429,15 @@ nav a.active {
     margin-top: 1.5rem;
     font-size: 0.85rem;
     padding: 12px 35px;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     color: white;
-    border: 1px solid var(--secondary-color);
+    border: 1px solid var(--primary-color);
   }
 
   .hero-content .btn-hero:hover {
-    background-color: var(--primary-color);
+    background-color: #1a2e24;
     color: white;
-    border-color: var(--primary-color);
+    border-color: #1a2e24;
     box-shadow: 0 4px 12px rgba(46, 74, 61, 0.15);
   }
 
@@ -448,7 +449,7 @@ nav a.active {
     height: auto;
     z-index: 1;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: 0;
     /* Clean rounded corners for the photo card */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     /* Subtle frame shadow */
@@ -581,40 +582,7 @@ footer {
   margin-top: auto;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .hero {
-    justify-content: center;
-    padding: 0 1.5rem;
-  }
 
-  .hero-bg-img {
-    left: 0;
-    width: 100%;
-    object-position: center;
-  }
-
-  .hero-overlay {
-    background: linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35));
-  }
-
-  .hero-content h1 {
-    font-size: 2.25rem;
-  }
-
-  .hero-content h1::after {
-    margin: 1.25rem auto;
-  }
-
-  .hero-content p {
-    font-size: 1.15rem;
-    margin-bottom: 2rem;
-  }
-
-  p.wedding-countdown {
-    margin-bottom: 0rem;
-  }
-}
 
 /* Form Styles */
 .form-group {
@@ -678,40 +646,4 @@ small {
   width: 1.2rem;
   height: 1.2rem;
 }
-
-/* Center ornament illustrations above details cards */
-.ornament-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 3.5rem; /* Slight gap between the two */
-  padding: 2.5rem 0 1rem 0; /* Padding above and below */
-  width: 100%;
-  max-width: 1100px;
-  margin: 0 auto;
-  box-sizing: border-box;
-}
-
-.ornament-branch {
-  width: 180px; /* Elegant editorial width */
-  height: auto;
-  opacity: 0.95;
-  mix-blend-mode: multiply; /* Blends seamlessly with background color */
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.ornament-flipped {
-  transform: scaleX(-1); /* Flips horizontally */
-}
-
-/* Make it responsive on smaller screens */
-@media (max-width: 767px) {
-  .ornament-container {
-    gap: 1.5rem; /* Narrower gap on mobile */
-    padding: 1.5rem 0 0.5rem 0;
-  }
-  
-  .ornament-branch {
-    width: 110px; /* Slightly smaller size on mobile */
-  }
-}
+
