@@ -18,18 +18,22 @@
   </header>
 
   <main>
-    <section class="container" style="padding-top: 120px;">
-      <h1>RSVP</h1>
-      <p style="margin-bottom: 2rem;">Please let us know if you can make it by December 1, 2026.</p>
+    <section class="details-editorial-container" style="padding-top: 120px;">
+      <div class="editorial-header">
+        <span class="editorial-subtitle">Response</span>
+        <h2 class="editorial-title">Kindly Reply</h2>
+        <div class="editorial-divider"></div>
+        <p style="margin-top: 1.5rem; font-family: var(--font-editorial); font-size: 1.15rem; color: #4A5650; max-width: 500px;">Please let us know if you can celebrate with us by December 1, 2026.</p>
+      </div>
 
-      <div class="card" style="max-width: 600px; margin: 0 auto; text-align: left;">
-        <form action="https://formspree.io/f/mojndlqj" method="POST">
+      <div class="stationery-card" style="max-width: 600px; margin: 0 auto; text-align: left;">
+        <form class="stationery-form" action="https://formspree.io/f/mojndlqj" method="POST">
           <input type="hidden" name="_next" value="/thanks.html">
 
           <div class="form-group">
             <label for="names">Guest Name(s)</label>
             <input type="text" id="names" name="names" placeholder="e.g. Lucas Grinspan & Lianne D'Arcy" required>
-            <small>Please include first and last names of all guests in your party.</small>
+            <small style="font-family: var(--font-body); font-size: 0.8rem; color: #5A6A62; margin-top: 0.4rem;">Please include first and last names of all guests in your party.</small>
           </div>
 
           <div class="form-group">
@@ -58,11 +62,11 @@
           </div>
 
           <div class="form-group">
-            <label for="dietary">Dietary Restrictions Or Songs You'd Like to Request?</label>
+            <label for="dietary">Dietary Restrictions Or Song Requests</label>
             <textarea id="dietary" name="message" rows="4" placeholder="Vegetarian, allergies, etc."></textarea>
           </div>
 
-          <div style="text-align: center; margin-top: 2rem;">
+          <div style="text-align: center; margin-top: 3rem;">
             <button type="submit" class="btn btn-dark-green">Submit RSVP</button>
           </div>
         </form>
@@ -70,9 +74,9 @@
     </section>
   </main>
 
-  <footer>
-    <p>&copy; 2027 Lucas & Lianne <a href="/mango.html" style="text-decoration: none; margin-left: 10px;">🥭</a></p>
-  </footer>
+  <div class="editorial-closing-simple">
+    <p class="closing-signature">Love, Lianne & Lucas <a href="/journey.html" class="signature-mango">🥭</a></p>
+  </div>
 
 </body>
 

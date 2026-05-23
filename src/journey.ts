@@ -17,11 +17,11 @@ L.Icon.Default.mergeOptions({
 });
 
 import coralReefImg from '../images/journey/coral-reef.JPG';
+import coldstoneImg from '../images/journey/coldstone.JPG';
 import highSchoolPromImg from '../images/journey/high-school-prom.JPG';
-import universityOfFloridaImg from '../images/journey/university-of-florida.jpeg';
+import universityOfFloridaImg from '../images/journey/university-of-florida.jpg';
 import firstApartmentImg from '../images/journey/first-apartment.JPG';
 import newYorkImg from '../images/journey/new-york.jpeg';
-import worldCupImg from '../images/journey/world-cup.jpg';
 import chickenKeyImg from '../images/journey/chicken-key.jpeg';
 import deeringEstateImg from '../images/journey/deering-estate.jpg';
 
@@ -52,10 +52,10 @@ const journeyData: JourneyLocation[] = [
   {
     id: 'coldstone',
     title: 'Coldstone Creamery',
-    date: 'TBD',
+    date: 'January 9, 2017',
     lat: 25.5767,
     lng: -80.3394,
-    photoUrl: 'https://via.placeholder.com/400x300?text=Coldstone+Creamery',
+    photoUrl: coldstoneImg,
     caption: 'Our first date. We ate ice cream in the car and ran out the battery. Thanks for the jumpstart, Rob.',
     zoom: 16
   },
@@ -98,16 +98,6 @@ const journeyData: JourneyLocation[] = [
     photoUrl: newYorkImg,
     caption: 'We move to New York City together. She is the cream cheese to my bagel.',
     zoom: 12
-  },
-  {
-    id: 'world-cup',
-    title: 'World Cup',
-    date: 'December 18, 2022',
-    lat: 25.4208,
-    lng: 51.4908,
-    photoUrl: worldCupImg,
-    caption: 'Argentina wins the World Cup!',
-    zoom: 10
   },
   {
     id: 'chicken-key',

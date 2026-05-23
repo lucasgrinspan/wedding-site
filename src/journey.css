@@ -15,34 +15,29 @@ body {
 /* Header adjustments to match specific request */
 header {
   background-color: white;
-  padding: 1rem 2rem;
+  padding: 0.5rem 2rem;
   display: flex;
   justify-content: center;
-  /* Center content initially */
   align-items: center;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   z-index: 1000;
   position: fixed;
-  height: 80px;
-  /* Explicit height */
+  height: 50px;
+  /* Thinner height */
   box-sizing: border-box;
   width: 100%;
-  /* Ensure it spans full width when fixed */
   top: 0;
-  /* Position at the top */
 }
 
 .logo-container {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: auto;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .logo {
   font-family: 'Playfair Display', serif;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--primary-color);
 }
@@ -76,9 +71,9 @@ nav a.active {
   display: flex;
   flex: 1;
   overflow: hidden;
-  /* Account for fixed header height (80px) + Footer height (variable but approx 50-60px) */
-  margin-top: 80px;
-  height: calc(100vh - 80px - 60px);
+  /* Account for fixed header height (50px) + Footer height (variable but approx 50-60px) */
+  margin-top: 50px;
+  height: calc(100vh - 50px - 60px);
 }
 
 /* Timeline Sidebar */
@@ -243,7 +238,6 @@ footer {
 /* Responsive */
 @media (max-width: 768px) {
 
-  /* On mobile allow header to be normal again if needed, or keep centered logo */
   /* Hide nav and footer on mobile */
   nav,
   footer {
@@ -251,9 +245,9 @@ footer {
   }
 
   header {
-    height: auto;
-    flex-direction: column;
-    padding-bottom: 10px;
+    height: 50px;
+    flex-direction: row;
+    padding-bottom: 0;
   }
 
   .logo-container {
@@ -265,11 +259,11 @@ footer {
   .journey-container {
     flex-direction: column-reverse;
     /* Timeline below map */
-    margin-top: 60px;
-    /* Adjust for taller header on mobile */
+    margin-top: 50px;
+    /* Adjust for fixed header height */
     height: auto;
     /* Allow Scroll on mobile */
-    min-height: calc(100vh - 100px);
+    min-height: calc(100vh - 110px);
   }
 
   .timeline-sidebar {

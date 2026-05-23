@@ -363,8 +363,7 @@ nav a.active {
     height: auto;
     min-height: auto;
     background-color: transparent;
-    padding: 0 0 2.5rem 0;
-    /* Remove padding so image is full-width, add bottom padding for spacing */
+    padding: 0;
     gap: 0;
   }
 
@@ -402,7 +401,8 @@ nav a.active {
     /* Text second */
     width: 100%;
     height: auto;
-    margin: 2rem 0 0 0; /* Add margin spacing now that section gap is 0 */
+    margin: 2rem 0 0 0;
+    /* Add margin spacing now that section gap is 0 */
     pointer-events: auto;
     display: block;
   }
@@ -417,7 +417,8 @@ nav a.active {
   .hero-content {
     width: 100%;
     max-width: 100%;
-    padding: 0 1.5rem; /* Add side padding so text doesn't touch screen edges */
+    padding: 0 1.5rem;
+    /* Add side padding so text doesn't touch screen edges */
     background: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -431,7 +432,8 @@ nav a.active {
 
   /* Reset typography colors back to dark primary colors since background is light off-white */
   .hero-content .wedding-names {
-    display: none; /* Hide the nested header on mobile since we use mobile-top-bar */
+    display: none;
+    /* Hide the nested header on mobile since we use mobile-top-bar */
   }
 
   .hero-content .wedding-date-location {
@@ -449,7 +451,8 @@ nav a.active {
   }
 
   .hero-content .hero-cta-container {
-    display: none; /* Details button has no use on mobile, hide it */
+    display: none;
+    /* Details button has no use on mobile, hide it */
   }
 
   .hero-image-container {
@@ -461,7 +464,8 @@ nav a.active {
     z-index: 1;
     overflow: hidden;
     border-radius: 0;
-    box-shadow: none; /* No frame shadow needed for edge-to-edge layout */
+    box-shadow: none;
+    /* No frame shadow needed for edge-to-edge layout */
   }
 
   .hero-picture,
@@ -473,6 +477,14 @@ nav a.active {
     display: block;
     object-fit: contain;
     /* Respect native aspect ratio of portrait image */
+  }
+
+  .details-editorial-container#details {
+    padding: 0;
+  }
+
+  .editorial-closing {
+    padding: 0;
   }
 }
 
@@ -534,7 +546,7 @@ nav a.active {
 }
 
 #details {
-  padding-top: 0;
+  padding-top: 7rem;
 }
 
 /* Section */
@@ -543,52 +555,362 @@ section {
   text-align: center;
 }
 
-.details-grid {
+.details-editorial-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.editorial-header {
+  text-align: center;
+  margin-bottom: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mobile-only-header {
+  display: none;
+}
+
+.mobile-getting-married {
+  font-family: var(--font-editorial);
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+
+.editorial-subtitle {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: var(--secondary-color);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  margin-bottom: 0.6rem;
+  display: block;
+}
+
+.editorial-title {
+  font-family: var(--font-editorial);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 500;
+  color: var(--primary-color);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.editorial-divider {
+  width: 120px;
+  height: 1px;
+  background: linear-gradient(to right, rgba(74, 124, 89, 0) 0%, rgba(74, 124, 89, 0.3) 50%, rgba(74, 124, 89, 0) 100%);
+  position: relative;
+}
+
+.editorial-divider::after {
+  content: '♦';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.5rem;
+  color: var(--secondary-color);
+  background: var(--bg-color);
+  padding: 0 6px;
+}
+
+.editorial-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 280px));
+  justify-content: center;
   gap: 2rem;
   margin-top: 1rem;
-  text-align: left;
+  text-align: center;
 }
 
-.card {
-  background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 2.2rem 2rem;
-  border-radius: 4px;
-  border: 1px solid rgba(46, 74, 61, 0.08);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.02);
-  transition: all 0.4s ease;
+.editorial-item {
+  position: relative;
+  padding: 2.5rem 1.5rem;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.card:hover {
-  transform: translateY(-3px);
-  background: rgba(255, 255, 255, 0.65);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.04);
+/* Vertical dividers on desktop */
+.editorial-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 20%;
+  right: -0.5rem;
+  width: 1px;
+  height: 60%;
+  background: linear-gradient(to bottom, rgba(46, 74, 61, 0) 0%, rgba(46, 74, 61, 0.12) 50%, rgba(46, 74, 61, 0) 100%);
 }
 
-.card h3 {
-  margin-bottom: 1rem;
+.editorial-num {
   font-family: var(--font-editorial);
-  font-size: 1.4rem;
+  font-style: italic;
+  font-size: 2.2rem;
+  color: var(--secondary-color);
+  opacity: 0.35;
+  line-height: 1;
+  margin-bottom: 0.8rem;
+  display: block;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.editorial-item h3 {
+  font-family: var(--font-editorial);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  color: var(--primary-color);
+}
+
+.editorial-main-detail {
+  font-family: var(--font-editorial);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin-bottom: 0.4rem;
+  line-height: 1.4;
+}
+
+.editorial-sub-detail {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: #5A6A62;
+  line-height: 1.6;
+}
+
+/* Elegant Hover Effects */
+.editorial-item:hover {
+  transform: translateY(-4px);
+}
+
+.editorial-item:hover .editorial-num {
+  opacity: 0.8;
+  transform: scale(1.1);
+  color: var(--primary-color);
+}
+
+/* Stationery Card RSVP Form Style (Replaces Boxed RSVP card) */
+.stationery-card {
+  background: #F4F3F0;
+  /* Soft beautiful paper card stock color */
+  border: 1px solid rgba(46, 74, 61, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02), inset 0 0 40px rgba(255, 255, 255, 0.5);
+  padding: 3.5rem 3rem;
+  border-radius: 2px;
+  position: relative;
+}
+
+/* Double fine-line border for stationary look */
+.stationery-card::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid rgba(46, 74, 61, 0.08);
+  pointer-events: none;
+}
+
+/* Stationery Form Styles */
+.stationery-form .form-group {
+  margin-bottom: 2rem;
+}
+
+.stationery-form label {
+  font-family: var(--font-editorial);
+  font-size: 1.1rem;
   font-weight: 500;
   letter-spacing: 1px;
+  color: var(--primary-color);
+  margin-bottom: 0.6rem;
   text-transform: uppercase;
 }
 
-.card p {
-  font-size: 0.95rem;
-  color: #4A5650;
-  margin-bottom: 0.5rem;
+.stationery-form input[type="text"],
+.stationery-form select,
+.stationery-form textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(46, 74, 61, 0.25);
+  border-radius: 0;
+  padding: 10px 4px;
+  font-family: var(--font-editorial);
+  font-size: 1.15rem;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  box-shadow: none;
 }
 
-footer {
+.stationery-form input[type="text"]::placeholder,
+.stationery-form textarea::placeholder {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  color: #8C9A93;
+}
+
+.stationery-form input[type="text"]:focus,
+.stationery-form select:focus,
+.stationery-form textarea:focus {
+  outline: none;
+  border-bottom: 1px solid var(--primary-color);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.stationery-form select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%232E4A3D' d='M6 7.4L.6 2 2 .6 6 4.6 10 .6 11.4 2z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+  padding-right: 30px;
+}
+
+.stationery-form .radio-group {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  margin-top: 0.8rem;
+}
+
+.stationery-form .radio-option {
+  font-family: var(--font-editorial);
+  font-size: 1.1rem;
+  color: var(--text-color);
+}
+
+.stationery-form .radio-option input[type="radio"] {
+  accent-color: var(--primary-color);
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+/* Responsive layout for editorial details */
+@media (max-width: 900px) {
+  .editorial-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  .editorial-item:nth-child(2)::after {
+    display: none;
+    /* Hide divider after second item in 2x2 grid */
+  }
+}
+
+@media (max-width: 600px) {
+  .editorial-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .editorial-item {
+    padding: 1.8rem 1rem;
+    border-bottom: 1px dashed rgba(46, 74, 61, 0.15);
+  }
+
+  .editorial-item:last-child {
+    border-bottom: none;
+  }
+
+  .editorial-item::after {
+    display: none !important;
+    /* Hide all vertical dividers on mobile */
+  }
+
+  .stationery-card {
+    padding: 2.2rem 1.5rem;
+  }
+
+  .stationery-form .radio-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .details-editorial-container {
+    padding: 3rem 1.5rem 0.5rem 1.5rem;
+  }
+
+  #details {
+    padding-top: 3rem;
+  }
+
+  .editorial-closing {
+    padding: 2.5rem 1.5rem 4rem 1.5rem;
+  }
+
+  .mobile-only-header {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.8rem;
+  }
+
+  .desktop-only-header {
+    display: none !important;
+  }
+}
+
+/* Editorial Closing & Signature Styles (Replaces Boxed Footer) */
+.editorial-closing {
+  padding: 6rem 2rem;
+  padding-top: 1rem;
   text-align: center;
-  padding: 2.5rem;
-  background-color: var(--primary-color);
-  color: white;
-  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.closing-headline {
+  font-family: var(--font-editorial);
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-weight: 500;
+  color: var(--primary-color);
+  letter-spacing: 2px;
+  line-height: 1.3;
+  margin-bottom: 2.5rem;
+}
+
+.closing-signature {
+  font-family: var(--font-editorial);
+  font-size: 1.25rem;
+  color: var(--secondary-color);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-top: 1rem;
+}
+
+.signature-mango {
+  text-decoration: none;
+  margin-left: 8px;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.signature-mango:hover {
+  transform: scale(1.2) rotate(15deg);
+}
+
+.editorial-closing-simple {
+  padding: 4rem 2rem 6rem 2rem;
+  text-align: center;
 }
 
 
@@ -655,4 +977,3 @@ small {
   width: 1.2rem;
   height: 1.2rem;
 }
-
