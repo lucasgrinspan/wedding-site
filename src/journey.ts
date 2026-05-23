@@ -20,7 +20,7 @@ import coralReefImg from '../images/journey/coral-reef.JPG';
 import coldstoneImg from '../images/journey/coldstone.JPG';
 import highSchoolPromImg from '../images/journey/high-school-prom.JPG';
 import universityOfFloridaImg from '../images/journey/university-of-florida.jpg';
-import firstApartmentImg from '../images/journey/first-apartment.JPG';
+import firstApartmentImg from '../images/journey/first-apartment.jpeg';
 import newYorkImg from '../images/journey/new-york.jpeg';
 import chickenKeyImg from '../images/journey/chicken-key.jpeg';
 import deeringEstateImg from '../images/journey/deering-estate.jpg';
