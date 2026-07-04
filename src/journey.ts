@@ -20,6 +20,7 @@ import coralReefImg from '../images/journey/coral-reef.JPG';
 import coldstoneImg from '../images/journey/coldstone.JPG';
 import highSchoolPromImg from '../images/journey/high-school-prom.JPG';
 import universityOfFloridaImg from '../images/journey/university-of-florida.jpg';
+import graduationImg from '../images/journey/graduation.jpg';
 import firstApartmentImg from '../images/journey/first-apartment.jpeg';
 import newYorkImg from '../images/journey/new-york.jpeg';
 import chickenKeyImg from '../images/journey/chicken-key.jpeg';
@@ -78,6 +79,16 @@ const journeyData: JourneyLocation[] = [
     photoUrl: universityOfFloridaImg,
     caption: 'We made it to UF! We were now spending every day together.',
     zoom: 14
+  },
+  {
+    id: 'college-graduation',
+    title: 'College Graduation',
+    date: 'May 9, 2021',
+    lat: 29.64915,
+    lng: -82.34412,
+    photoUrl: graduationImg,
+    caption: 'Ready for the real world, though that felt pretty real',
+    zoom: 16
   },
   {
     id: 'first-apartment',
