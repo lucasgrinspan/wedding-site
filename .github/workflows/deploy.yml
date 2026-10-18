@@ -34,6 +34,8 @@ jobs:
         run: npm run build
         env:
           VITE_THUNDERFOREST_API_KEY: ${{ secrets.VITE_THUNDERFOREST_API_KEY }}
+          VITE_RSVP_WORKER_URL: "https://rsvp-lookup.lucasaffalter.workers.dev/"
+          VITE_FORMSPREE_URL: "https://formspree.io/f/mojndlqj"
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
