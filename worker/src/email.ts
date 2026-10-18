@@ -29,8 +29,11 @@ const EMAIL_COPY = {
     viewDetailsBtn: "View Wedding Details",
     signature: "Love, Lianne &amp; Lucas 🥭",
     signaturePlain: "With love,\nLianne & Lucas 🥭",
-    changesPrefix: "If you need to make any changes to your RSVP, please reply directly to this email or contact us at",
-    changesPlain: "If you need to make any changes to your RSVP, please reply directly to this email or reach us at rsvp@lucasandlianne.com.",
+    rsvpUrl: "https://lucasandlianne.com/rsvp.html",
+    rsvpLinkText: "RSVP page",
+    changesPrefix: "Need to update anyone in your party's response or make a change later? Simply revisit our",
+    changesSuffix: "at any time to submit an updated response.",
+    changesPlain: "Need to update anyone in your party's response or make a change later? Simply revisit our RSVP page at https://lucasandlianne.com/rsvp.html at any time to submit an updated response.",
   },
   es: {
     subject: "Confirmación de Asistencia — Casamiento de Lucas & Lianne",
@@ -51,8 +54,11 @@ const EMAIL_COPY = {
     viewDetailsBtn: "Ver Detalles del Casamiento",
     signature: "Con amor, Lianne &amp; Lucas 🥭",
     signaturePlain: "Con amor,\nLianne & Lucas 🥭",
-    changesPrefix: "Si necesitás hacer algún cambio en tu confirmación, por favor respondé directamente a este mail o escribinos a",
-    changesPlain: "Si necesitás hacer algún cambio en tu confirmación, por favor respondé directamente a este mail o escribinos a rsvp@lucasandlianne.com.",
+    rsvpUrl: "https://lucasandlianne.com/es/rsvp.html",
+    rsvpLinkText: "página de confirmación",
+    changesPrefix: "¿Necesitás actualizar la respuesta de alguien de tu grupo o hacer algún cambio más adelante? Podés volver a visitar nuestra",
+    changesSuffix: "en cualquier momento para enviar una respuesta actualizada.",
+    changesPlain: "¿Necesitás actualizar la respuesta de alguien de tu grupo o hacer algún cambio más adelante? Podés volver a visitar nuestra página de confirmación en https://lucasandlianne.com/es/rsvp.html en cualquier momento para enviar una respuesta actualizada.",
   },
 } as const;
 
@@ -180,7 +186,7 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
                         ${copy.signature}
                       </p>
                       <p style="margin: 0; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; color: #7A8680; line-height: 1.6;">
-                        ${copy.changesPrefix} <a href="mailto:rsvp@lucasandlianne.com" style="color: #2E4A3D; text-decoration: underline;">rsvp@lucasandlianne.com</a>.<br>
+                        ${copy.changesPrefix} <a href="${copy.rsvpUrl}" target="_blank" style="color: #2E4A3D; text-decoration: underline;">${copy.rsvpLinkText}</a> ${copy.changesSuffix}<br>
                         <a href="https://lucasandlianne.com${locale === "es" ? "/es/" : ""}" target="_blank" style="color: #8B5A2B; text-decoration: none; font-weight: bold;">lucasandlianne.com</a>
                       </p>
                     </div>

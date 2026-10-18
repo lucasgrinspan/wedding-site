@@ -745,11 +745,11 @@ async function sendConfirmationEmail(
   const html = buildConfirmationEmailHtml(submission);
   const text = buildConfirmationEmailText(submission);
   const subject = getConfirmationEmailSubject(submission);
-  const cleanReplyTo = replyToEmail?.trim() || "rsvp@lucasandlianne.com";
+  const cleanReplyTo = replyToEmail?.trim();
 
   const payload = {
     from: "Lucas & Lianne <rsvp@send.lucasandlianne.com>",
-    reply_to: `Lucas & Lianne <${cleanReplyTo}>`,
+    ...(cleanReplyTo ? { reply_to: `Lucas & Lianne <${cleanReplyTo}>` } : {}),
     to: [submission.email],
     subject,
     html,

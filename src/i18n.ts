@@ -84,6 +84,7 @@ export const esStrings: Record<string, string> = {
   'rsvp.findBtn': 'Buscar Invitación',
   'rsvp.confirmSubtitle': 'Confirmar Asistencia',
   'rsvp.forYourParty': 'Para tu Grupo',
+  'rsvp.updateAnytimeNote': '¿Todavía no estás seguro por todos en tu grupo o necesitás hacer un cambio más adelante? Podés volver a esta página en cualquier momento para enviar una respuesta actualizada.',
   'rsvp.emailLabel': 'Correo Electrónico (Opcional)',
   'rsvp.emailPlaceholder': 'Solo si querés recibir una confirmación por mail',
   'rsvp.emailHelp': 'Solo si querés recibir una confirmación por mail',
@@ -96,6 +97,7 @@ export const esStrings: Record<string, string> = {
   'thanks.title': '¡Muchas Gracias!',
   'thanks.received': 'Recibimos tu confirmación de asistencia.',
   'thanks.celebrate': '¡No vemos la hora de celebrar con vos!',
+  'thanks.updateNote': '¿Necesitás hacer algún cambio más adelante? Podés volver a la <a href="/es/rsvp.html" style="color: var(--primary-color); text-decoration: underline;">página de confirmación</a> en cualquier momento para actualizar la respuesta de tu grupo.',
   'thanks.backHome': 'Volver al Inicio',
 
   // Journey Page
