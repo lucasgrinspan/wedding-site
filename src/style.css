@@ -1148,24 +1148,3 @@ small {
   color: var(--text-color);
   font-style: italic;
 }
-
-/* Easter Egg: Runaway Button Floating Caption */
-.easter-egg-runaway-badge {
-  position: absolute;
-  bottom: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: var(--primary-color);
-  color: #FAF8F3;
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(46, 74, 61, 0.22);
-  pointer-events: none;
-  z-index: 30;
-  animation: fadeIn 0.2s ease-out;
-}
