@@ -64,8 +64,19 @@ function normalizeEffects(entry?: DelightConfigEntry): string[] {
   return Array.from(new Set(rawList));
 }
 
+const DEFAULT_PARTIES_DELIGHTS: Record<string, DelightConfigEntry> = {
+  mrpenny: {
+    rsvpNote: "Here is where the RSVP note goes",
+    thanksNote: "Here is where the thanks note goes",
+    emailNote: "Here is where the confirmation email note goes",
+  },
+};
+
 // Build normalized lookup maps for parties and guests
 const normalizedPartiesMap = new Map<string, DelightConfigEntry>();
+for (const [k, v] of Object.entries(DEFAULT_PARTIES_DELIGHTS)) {
+  normalizedPartiesMap.set(normalizeKey(k), v);
+}
 if (rawDelights.parties && typeof rawDelights.parties === "object") {
   for (const [k, v] of Object.entries(rawDelights.parties)) {
     const nk = normalizeKey(k);
