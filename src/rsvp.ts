@@ -1,3 +1,9 @@
+import {
+  applyRsvpDelights,
+  initRsvpPreviewIfRequested,
+  persistThanksDelightOnSubmit,
+  resetRsvpDelights,
+} from "./easter-eggs";
 import { dynamicCopy, getCurrentLocale } from "./i18n";
 
 // Configurable variables loaded from Vite environment variables (with fallbacks)
@@ -71,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (response.ok) {
+          persistThanksDelightOnSubmit(rsvpForm);
           const nextInput = rsvpForm.querySelector('input[name="_next"]') as HTMLInputElement | null;
           const nextUrl = nextInput?.value || (locale === "es" ? "/es/thanks.html" : "/thanks.html");
           window.location.href = nextUrl;
@@ -111,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const party = await response.json();
           const headerMatchedGuest = response.headers.get("X-Matched-Guest")?.trim();
           const submittedBy = headerMatchedGuest || resolveSubmittedBy(first, last, party);
-          setupRsvpForm(party, submittedBy);
+          setupRsvpForm(party, submittedBy, response);
         } else if (response.status === 404) {
           showError(copy.notFound);
         } else {
@@ -130,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnBackSearch && rsvpForm && searchStep) {
     btnBackSearch.addEventListener("click", () => {
       if (submitError) submitError.style.display = "none";
+      resetRsvpDelights();
       rsvpForm.style.display = "none";
       searchStep.style.display = "block";
     });
@@ -149,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function setupRsvpForm(party: string[], submittedBy: string) {
+  function setupRsvpForm(party: string[], submittedBy: string, response?: Response) {
     if (!guestRowsContainer || !partyListHiddenInput || !searchStep || !rsvpForm) return;
 
     // Clear old rows
@@ -185,5 +193,20 @@ document.addEventListener("DOMContentLoaded", () => {
     // Switch views
     searchStep.style.display = "none";
     rsvpForm.style.display = "block";
+
+    // Apply any guest/party custom note or interactive easter egg
+    applyRsvpDelights({
+      response,
+      party,
+      submittedBy,
+      locale,
+      formElement: rsvpForm,
+    });
   }
+
+  initRsvpPreviewIfRequested({
+    locale,
+    onPreviewParty: (party, submittedBy) => setupRsvpForm(party, submittedBy),
+  });
 });
+

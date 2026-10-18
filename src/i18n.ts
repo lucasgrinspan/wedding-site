@@ -92,11 +92,13 @@ export const esStrings: Record<string, string> = {
   'rsvp.dietaryPlaceholder': 'Vegetariano, sin TACC / sin gluten, temas que no pueden faltar, etc.',
   'rsvp.backBtn': 'Volver',
   'rsvp.submitBtn': 'Enviar Confirmación',
+  'rsvp.personalNoteLabel': 'Una Nota Personal de Lucas y Lianne',
 
   // Thank You Page
   'thanks.title': '¡Muchas Gracias!',
   'thanks.received': 'Recibimos tu confirmación de asistencia.',
   'thanks.celebrate': '¡No vemos la hora de celebrar con vos!',
+  'thanks.personalNoteLabel': 'Una Nota Personal de Lucas y Lianne',
   'thanks.updateNote': '¿Necesitás hacer algún cambio más adelante? Podés volver a la <a href="/es/rsvp.html" style="color: var(--primary-color); text-decoration: underline;">página de confirmación</a> en cualquier momento para actualizar la respuesta de tu grupo.',
   'thanks.backHome': 'Volver al Inicio',
 

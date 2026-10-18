@@ -1,3 +1,4 @@
+import { resolveEmailNoteForSubmission } from "./delights";
 import { GuestResponse, RsvpSubmissionPayload } from "./types";
 
 function escapeHtml(str: string): string {
@@ -15,6 +16,7 @@ const EMAIL_COPY = {
     title: "RSVP Confirmation — Lucas &amp; Lianne",
     acceptStatus: "✓ Joyfully Accepts",
     declineStatus: "✕ Regretfully Declines",
+    personalNoteLabel: "A Personal Note from Lucas & Lianne",
     dietaryLabel: "Dietary Restrictions or Requests",
     headerTitle: "Kindly Reply",
     headerSubtitle: "RSVP Confirmation",
@@ -40,6 +42,7 @@ const EMAIL_COPY = {
     title: "Confirmación de Asistencia — Lucas &amp; Lianne",
     acceptStatus: "✓ Asistirá con alegría",
     declineStatus: "✕ No podrá asistir",
+    personalNoteLabel: "Una Nota Personal de Lucas y Lianne",
     dietaryLabel: "Restricciones Alimentarias o Pedidos Especiales",
     headerTitle: "Confirmación",
     headerSubtitle: "Confirmación de Asistencia",
@@ -94,6 +97,18 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
     })
     .join("");
 
+  const personalNote = resolveEmailNoteForSubmission(submission);
+  const personalNoteHtml = personalNote
+    ? `
+      <div style="margin: 0 0 28px 0; padding: 20px 22px; background-color: #F4F2EC; border: 1px solid rgba(139, 90, 43, 0.25); border-left: 3px solid #8B5A2B; border-radius: 2px;">
+        <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 8px; font-weight: 600;">${escapeHtml(copy.personalNoteLabel)}</span>
+        <p style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 15px; line-height: 1.65; color: #2C3531; font-style: italic;">
+          &ldquo;${escapeHtml(personalNote)}&rdquo;
+        </p>
+      </div>
+    `
+    : "";
+
   const dietaryHtml = submission.dietary && submission.dietary.trim().length > 0
     ? `
       <div style="margin-top: 28px; padding: 18px 20px; background-color: #F4F2EC; border-left: 3px solid #2E4A3D; border-radius: 2px;">
@@ -143,6 +158,9 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
 
                     <!-- Divider -->
                     <div style="border-top: 1px solid rgba(46, 74, 61, 0.12); margin: 20px 0 28px 0;"></div>
+
+                    <!-- Personal Note Section (if configured for this guest/party) -->
+                    ${personalNoteHtml}
 
                     <!-- Party Responses Table -->
                     <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 12px; font-weight: 600;">${copy.partyResponseLabel}</span>
@@ -212,6 +230,11 @@ export function buildConfirmationEmailText(submission: RsvpSubmissionPayload): s
     .map((guest: GuestResponse) => `• ${guest.name}: ${guest.attending ? copy.acceptStatus : copy.declineStatus}`)
     .join("\n");
 
+  const personalNote = resolveEmailNoteForSubmission(submission);
+  const personalNoteSection = personalNote
+    ? `\n${copy.personalNoteLabel.toUpperCase()}:\n"${personalNote}"\n`
+    : "";
+
   const dietarySection = submission.dietary && submission.dietary.trim().length > 0
     ? `\n${copy.dietaryLabel.toUpperCase()}:\n${submission.dietary.trim()}\n`
     : "";
@@ -220,7 +243,7 @@ export function buildConfirmationEmailText(submission: RsvpSubmissionPayload): s
 ==================================================
 
 ${copy.thankYouIntro}
-
+${personalNoteSection}
 ${copy.partyResponseLabel.toUpperCase()}:
 ${partyLines}
 ${dietarySection}

@@ -1,5 +1,10 @@
 import rsvpLookupData from "../data/rsvp_lookup.json";
 import {
+  encodeDelightHeader,
+  resolveEmailNoteForSubmission,
+  resolveGuestDelight,
+} from "./delights";
+import {
   buildConfirmationEmailHtml,
   buildConfirmationEmailText,
   buildHostNotificationEmailHtml,
@@ -109,7 +114,7 @@ export function getCorsHeaders(request: Request): Record<string, string> {
     "Access-Control-Allow-Origin": allowOrigin,
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
-    "Access-Control-Expose-Headers": "X-Matched-Guest",
+    "Access-Control-Expose-Headers": "X-Matched-Guest, X-Rsvp-Delight",
     "Access-Control-Max-Age": "86400",
   };
 }
@@ -537,12 +542,19 @@ export function handleLookup(url: URL, corsHeaders: Record<string, string>): Res
   }
 
   const matchedGuest = resolvePartyMember(first, last, party);
+  const delight = resolveGuestDelight({
+    party,
+    matchedGuest,
+    first,
+    last,
+  });
 
   return new Response(JSON.stringify(party), {
     status: 200,
     headers: {
       "Content-Type": "application/json",
       ...(matchedGuest ? { "X-Matched-Guest": matchedGuest } : {}),
+      ...(delight ? { "X-Rsvp-Delight": encodeDelightHeader(delight) } : {}),
       ...corsHeaders,
     },
   });
@@ -689,12 +701,24 @@ export function extractSubmissionPayload(raw: Record<string, unknown>): RsvpSubm
   const rawLang = typeof raw.lang === "string" ? raw.lang.trim().toLowerCase() : "";
   const lang: "en" | "es" = rawLang === "es" ? "es" : "en";
 
+  const rawPersonalNote = (raw.personal_note || raw.personalNote || "") as string;
+  const personalNote = resolveEmailNoteForSubmission({
+    party: partyList,
+    submittedBy,
+    lang,
+    personalNote:
+      typeof rawPersonalNote === "string" && rawPersonalNote.trim().length > 0
+        ? rawPersonalNote.trim()
+        : undefined,
+  });
+
   return {
     party: partyList,
     ...(submittedBy ? { submittedBy } : {}),
     dietary: typeof dietary === "string" && dietary.trim().length > 0 ? dietary.trim() : undefined,
     email: typeof email === "string" && email.trim().length > 0 ? email.trim() : undefined,
     lang,
+    ...(personalNote ? { personalNote } : {}),
     submittedAt: new Date().toISOString(),
   };
 }

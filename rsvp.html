@@ -66,6 +66,12 @@
             <p style="font-family: var(--font-body); font-size: 0.95rem; color: #5A6A62; margin: 0.5rem 0 0 0; line-height: 1.5;" data-i18n="rsvp.updateAnytimeNote">Not sure about everyone in your party yet, or need to make a change later? You can return to this page anytime to submit an updated response.</p>
           </div>
 
+          <!-- Optional personal note from Lucas & Lianne (populated dynamically if configured for guest/party) -->
+          <div id="rsvp-delight-note" class="delight-note-callout" style="display: none;">
+            <span class="delight-note-eyebrow" data-i18n="rsvp.personalNoteLabel">A Personal Note from Lucas &amp; Lianne</span>
+            <p id="rsvp-delight-note-text" class="delight-note-body"></p>
+          </div>
+
           <!-- Dynamic guest RSVP rows will be injected here -->
           <div id="guest-rows-container"></div>
 
