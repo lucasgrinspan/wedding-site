@@ -87,7 +87,7 @@ header:not(.site-header-home) {
 
 .logo {
   font-family: var(--font-editorial);
-  font-size: 1.4rem;
+  font-size: 1.55rem;
   font-weight: 500;
   color: var(--primary-color);
   letter-spacing: 3px;
@@ -113,7 +113,7 @@ nav a {
   text-decoration: none;
   color: var(--text-color);
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   text-transform: uppercase;
   letter-spacing: 2px;
   padding: 6px 0;
@@ -158,7 +158,7 @@ nav a.active {
 
 .wedding-names {
   font-family: var(--font-editorial);
-  font-size: 3rem;
+  font-size: 3.4rem;
   font-weight: 500;
   color: var(--primary-color);
   letter-spacing: 6px;
@@ -176,7 +176,7 @@ nav a.active {
 
 .wedding-date-location {
   font-family: var(--font-editorial);
-  font-size: 1rem;
+  font-size: 1.15rem;
   font-weight: 500;
   color: #4A5650;
   letter-spacing: 3px;
@@ -185,7 +185,7 @@ nav a.active {
 
 .wedding-countdown {
   font-family: var(--font-editorial);
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: #7A8B82;
   letter-spacing: 3px;
@@ -280,7 +280,7 @@ nav a.active {
 
 .hero-content .btn-hero {
   margin-top: 1.8rem;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   padding: 14px 38px;
   background-color: #ECEBE9;
   /* High-contrast light button */
@@ -381,7 +381,7 @@ nav a.active {
   .mobile-top-bar .wedding-names {
     margin: 0;
     color: var(--primary-color);
-    font-size: clamp(1.6rem, 7.5vw, 2.2rem);
+    font-size: clamp(1.7rem, 7.8vw, 2.35rem);
     /* Large and beautiful, scaled dynamically to fit in a single line */
     letter-spacing: 3px;
     white-space: nowrap;
@@ -439,14 +439,14 @@ nav a.active {
   .hero-content .wedding-date-location {
     color: #4A5650;
     opacity: 1;
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     letter-spacing: 2px;
     margin-bottom: 0;
   }
 
   .hero-content .wedding-countdown {
     color: #7A8B82;
-    font-size: 1.05rem;
+    font-size: 1.2rem;
     letter-spacing: 2px;
   }
 
@@ -516,6 +516,7 @@ nav a.active {
   background-color: var(--secondary-color);
   color: white;
   border-radius: 4px;
+  font-size: 1.05rem;
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -579,7 +580,7 @@ section {
 
 .mobile-getting-married {
   font-family: var(--font-editorial);
-  font-size: 1.8rem;
+  font-size: 2.05rem;
   font-weight: 500;
   color: var(--primary-color);
   letter-spacing: 2px;
@@ -591,7 +592,7 @@ section {
 .editorial-subtitle {
   font-family: var(--font-body);
   font-weight: 700;
-  font-size: 0.75rem;
+  font-size: 0.9rem;
   color: var(--secondary-color);
   text-transform: uppercase;
   letter-spacing: 4px;
@@ -601,7 +602,7 @@ section {
 
 .editorial-title {
   font-family: var(--font-editorial);
-  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-size: clamp(2.25rem, 5.5vw, 3.2rem);
   font-weight: 500;
   color: var(--primary-color);
   letter-spacing: 2px;
@@ -660,7 +661,7 @@ section {
 .editorial-num {
   font-family: var(--font-editorial);
   font-style: italic;
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   color: var(--secondary-color);
   opacity: 0.35;
   line-height: 1;
@@ -671,7 +672,7 @@ section {
 
 .editorial-item h3 {
   font-family: var(--font-editorial);
-  font-size: 1.25rem;
+  font-size: 1.45rem;
   font-weight: 500;
   letter-spacing: 2px;
   margin-bottom: 1rem;
@@ -681,7 +682,7 @@ section {
 
 .editorial-main-detail {
   font-family: var(--font-editorial);
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   font-weight: 600;
   color: var(--text-color);
   margin-bottom: 0.4rem;
@@ -690,7 +691,7 @@ section {
 
 .editorial-sub-detail {
   font-family: var(--font-body);
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   color: #5A6A62;
   line-height: 1.6;
 }
@@ -753,7 +754,7 @@ section {
 
 .stationery-form label {
   font-family: var(--font-editorial);
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   font-weight: 500;
   letter-spacing: 1px;
   color: var(--primary-color);
@@ -772,7 +773,7 @@ section {
   border-radius: 0;
   padding: 10px 4px;
   font-family: var(--font-editorial);
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   color: var(--text-color);
   transition: all 0.3s ease;
   box-shadow: none;
@@ -782,7 +783,7 @@ section {
 .stationery-form input[type="email"]::placeholder,
 .stationery-form textarea::placeholder {
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   letter-spacing: 1px;
   color: #8C9A93;
 }
@@ -799,7 +800,7 @@ section {
 .stationery-form small,
 .stationery-form .form-help-text {
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: #5A6A62;
   margin-top: 0.4rem;
   display: block;
@@ -825,7 +826,7 @@ section {
 
 .stationery-form .radio-option {
   font-family: var(--font-editorial);
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: var(--text-color);
 }
 
@@ -920,7 +921,7 @@ section {
 
 .closing-headline {
   font-family: var(--font-editorial);
-  font-size: clamp(2rem, 5vw, 2.8rem);
+  font-size: clamp(2.25rem, 5.5vw, 3.2rem);
   font-weight: 500;
   color: var(--primary-color);
   letter-spacing: 2px;
@@ -930,7 +931,7 @@ section {
 
 .closing-signature {
   font-family: var(--font-editorial);
-  font-size: 1.25rem;
+  font-size: 1.45rem;
   color: var(--secondary-color);
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -964,6 +965,7 @@ section {
 label {
   display: block;
   font-weight: bold;
+  font-size: 1.1rem;
   margin-bottom: 0.5rem;
   color: var(--primary-color);
 }
@@ -977,7 +979,7 @@ textarea {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 1.125rem;
   transition: border-color 0.3s;
 }
 
@@ -1081,7 +1083,7 @@ small {
   margin-top: 2rem;
   text-align: center;
   font-family: var(--font-editorial);
-  font-size: 1rem;
+  font-size: 1.15rem;
   letter-spacing: 1px;
 }
 
