@@ -294,15 +294,45 @@ export function persistThanksDelightOnSubmit(formElement: HTMLFormElement): void
   }
 }
 
+const DEFAULT_WORKER_URL =
+  import.meta.env.VITE_RSVP_WORKER_URL || "https://wedding-rsvp-worker.lucasaffalter.workers.dev/";
+
+/**
+ * Extracts optional `?first=...&last=...` or `?name=First+Last` / `?guest=First+Last`
+ * query parameters from the URL for direct testing/linking.
+ */
+export function getGuestQueryFromUrl(): { first: string; last: string } | null {
+  if (typeof window === "undefined") return null;
+  const params = new URLSearchParams(window.location.search);
+  const firstParam = params.get("first")?.trim() || "";
+  const lastParam = params.get("last")?.trim() || "";
+  if (firstParam && lastParam) {
+    return { first: firstParam, last: lastParam };
+  }
+
+  const fullParam = (params.get("name") || params.get("guest") || "").trim();
+  if (fullParam) {
+    const parts = fullParam.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return {
+        first: parts[0],
+        last: parts.slice(1).join(" "),
+      };
+    }
+  }
+  return null;
+}
+
 /**
  * Optional helper for `rsvp.html`: if the user opens `/rsvp.html?preview_effect=...`
- * or `/rsvp.html?preview_note=...`, automatically opens Step 2 with a demo guest so
- * they can test effects and notes with one click.
+ * or `/rsvp.html?preview_note=...` (without `?first=&last=`), automatically opens
+ * Step 2 with a demo guest so they can test effects and notes with one click.
  */
 export function initRsvpPreviewIfRequested(options: {
   locale: Locale;
   onPreviewParty: (party: string[], submittedBy: string) => void;
 }): void {
+  if (getGuestQueryFromUrl()) return;
   const preview = getPreviewDelightFromUrl();
   if (!preview) return;
 
@@ -310,12 +340,84 @@ export function initRsvpPreviewIfRequested(options: {
   options.onPreviewParty(demoParty, "Mr. Penny");
 }
 
+function mountThanksDelights(options: {
+  locale: Locale;
+  noteSource: LocalizedNote | undefined;
+  effects: string[];
+  matchedGuest: string;
+  party: string[];
+  delight: DelightPayload | null;
+}): void {
+  const thanksNoteText = resolveNoteText(options.noteSource, options.locale);
+  renderCalloutNote("thanks-delight-note", "thanks-delight-note-text", thanksNoteText);
+
+  const ctx: EasterEggContext = {
+    page: "thanks",
+    locale: options.locale,
+    matchedGuest: options.matchedGuest,
+    normalizedGuest: normalizeIdentifier(options.matchedGuest),
+    party: options.party,
+    normalizedParty: options.party.map((p) => normalizeIdentifier(p)).filter(Boolean),
+    effects: options.effects,
+    delight: options.delight,
+  };
+
+  for (const mod of EASTER_EGG_REGISTRY) {
+    if (shouldRunModule(mod, ctx)) {
+      mod.mount(ctx);
+    }
+  }
+}
+
 /**
  * Initializes custom notes and any `thanks`-page easter eggs on `thanks.html`.
+ * Supports both the normal post-submit `sessionStorage` flow and direct URL testing
+ * via `?first=...&last=...` (or `?name=First+Last`), which queries the Cloudflare Worker.
  */
-export function initThanksDelights(): void {
+export function initThanksDelights(workerUrl: string = DEFAULT_WORKER_URL): void {
   const locale = getCurrentLocale();
   const preview = getPreviewDelightFromUrl();
+  const guestQuery = getGuestQueryFromUrl();
+
+  if (guestQuery) {
+    void (async () => {
+      try {
+        const response = await fetch(
+          `${workerUrl}?first=${encodeURIComponent(guestQuery.first)}&last=${encodeURIComponent(guestQuery.last)}`
+        );
+        if (response.ok) {
+          const party = (await response.json()) as string[];
+          const matchedGuest =
+            response.headers.get("X-Matched-Guest")?.trim() ||
+            `${guestQuery.first} ${guestQuery.last}`;
+          const headerDelight = parseDelightHeader(response);
+          const merged = mergeDelightPayloads(headerDelight, preview);
+
+          mountThanksDelights({
+            locale,
+            noteSource: merged?.thanksNote,
+            effects: extractEffectsList(merged),
+            matchedGuest,
+            party: Array.isArray(party) ? party : [],
+            delight: merged,
+          });
+          return;
+        }
+      } catch {
+        // Fall through to stored/preview fallback on network error
+      }
+
+      mountThanksDelights({
+        locale,
+        noteSource: preview?.thanksNote,
+        effects: extractEffectsList(preview),
+        matchedGuest: `${guestQuery.first} ${guestQuery.last}`,
+        party: [],
+        delight: preview,
+      });
+    })();
+    return;
+  }
 
   let stored: StoredThanksDelight | null = null;
   try {
@@ -333,29 +435,18 @@ export function initThanksDelights(): void {
     (stored.onlyWhenAttending === false || stored.anyAttending);
 
   const noteSource = preview?.thanksNote ?? (shouldShowStoredNote ? stored?.thanksNote : undefined);
-  const thanksNoteText = resolveNoteText(noteSource, locale);
-  renderCalloutNote("thanks-delight-note", "thanks-delight-note-text", thanksNoteText);
-
   const effects = Array.from(
     new Set([...(stored?.effects ?? []), ...extractEffectsList(preview)])
   );
   const matchedGuest = stored?.submittedBy ?? "";
   const party = stored?.party ?? [];
 
-  const ctx: EasterEggContext = {
-    page: "thanks",
+  mountThanksDelights({
     locale,
-    matchedGuest,
-    normalizedGuest: normalizeIdentifier(matchedGuest),
-    party,
-    normalizedParty: party.map((p) => normalizeIdentifier(p)).filter(Boolean),
+    noteSource,
     effects,
+    matchedGuest,
+    party,
     delight: preview ?? (stored ? { thanksNote: stored.thanksNote, effects: stored.effects } : null),
-  };
-
-  for (const mod of EASTER_EGG_REGISTRY) {
-    if (shouldRunModule(mod, ctx)) {
-      mod.mount(ctx);
-    }
-  }
+  });
 }

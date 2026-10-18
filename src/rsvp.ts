@@ -1,5 +1,6 @@
 import {
   applyRsvpDelights,
+  getGuestQueryFromUrl,
   initRsvpPreviewIfRequested,
   persistThanksDelightOnSubmit,
   resetRsvpDelights,
@@ -168,6 +169,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (submittedByHiddenInput) {
       submittedByHiddenInput.value = submittedBy;
     }
+    const langHiddenInput = rsvpForm.querySelector('input[name="lang"]') as HTMLInputElement | null;
+    if (langHiddenInput) {
+      langHiddenInput.value = locale;
+    }
 
     // Inject row for each party member
     party.forEach(guest => {
@@ -204,9 +209,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  initRsvpPreviewIfRequested({
-    locale,
-    onPreviewParty: (party, submittedBy) => setupRsvpForm(party, submittedBy),
-  });
+  const guestQuery = getGuestQueryFromUrl();
+  if (guestQuery && firstNameInput && lastNameInput && btnFindInvitation) {
+    firstNameInput.value = guestQuery.first;
+    lastNameInput.value = guestQuery.last;
+    btnFindInvitation.click();
+  } else {
+    initRsvpPreviewIfRequested({
+      locale,
+      onPreviewParty: (party, submittedBy) => setupRsvpForm(party, submittedBy),
+    });
+  }
 });
 

@@ -12,9 +12,12 @@ const autoRedirectHeadScript = `${AUTO_REDIRECT_MARKER_START}
   <script>
     (function () {
       try {
+        var params = new URLSearchParams(location.search);
+        var qLang = (params.get('locale') || params.get('lang') || '').toLowerCase();
+        if (qLang === 'en') return;
         var saved = localStorage.getItem('lang');
-        if (saved === 'en') return;
-        if (saved === 'es' || /^es\\b/i.test(navigator.language || '')) {
+        if (qLang !== 'es' && saved === 'en') return;
+        if (qLang === 'es' || saved === 'es' || /^es\\b/i.test(navigator.language || '')) {
           var p = location.pathname;
           if (!/^\\/es(\\/|$)/.test(p)) {
             location.replace('/es' + (p.charAt(0) === '/' ? p : '/' + p) + location.search + location.hash);

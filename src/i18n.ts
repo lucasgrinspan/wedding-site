@@ -4,6 +4,12 @@ export type Locale = 'en' | 'es';
  * Detects whether the current document is rendered in Spanish.
  */
 export function getCurrentLocale(): Locale {
+  if (typeof window !== 'undefined') {
+    const params = new URLSearchParams(window.location.search);
+    const paramLocale = (params.get('locale') || params.get('lang') || '').trim().toLowerCase();
+    if (paramLocale === 'es') return 'es';
+    if (paramLocale === 'en') return 'en';
+  }
   if (typeof document !== 'undefined' && document.documentElement.lang === 'es') {
     return 'es';
   }
