@@ -67,6 +67,12 @@
           <div id="guest-rows-container"></div>
 
           <div class="form-group" style="margin-top: 2.5rem;">
+            <label for="email">Email Address (Optional)</label>
+            <input type="email" id="email" name="email" placeholder="Only if you want a confirmation email" autocomplete="email">
+            <small class="form-help-text" style="font-family: var(--font-body); font-size: 0.85rem; color: #5A6A62; margin-top: 0.4rem; display: block;">Only if you want a confirmation email</small>
+          </div>
+
+          <div class="form-group" style="margin-top: 2rem;">
             <label for="dietary">Dietary Restrictions or Song Requests</label>
             <textarea id="dietary" name="message" rows="4" placeholder="Vegetarian, gluten-free, song requests, etc."></textarea>
           </div>
@@ -95,6 +101,14 @@
       grid-template-columns: 1fr 1fr;
       gap: 20px;
       margin-bottom: 1.5rem;
+    }
+
+    .form-help-text {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: #5A6A62;
+      margin-top: 0.4rem;
+      display: block;
     }
 
     .guest-rsvp-row {

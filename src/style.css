@@ -741,6 +741,7 @@ section {
 }
 
 .stationery-form input[type="text"],
+.stationery-form input[type="email"],
 .stationery-form select,
 .stationery-form textarea {
   width: 100%;
@@ -757,6 +758,7 @@ section {
 }
 
 .stationery-form input[type="text"]::placeholder,
+.stationery-form input[type="email"]::placeholder,
 .stationery-form textarea::placeholder {
   font-family: var(--font-body);
   font-size: 0.85rem;
@@ -765,11 +767,21 @@ section {
 }
 
 .stationery-form input[type="text"]:focus,
+.stationery-form input[type="email"]:focus,
 .stationery-form select:focus,
 .stationery-form textarea:focus {
   outline: none;
   border-bottom: 1px solid var(--primary-color);
   background: rgba(255, 255, 255, 0.15);
+}
+
+.stationery-form small,
+.stationery-form .form-help-text {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: #5A6A62;
+  margin-top: 0.4rem;
+  display: block;
 }
 
 .stationery-form select {
@@ -928,6 +940,7 @@ label {
 }
 
 input[type="text"],
+input[type="email"],
 select,
 textarea {
   width: 100%;
@@ -940,6 +953,7 @@ textarea {
 }
 
 input[type="text"]:focus,
+input[type="email"]:focus,
 select:focus,
 textarea:focus {
   outline: none;

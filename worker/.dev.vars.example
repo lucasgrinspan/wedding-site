@@ -1,0 +1,3 @@
+# Resend API Key for sending RSVP confirmation emails
+# Replace with your actual key from https://resend.com/api-keys
+RESEND_API_KEY=re_example_key_here

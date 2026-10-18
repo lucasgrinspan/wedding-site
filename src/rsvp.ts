@@ -1,5 +1,5 @@
 // Configurable variables loaded from Vite environment variables (with fallbacks)
-const WORKER_URL = import.meta.env.VITE_RSVP_WORKER_URL || "https://rsvp-lookup.lucasaffalter.workers.dev/";
+const WORKER_URL = import.meta.env.VITE_RSVP_WORKER_URL || "https://wedding-rsvp-worker.lucasaffalter.workers.dev/";
 const FORMSPREE_URL = import.meta.env.VITE_FORMSPREE_URL || "https://formspree.io/f/mojndlqj";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -12,10 +12,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchError = document.getElementById("search-error");
   const guestRowsContainer = document.getElementById("guest-rows-container");
   const partyListHiddenInput = document.getElementById("formspree-party-list") as HTMLInputElement | null;
+  const emailInput = document.getElementById("email") as HTMLInputElement | null;
 
   // Dynamically set the Formspree action endpoint
   if (rsvpForm) {
     rsvpForm.action = FORMSPREE_URL;
+
+    rsvpForm.addEventListener("submit", () => {
+      if (emailInput) {
+        emailInput.value = emailInput.value.trim();
+      }
+
+      // If guest provided an email, dispatch to worker to send confirmation email
+      if (emailInput && emailInput.value) {
+        try {
+          const formData = new FormData(rsvpForm);
+          const submitEndpoint = WORKER_URL.endsWith("/") ? `${WORKER_URL}submit` : `${WORKER_URL}/submit`;
+          fetch(submitEndpoint, {
+            method: "POST",
+            body: formData,
+            keepalive: true,
+          }).catch(err => {
+            console.warn("Could not dispatch confirmation email:", err);
+          });
+        } catch (e) {
+          console.warn("Failed to prepare confirmation dispatch:", e);
+        }
+      }
+    });
   }
 
   if (btnFindInvitation && firstNameInput && lastNameInput) {
