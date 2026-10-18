@@ -26,9 +26,13 @@ import newYorkImg from '../images/journey/new-york.jpeg';
 import chickenKeyImg from '../images/journey/chicken-key.jpeg';
 import deeringEstateImg from '../images/journey/deering-estate.jpg';
 
+import { dynamicCopy, getCurrentLocale } from './i18n';
+
 // --- Types ---
+type JourneyId = keyof typeof dynamicCopy.en.journey;
+
 interface JourneyLocation {
-  id: string;
+  id: JourneyId;
   title: string;
   date: string;
   lat: number;
@@ -38,99 +42,80 @@ interface JourneyLocation {
   zoom?: number;
 }
 
-// --- Placeholder Data ---
-const journeyData: JourneyLocation[] = [
+const baseLocations: Array<Omit<JourneyLocation, 'title' | 'date' | 'caption'>> = [
   {
     id: 'coral-reef',
-    title: 'Coral Reef High School',
-    date: 'May 27, 2016',
     lat: 25.6306,
     lng: -80.3557,
     photoUrl: coralReefImg,
-    caption: 'She asked Sarah to borrow a math textbook. Sarah, with infinite foresight, referred her to me.',
     zoom: 16
   },
   {
     id: 'coldstone',
-    title: 'Coldstone Creamery',
-    date: 'January 9, 2017',
     lat: 25.5767,
     lng: -80.3394,
     photoUrl: coldstoneImg,
-    caption: 'Our first date. We ate ice cream in the car and ran out the battery. Thanks for the jumpstart, Rob.',
     zoom: 16
   },
   {
     id: 'high-school-prom',
-    title: 'High School Prom',
-    date: 'May 19, 2017',
     lat: 25.7853,
     lng: -80.1739,
     photoUrl: highSchoolPromImg,
-    caption: 'She looked beautiful.',
     zoom: 15
   },
   {
     id: 'university-of-florida',
-    title: 'University of Florida',
-    date: 'August 18, 2017',
     lat: 29.6462,
     lng: -82.3487,
     photoUrl: universityOfFloridaImg,
-    caption: 'We made it to UF! We were now spending every day together.',
     zoom: 14
   },
   {
     id: 'college-graduation',
-    title: 'College Graduation',
-    date: 'May 9, 2021',
     lat: 29.64915,
     lng: -82.34412,
     photoUrl: graduationImg,
-    caption: 'Ready for the real world, though that felt pretty real',
     zoom: 16
   },
   {
     id: 'first-apartment',
-    title: 'First Apartment',
-    date: 'August 21, 2021',
     lat: 29.6251,
     lng: -82.3577,
     photoUrl: firstApartmentImg,
-    caption: 'We are officially on the same lease. Shoutout Brigid and Trinidad.',
     zoom: 15
   },
   {
     id: 'new-york',
-    title: 'New York',
-    date: 'August 26, 2022',
     lat: 40.7734,
     lng: -73.9523,
     photoUrl: newYorkImg,
-    caption: 'We move to New York City together. She is the cream cheese to my bagel.',
     zoom: 12
   },
   {
     id: 'chicken-key',
-    title: 'Chicken Key',
-    date: 'November 26, 2024',
     lat: 25.6215,
     lng: -80.2853,
     photoUrl: chickenKeyImg,
-    caption: 'She said yes!',
     zoom: 16
   },
   {
     id: 'deering-estate',
-    title: 'Deering Estate',
-    date: 'February 20, 2027',
     lat: 25.6158,
     lng: -80.3070,
     photoUrl: deeringEstateImg,
-    caption: 'Now it\'s your turn to join us on our journey.',
     zoom: 15
   }
 ];
+
+function getJourneyData(): JourneyLocation[] {
+  const locale = getCurrentLocale();
+  const copy = dynamicCopy[locale].journey;
+  return baseLocations.map((loc) => ({
+    ...loc,
+    ...copy[loc.id],
+  }));
+}
 
 // --- Application Logic ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -140,6 +125,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function initMap() {
   const mapElement = document.getElementById('map');
   if (!mapElement) return;
+
+  const journeyData = getJourneyData();
 
   // Initialize Map
   const map = L.map('map').setView([20, 0], 2); // Global view initially

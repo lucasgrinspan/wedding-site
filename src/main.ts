@@ -1,4 +1,5 @@
 import './style.css'
+import { dynamicCopy, getCurrentLocale } from './i18n'
 
 // Dynamic wedding countdown logic
 const weddingDate = new Date('2027-02-20T00:00:00');
@@ -6,6 +7,9 @@ const weddingDate = new Date('2027-02-20T00:00:00');
 function updateCountdown() {
   const countdownElement = document.getElementById('countdown');
   if (!countdownElement) return;
+
+  const locale = getCurrentLocale();
+  const copy = dynamicCopy[locale].countdown;
 
   const now = new Date();
   
@@ -17,11 +21,11 @@ function updateCountdown() {
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   
   if (diffDays > 0) {
-    countdownElement.textContent = `${diffDays} DAYS TO GO!`;
+    countdownElement.textContent = copy.daysToGo(diffDays);
   } else if (diffDays === 0) {
-    countdownElement.textContent = `TODAY IS THE BIG DAY!`;
+    countdownElement.textContent = copy.today;
   } else {
-    countdownElement.textContent = `JUST MARRIED!`;
+    countdownElement.textContent = copy.married;
   }
 }
 

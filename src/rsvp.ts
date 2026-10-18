@@ -1,8 +1,13 @@
+import { dynamicCopy, getCurrentLocale } from "./i18n";
+
 // Configurable variables loaded from Vite environment variables (with fallbacks)
 const WORKER_URL = import.meta.env.VITE_RSVP_WORKER_URL || "https://wedding-rsvp-worker.lucasaffalter.workers.dev/";
 const FORMSPREE_URL = import.meta.env.VITE_FORMSPREE_URL || "https://formspree.io/f/mojndlqj";
 
 document.addEventListener("DOMContentLoaded", () => {
+  const locale = getCurrentLocale();
+  const copy = dynamicCopy[locale].rsvp;
+
   const searchStep = document.getElementById("rsvp-search-step");
   const rsvpForm = document.getElementById("rsvp-form") as HTMLFormElement | null;
   const firstNameInput = document.getElementById("first-name") as HTMLInputElement | null;
@@ -48,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const last = lastNameInput.value.trim();
 
       if (!first || !last) {
-        showError("Please fill out both first and last name fields.");
+        showError(copy.missingFields);
         return;
       }
 
@@ -65,12 +70,12 @@ document.addEventListener("DOMContentLoaded", () => {
           const party = await response.json();
           setupRsvpForm(party);
         } else if (response.status === 404) {
-          showError("We couldn't find your invitation. Please check the spelling or try searching for another member of your party.");
+          showError(copy.notFound);
         } else {
-          showError("Something went wrong on our end. Please try again in a few moments.");
+          showError(copy.serverError);
         }
       } catch (error) {
-        showError("Connection error. Please check your internet connection and try again.");
+        showError(copy.networkError);
       } finally {
         // Hide loading spinner
         if (spinner) spinner.style.display = "none";
@@ -111,11 +116,11 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="guest-options-group">
             <label class="radio-option">
               <input type="radio" name="attending_${sanitizedGuestName}" value="Joyfully Accept" required checked>
-              <span>Joyfully Accept</span>
+              <span>${copy.acceptLabel}</span>
             </label>
             <label class="radio-option">
               <input type="radio" name="attending_${sanitizedGuestName}" value="Regretfully Decline">
-              <span>Regretfully Decline</span>
+              <span>${copy.declineLabel}</span>
             </label>
           </div>
         </div>

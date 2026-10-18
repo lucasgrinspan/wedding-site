@@ -1,5 +1,9 @@
 import rsvpLookupData from "../data/rsvp_lookup.json";
-import { buildConfirmationEmailHtml, buildConfirmationEmailText } from "./email";
+import {
+  buildConfirmationEmailHtml,
+  buildConfirmationEmailText,
+  getConfirmationEmailSubject,
+} from "./email";
 import {
   GuestResponse,
   RsvpSubmissionPayload,
@@ -197,10 +201,14 @@ export function extractSubmissionPayload(raw: Record<string, unknown>): RsvpSubm
     }
   }
 
+  const rawLang = typeof raw.lang === "string" ? raw.lang.trim().toLowerCase() : "";
+  const lang: "en" | "es" = rawLang === "es" ? "es" : "en";
+
   return {
     party: partyList,
     dietary: typeof dietary === "string" && dietary.trim().length > 0 ? dietary.trim() : undefined,
     email: typeof email === "string" && email.trim().length > 0 ? email.trim() : undefined,
+    lang,
     submittedAt: new Date().toISOString(),
   };
 }
@@ -249,12 +257,13 @@ async function sendConfirmationEmail(
 
   const html = buildConfirmationEmailHtml(submission);
   const text = buildConfirmationEmailText(submission);
+  const subject = getConfirmationEmailSubject(submission);
 
   const payload = {
     from: "Lucas & Lianne <rsvp@send.lucasandlianne.com>",
     reply_to: "Lucas & Lianne <rsvp@lucasandlianne.com>",
     to: [submission.email],
-    subject: "RSVP Confirmation — Lucas & Lianne's Wedding",
+    subject,
     html,
     text,
   };

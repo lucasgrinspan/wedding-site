@@ -9,11 +9,66 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;");
 }
 
+const EMAIL_COPY = {
+  en: {
+    subject: "RSVP Confirmation — Lucas & Lianne's Wedding",
+    title: "RSVP Confirmation — Lucas &amp; Lianne",
+    acceptStatus: "✓ Joyfully Accepts",
+    declineStatus: "✕ Regretfully Declines",
+    dietaryLabel: "Dietary Restrictions or Requests",
+    headerTitle: "Kindly Reply",
+    headerSubtitle: "RSVP Confirmation",
+    thankYouIntro: "Thank you for your response! We have received your RSVP for our wedding celebration.",
+    partyResponseLabel: "Your Party's Response",
+    celebrationDetailsLabel: "Celebration Details",
+    weddingHeading: "Lucas &amp; Lianne's Wedding",
+    weddingHeadingPlain: "LUCAS & LIANNE'S WEDDING",
+    dateText: "Saturday, February 20, 2027",
+    timeText: "At Five O'Clock in the Evening",
+    detailsUrl: "https://lucasandlianne.com/details.html",
+    viewDetailsBtn: "View Wedding Details",
+    signature: "Love, Lianne &amp; Lucas 🥭",
+    signaturePlain: "With love,\nLianne & Lucas 🥭",
+    changesPrefix: "If you need to make any changes to your RSVP, please reply directly to this email or contact us at",
+    changesPlain: "If you need to make any changes to your RSVP, please reply directly to this email or reach us at rsvp@lucasandlianne.com.",
+  },
+  es: {
+    subject: "Confirmación de Asistencia — Casamiento de Lucas & Lianne",
+    title: "Confirmación de Asistencia — Lucas &amp; Lianne",
+    acceptStatus: "✓ Asistirá con alegría",
+    declineStatus: "✕ No podrá asistir",
+    dietaryLabel: "Restricciones Alimentarias o Pedidos Especiales",
+    headerTitle: "Confirmación",
+    headerSubtitle: "Confirmación de Asistencia",
+    thankYouIntro: "¡Muchas gracias por responder! Recibimos tu confirmación para nuestro casamiento.",
+    partyResponseLabel: "Respuesta de tu Grupo",
+    celebrationDetailsLabel: "Detalles de la Celebración",
+    weddingHeading: "Casamiento de Lucas &amp; Lianne",
+    weddingHeadingPlain: "CASAMIENTO DE LUCAS & LIANNE",
+    dateText: "Sábado 20 de febrero de 2027",
+    timeText: "A las cinco de la tarde",
+    detailsUrl: "https://lucasandlianne.com/es/details.html",
+    viewDetailsBtn: "Ver Detalles del Casamiento",
+    signature: "Con amor, Lianne &amp; Lucas 🥭",
+    signaturePlain: "Con amor,\nLianne & Lucas 🥭",
+    changesPrefix: "Si necesitás hacer algún cambio en tu confirmación, por favor respondé directamente a este mail o escribinos a",
+    changesPlain: "Si necesitás hacer algún cambio en tu confirmación, por favor respondé directamente a este mail o escribinos a rsvp@lucasandlianne.com.",
+  },
+} as const;
+
+export function getConfirmationEmailSubject(submission: RsvpSubmissionPayload): string {
+  const locale = submission.lang === "es" ? "es" : "en";
+  return EMAIL_COPY[locale].subject;
+}
+
 export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): string {
+  const locale = submission.lang === "es" ? "es" : "en";
+  const copy = EMAIL_COPY[locale];
+
   const partyRowsHtml = submission.party
     .map((guest: GuestResponse) => {
       const isAttending = guest.attending;
-      const statusText = isAttending ? "✓ Joyfully Accepts" : "✕ Regretfully Declines";
+      const statusText = isAttending ? copy.acceptStatus : copy.declineStatus;
       const statusBg = isAttending ? "#2E4A3D" : "#ECEBE9";
       const statusColor = isAttending ? "#FFFFFF" : "#6E6259";
       const statusBorder = isAttending ? "#2E4A3D" : "#D4CEC5";
@@ -36,7 +91,7 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
   const dietaryHtml = submission.dietary && submission.dietary.trim().length > 0
     ? `
       <div style="margin-top: 28px; padding: 18px 20px; background-color: #F4F2EC; border-left: 3px solid #2E4A3D; border-radius: 2px;">
-        <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 6px; font-weight: 600;">Dietary Restrictions or Requests</span>
+        <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 6px; font-weight: 600;">${copy.dietaryLabel}</span>
         <p style="margin: 0; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #2C3531; font-style: italic;">
           "${escapeHtml(submission.dietary.trim())}"
         </p>
@@ -45,11 +100,11 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
     : "";
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="${locale}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RSVP Confirmation — Lucas &amp; Lianne</title>
+  <title>${copy.title}</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #ECEBE9; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2C3531; -webkit-font-smoothing: antialiased;">
   <!-- Outer Background Table -->
@@ -70,11 +125,11 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
                       <tr>
                         <td align="center">
                           <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; color: #8B5A2B; margin-bottom: 8px;">Lucas &amp; Lianne</span>
-                          <h1 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 30px; font-weight: normal; color: #2E4A3D; letter-spacing: 1px;">Kindly Reply</h1>
+                          <h1 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 30px; font-weight: normal; color: #2E4A3D; letter-spacing: 1px;">${copy.headerTitle}</h1>
                           <div style="width: 48px; height: 1px; background-color: #2E4A3D; margin: 18px auto 20px auto;"></div>
-                          <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: #2E4A3D; margin-bottom: 12px; font-weight: 600;">RSVP Confirmation</span>
+                          <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: #2E4A3D; margin-bottom: 12px; font-weight: 600;">${copy.headerSubtitle}</span>
                           <p style="margin: 0 0 24px 0; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.6; color: #4A5650; max-width: 440px;">
-                            Thank you for your response! We have received your RSVP for our wedding celebration.
+                            ${copy.thankYouIntro}
                           </p>
                         </td>
                       </tr>
@@ -84,7 +139,7 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
                     <div style="border-top: 1px solid rgba(46, 74, 61, 0.12); margin: 20px 0 28px 0;"></div>
 
                     <!-- Party Responses Table -->
-                    <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 12px; font-weight: 600;">Your Party's Response</span>
+                    <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 12px; font-weight: 600;">${copy.partyResponseLabel}</span>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 24px;">
                       ${partyRowsHtml}
                     </table>
@@ -94,14 +149,14 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
 
                     <!-- Wedding Celebration Details Box -->
                     <div style="margin-top: 36px; padding: 28px 24px; background-color: #F4F2EC; border: 1px solid rgba(46, 74, 61, 0.15); border-radius: 2px; text-align: center;">
-                      <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: #8B5A2B; margin-bottom: 8px; font-weight: 600;">Celebration Details</span>
-                      <h3 style="margin: 0 0 16px 0; font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: normal; color: #2E4A3D;">Lucas &amp; Lianne's Wedding</h3>
+                      <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 11px; text-transform: uppercase; letter-spacing: 3px; color: #8B5A2B; margin-bottom: 8px; font-weight: 600;">${copy.celebrationDetailsLabel}</span>
+                      <h3 style="margin: 0 0 16px 0; font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: normal; color: #2E4A3D;">${copy.weddingHeading}</h3>
                       
                       <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 12px;">
                         <tr>
                           <td style="padding: 8px 0; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; color: #2C3531;">
-                            <strong style="color: #2E4A3D; font-family: 'Playfair Display', Georgia, serif; font-size: 16px;">Saturday, February 20, 2027</strong><br>
-                            <span style="color: #4A5650; font-size: 14px;">At Five O'Clock in the Evening</span>
+                            <strong style="color: #2E4A3D; font-family: 'Playfair Display', Georgia, serif; font-size: 16px;">${copy.dateText}</strong><br>
+                            <span style="color: #4A5650; font-size: 14px;">${copy.timeText}</span>
                           </td>
                         </tr>
                         <tr>
@@ -113,8 +168,8 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
                       </table>
 
                       <div style="margin-top: 24px;">
-                        <a href="https://lucasandlianne.com/details.html" target="_blank" style="display: inline-block; background-color: #2E4A3D; color: #FFFFFF; text-decoration: none; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; padding: 12px 28px; border-radius: 2px;">
-                          View Wedding Details
+                        <a href="${copy.detailsUrl}" target="_blank" style="display: inline-block; background-color: #2E4A3D; color: #FFFFFF; text-decoration: none; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; padding: 12px 28px; border-radius: 2px;">
+                          ${copy.viewDetailsBtn}
                         </a>
                       </div>
                     </div>
@@ -122,11 +177,11 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
                     <!-- Footer Signature -->
                     <div style="margin-top: 40px; text-align: center; border-top: 1px solid rgba(46, 74, 61, 0.12); padding-top: 28px;">
                       <p style="margin: 0 0 8px 0; font-family: 'Playfair Display', Georgia, serif; font-size: 18px; color: #8B5A2B; font-style: italic;">
-                        Love, Lianne &amp; Lucas 🥭
+                        ${copy.signature}
                       </p>
                       <p style="margin: 0; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 12px; color: #7A8680; line-height: 1.6;">
-                        If you need to make any changes to your RSVP, please reply directly to this email or contact us at <a href="mailto:rsvp@lucasandlianne.com" style="color: #2E4A3D; text-decoration: underline;">rsvp@lucasandlianne.com</a>.<br>
-                        <a href="https://lucasandlianne.com" target="_blank" style="color: #8B5A2B; text-decoration: none; font-weight: bold;">lucasandlianne.com</a>
+                        ${copy.changesPrefix} <a href="mailto:rsvp@lucasandlianne.com" style="color: #2E4A3D; text-decoration: underline;">rsvp@lucasandlianne.com</a>.<br>
+                        <a href="https://lucasandlianne.com${locale === "es" ? "/es/" : ""}" target="_blank" style="color: #8B5A2B; text-decoration: none; font-weight: bold;">lucasandlianne.com</a>
                       </p>
                     </div>
 
@@ -144,30 +199,32 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
 }
 
 export function buildConfirmationEmailText(submission: RsvpSubmissionPayload): string {
+  const locale = submission.lang === "es" ? "es" : "en";
+  const copy = EMAIL_COPY[locale];
+
   const partyLines = submission.party
-    .map((guest: GuestResponse) => `• ${guest.name}: ${guest.status}`)
+    .map((guest: GuestResponse) => `• ${guest.name}: ${guest.attending ? copy.acceptStatus : copy.declineStatus}`)
     .join("\n");
 
   const dietarySection = submission.dietary && submission.dietary.trim().length > 0
-    ? `\nDIETARY RESTRICTIONS OR NOTES:\n${submission.dietary.trim()}\n`
+    ? `\n${copy.dietaryLabel.toUpperCase()}:\n${submission.dietary.trim()}\n`
     : "";
 
-  return `RSVP CONFIRMATION — LUCAS & LIANNE'S WEDDING
+  return `${copy.headerSubtitle.toUpperCase()} — ${copy.weddingHeadingPlain}
 ==================================================
 
-Thank you for your response! We have received your RSVP for our wedding celebration.
+${copy.thankYouIntro}
 
-YOUR PARTY'S RSVP:
+${copy.partyResponseLabel.toUpperCase()}:
 ${partyLines}
 ${dietarySection}
-CELEBRATION DETAILS:
-• Date: Saturday, February 20, 2027 at Five O'Clock in the Evening (5:00 PM)
+${copy.celebrationDetailsLabel.toUpperCase()}:
+• Date: ${copy.dateText} (${copy.timeText})
 • Location: Deering Estate (16701 SW 72nd Ave, Miami, FL 33157)
-• Wedding Details: https://lucasandlianne.com/details.html
+• Wedding Details: ${copy.detailsUrl}
 
-With love,
-Lianne & Lucas 🥭
+${copy.signaturePlain}
 
-If you need to make any changes to your RSVP, please reply directly to this email or reach us at rsvp@lucasandlianne.com.
+${copy.changesPlain}
 `;
 }

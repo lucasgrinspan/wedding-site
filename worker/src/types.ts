@@ -10,6 +10,7 @@ export interface RsvpSubmissionPayload {
   party: GuestResponse[];
   dietary?: string;
   email?: string;
+  lang?: "en" | "es";
   submittedAt?: string;
 }
 
