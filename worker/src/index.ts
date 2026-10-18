@@ -2,7 +2,10 @@ import rsvpLookupData from "../data/rsvp_lookup.json";
 import {
   buildConfirmationEmailHtml,
   buildConfirmationEmailText,
+  buildHostNotificationEmailHtml,
+  buildHostNotificationEmailText,
   getConfirmationEmailSubject,
+  getHostNotificationEmailSubject,
 } from "./email";
 import {
   GuestResponse,
@@ -249,7 +252,8 @@ async function parseRsvpBody(request: Request): Promise<RsvpSubmissionPayload> {
  */
 async function sendConfirmationEmail(
   submission: RsvpSubmissionPayload,
-  apiKey: string
+  apiKey: string,
+  replyToEmail?: string
 ): Promise<{ success: boolean; error?: string }> {
   if (!submission.email) {
     return { success: false, error: "No recipient email provided" };
@@ -258,10 +262,11 @@ async function sendConfirmationEmail(
   const html = buildConfirmationEmailHtml(submission);
   const text = buildConfirmationEmailText(submission);
   const subject = getConfirmationEmailSubject(submission);
+  const cleanReplyTo = replyToEmail?.trim() || "rsvp@lucasandlianne.com";
 
   const payload = {
     from: "Lucas & Lianne <rsvp@send.lucasandlianne.com>",
-    reply_to: "Lucas & Lianne <rsvp@lucasandlianne.com>",
+    reply_to: `Lucas & Lianne <${cleanReplyTo}>`,
     to: [submission.email],
     subject,
     html,
@@ -302,6 +307,75 @@ async function sendConfirmationEmail(
       event: "resend_fetch_exception",
       error: errorMsg,
       to: submission.email,
+    }));
+    return { success: false, error: errorMsg };
+  }
+}
+
+/**
+ * Sends a notification email to the hosts via Resend API on every RSVP submission
+ */
+export async function sendHostNotificationEmail(
+  submission: RsvpSubmissionPayload,
+  apiKey: string,
+  recipientEmail?: string
+): Promise<{ success: boolean; error?: string }> {
+  const toEmail = recipientEmail?.trim();
+  if (!toEmail) {
+    console.warn(JSON.stringify({
+      event: "notification_email_missing",
+      message: "NOTIFICATION_EMAIL secret is not configured; host notification skipped",
+    }));
+    return { success: false, error: "NOTIFICATION_EMAIL not configured in worker environment" };
+  }
+
+  const html = buildHostNotificationEmailHtml(submission);
+  const text = buildHostNotificationEmailText(submission);
+  const subject = getHostNotificationEmailSubject(submission);
+
+  const payload = {
+    from: "Lucas & Lianne RSVP <rsvp@send.lucasandlianne.com>",
+    ...(submission.email ? { reply_to: submission.email } : {}),
+    to: [toEmail],
+    subject,
+    html,
+    text,
+  };
+
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      console.error(JSON.stringify({
+        event: "resend_host_notification_error",
+        status: response.status,
+        body: errText,
+        to: toEmail,
+      }));
+      return { success: false, error: `Resend error (${response.status}): ${errText}` };
+    }
+
+    const data = await response.json();
+    console.log(JSON.stringify({
+      event: "resend_host_notification_sent",
+      to: toEmail,
+      resendId: (data as Record<string, unknown>)?.id,
+    }));
+    return { success: true };
+  } catch (err) {
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    console.error(JSON.stringify({
+      event: "resend_host_notification_error",
+      error: errorMsg,
+      to: toEmail,
     }));
     return { success: false, error: errorMsg };
   }
@@ -349,13 +423,35 @@ export async function handleRsvpSubmit(
     submittedAt: submission.submittedAt,
   }));
 
+  const apiKey = env.RESEND_API_KEY;
+  let notificationSent: boolean;
+  let notificationError: string | undefined;
+
+  if (apiKey) {
+    const notifyResult = await sendHostNotificationEmail(
+      submission,
+      apiKey,
+      env.NOTIFICATION_EMAIL
+    );
+    notificationSent = notifyResult.success;
+    if (!notifyResult.success) {
+      notificationError = notifyResult.error;
+    }
+  } else {
+    console.warn(JSON.stringify({
+      event: "resend_api_key_missing",
+      message: "RESEND_API_KEY secret is not configured; host notification skipped",
+    }));
+    notificationSent = false;
+    notificationError = "RESEND_API_KEY not configured in worker environment";
+  }
+
   let emailSent: boolean | undefined;
   let emailError: string | undefined;
 
   if (submission.email) {
-    const apiKey = env.RESEND_API_KEY;
     if (apiKey) {
-      const result = await sendConfirmationEmail(submission, apiKey);
+      const result = await sendConfirmationEmail(submission, apiKey, env.NOTIFICATION_EMAIL);
       emailSent = result.success;
       if (!result.success) {
         emailError = result.error;
@@ -375,7 +471,9 @@ export async function handleRsvpSubmit(
     success: true,
     message: "RSVP received successfully",
     party: submission.party,
-    ...(submission.email ? { emailSent, emailError } : {}),
+    notificationSent,
+    ...(notificationError ? { notificationError } : {}),
+    ...(submission.email ? { emailSent, ...(emailError ? { emailError } : {}) } : {}),
   };
 
   return new Response(JSON.stringify(responsePayload), {

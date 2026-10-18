@@ -20,6 +20,8 @@ export interface SubmitResult {
   party: GuestResponse[];
   emailSent?: boolean;
   emailError?: string;
+  notificationSent?: boolean;
+  notificationError?: string;
 }
 
 export interface ResendEmailPayload {
@@ -28,4 +30,15 @@ export interface ResendEmailPayload {
   subject: string;
   html: string;
   text: string;
+}
+
+declare global {
+  interface Env {
+    NOTIFICATION_EMAIL?: string;
+  }
+  namespace Cloudflare {
+    interface Env {
+      NOTIFICATION_EMAIL?: string;
+    }
+  }
 }

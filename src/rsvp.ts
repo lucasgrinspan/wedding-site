@@ -2,7 +2,6 @@ import { dynamicCopy, getCurrentLocale } from "./i18n";
 
 // Configurable variables loaded from Vite environment variables (with fallbacks)
 const WORKER_URL = import.meta.env.VITE_RSVP_WORKER_URL || "https://wedding-rsvp-worker.lucasaffalter.workers.dev/";
-const FORMSPREE_URL = import.meta.env.VITE_FORMSPREE_URL || "https://formspree.io/f/mojndlqj";
 
 document.addEventListener("DOMContentLoaded", () => {
   const locale = getCurrentLocale();
@@ -14,36 +13,50 @@ document.addEventListener("DOMContentLoaded", () => {
   const lastNameInput = document.getElementById("last-name") as HTMLInputElement | null;
   const btnFindInvitation = document.getElementById("btn-find-invitation") as HTMLButtonElement | null;
   const btnBackSearch = document.getElementById("btn-back-search") as HTMLButtonElement | null;
+  const btnSubmitRsvp = document.getElementById("btn-submit-rsvp") as HTMLButtonElement | null;
   const searchError = document.getElementById("search-error");
+  const submitError = document.getElementById("submit-error");
   const guestRowsContainer = document.getElementById("guest-rows-container");
-  const partyListHiddenInput = document.getElementById("formspree-party-list") as HTMLInputElement | null;
+  const partyListHiddenInput = document.getElementById("rsvp-party-list") as HTMLInputElement | null;
   const emailInput = document.getElementById("email") as HTMLInputElement | null;
 
-  // Dynamically set the Formspree action endpoint
   if (rsvpForm) {
-    rsvpForm.action = FORMSPREE_URL;
+    rsvpForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
 
-    rsvpForm.addEventListener("submit", () => {
       if (emailInput) {
         emailInput.value = emailInput.value.trim();
       }
 
-      // If guest provided an email, dispatch to worker to send confirmation email
-      if (emailInput && emailInput.value) {
-        try {
-          const formData = new FormData(rsvpForm);
-          const submitEndpoint = WORKER_URL.endsWith("/") ? `${WORKER_URL}submit` : `${WORKER_URL}/submit`;
-          fetch(submitEndpoint, {
-            method: "POST",
-            body: formData,
-            keepalive: true,
-          }).catch(err => {
-            console.warn("Could not dispatch confirmation email:", err);
-          });
-        } catch (e) {
-          console.warn("Failed to prepare confirmation dispatch:", e);
+      const spinner = btnSubmitRsvp?.querySelector(".spinner") as HTMLElement | null;
+      if (spinner) spinner.style.display = "inline-block";
+      if (btnSubmitRsvp) btnSubmitRsvp.disabled = true;
+      if (btnBackSearch) btnBackSearch.disabled = true;
+      if (submitError) submitError.style.display = "none";
+
+      try {
+        const formData = new FormData(rsvpForm);
+        const submitEndpoint = WORKER_URL.endsWith("/") ? `${WORKER_URL}submit` : `${WORKER_URL}/submit`;
+        const response = await fetch(submitEndpoint, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.ok) {
+          const nextInput = rsvpForm.querySelector('input[name="_next"]') as HTMLInputElement | null;
+          const nextUrl = nextInput?.value || (locale === "es" ? "/es/thanks.html" : "/thanks.html");
+          window.location.href = nextUrl;
+          return;
+        } else {
+          showSubmitError(copy.serverError);
         }
+      } catch (err) {
+        showSubmitError(copy.networkError);
       }
+
+      if (spinner) spinner.style.display = "none";
+      if (btnSubmitRsvp) btnSubmitRsvp.disabled = false;
+      if (btnBackSearch) btnBackSearch.disabled = false;
     });
   }
 
@@ -86,6 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (btnBackSearch && rsvpForm && searchStep) {
     btnBackSearch.addEventListener("click", () => {
+      if (submitError) submitError.style.display = "none";
       rsvpForm.style.display = "none";
       searchStep.style.display = "block";
     });
@@ -95,6 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (searchError) {
       searchError.textContent = message;
       searchError.style.display = "block";
+    }
+  }
+
+  function showSubmitError(message: string) {
+    if (submitError) {
+      submitError.textContent = message;
+      submitError.style.display = "block";
     }
   }
 

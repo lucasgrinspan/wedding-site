@@ -228,3 +228,174 @@ ${copy.signaturePlain}
 ${copy.changesPlain}
 `;
 }
+
+export function getHostNotificationEmailSubject(submission: RsvpSubmissionPayload): string {
+  const guestNames = submission.party.map((g) => g.name).join(", ") || "Guest";
+  const totalCount = submission.party.length;
+  const acceptingCount = submission.party.filter((g) => g.attending).length;
+
+  let attendingSummary: string;
+  if (totalCount === 1) {
+    attendingSummary = acceptingCount === 1 ? "Joyfully Accept" : "Regretfully Decline";
+  } else if (acceptingCount === totalCount) {
+    attendingSummary = `All ${totalCount} Joyfully Accept`;
+  } else if (acceptingCount === 0) {
+    attendingSummary = `All ${totalCount} Regretfully Decline`;
+  } else {
+    attendingSummary = `${acceptingCount} of ${totalCount} Accepting`;
+  }
+
+  return `New RSVP: ${guestNames} (${attendingSummary})`;
+}
+
+export function buildHostNotificationEmailHtml(submission: RsvpSubmissionPayload): string {
+  const totalCount = submission.party.length;
+  const acceptingCount = submission.party.filter((g) => g.attending).length;
+  const decliningCount = totalCount - acceptingCount;
+
+  const partyRowsHtml = submission.party
+    .map((guest: GuestResponse) => {
+      const isAttending = guest.attending;
+      const statusText = isAttending ? "✓ Joyfully Accept" : "✕ Regretfully Decline";
+      const statusBg = isAttending ? "#2E4A3D" : "#ECEBE9";
+      const statusColor = isAttending ? "#FFFFFF" : "#6E6259";
+      const statusBorder = isAttending ? "#2E4A3D" : "#D4CEC5";
+
+      return `
+        <tr>
+          <td style="padding: 14px 0; border-bottom: 1px dashed rgba(46, 74, 61, 0.15); font-family: 'Playfair Display', Georgia, serif; font-size: 17px; color: #2E4A3D; font-weight: 600;">
+            ${escapeHtml(guest.name)}
+          </td>
+          <td align="right" style="padding: 14px 0; border-bottom: 1px dashed rgba(46, 74, 61, 0.15);">
+            <span style="display: inline-block; padding: 6px 14px; background-color: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; border-radius: 2px; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.5px;">
+              ${statusText}
+            </span>
+          </td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  const dietaryValue =
+    submission.dietary && submission.dietary.trim().length > 0
+      ? escapeHtml(submission.dietary.trim())
+      : "None provided";
+
+  const guestEmailHtml =
+    submission.email && submission.email.trim().length > 0
+      ? `<a href="mailto:${escapeHtml(submission.email.trim())}" style="color: #2E4A3D; text-decoration: underline;">${escapeHtml(submission.email.trim())}</a>`
+      : `<span style="color: #7A8680; font-style: italic;">Not provided</span>`;
+
+  const localeLabel = submission.lang === "es" ? "Español" : "English";
+  const submittedAtText = escapeHtml(submission.submittedAt || new Date().toISOString());
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New RSVP Submission — Lucas &amp; Lianne</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #ECEBE9; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2C3531; -webkit-font-smoothing: antialiased;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #ECEBE9; padding: 40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px; background-color: #FBF9F5; border: 1px solid #2E4A3D; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+          <tr>
+            <td style="padding: 12px;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border: 1px solid rgba(46, 74, 61, 0.18); background-color: #FBF9F5; padding: 36px 32px;">
+                <tr>
+                  <td>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td align="center">
+                          <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; color: #8B5A2B; margin-bottom: 8px;">Lucas &amp; Lianne</span>
+                          <h1 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: normal; color: #2E4A3D; letter-spacing: 1px;">New RSVP Received</h1>
+                          <div style="width: 48px; height: 1px; background-color: #2E4A3D; margin: 16px auto 18px auto;"></div>
+                          <p style="margin: 0 0 20px 0; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #4A5650;">
+                            <strong>${acceptingCount}</strong> accepting &bull; <strong>${decliningCount}</strong> declining (Total party: ${totalCount})
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <div style="border-top: 1px solid rgba(46, 74, 61, 0.12); margin: 16px 0 24px 0;"></div>
+
+                    <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 12px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 12px; font-weight: 600;">Party Members &amp; Status</span>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-bottom: 24px;">
+                      ${partyRowsHtml}
+                    </table>
+
+                    <div style="margin-top: 24px; padding: 18px 20px; background-color: #F4F2EC; border-left: 3px solid #2E4A3D; border-radius: 2px;">
+                      <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 6px; font-weight: 600;">Dietary Restrictions / Notes</span>
+                      <p style="margin: 0; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 1.6; color: #2C3531;">
+                        ${dietaryValue}
+                      </p>
+                    </div>
+
+                    <div style="margin-top: 24px; padding: 18px 20px; background-color: #F4F2EC; border: 1px solid rgba(46, 74, 61, 0.15); border-radius: 2px;">
+                      <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 10px; font-weight: 600;">Submission Metadata</span>
+                      <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #2C3531;">
+                        <tr>
+                          <td style="padding: 4px 0; color: #4A5650; width: 140px;"><strong>Guest Email:</strong></td>
+                          <td style="padding: 4px 0;">${guestEmailHtml}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 4px 0; color: #4A5650;"><strong>Locale:</strong></td>
+                          <td style="padding: 4px 0;">${localeLabel}</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 4px 0; color: #4A5650;"><strong>Submitted At:</strong></td>
+                          <td style="padding: 4px 0;">${submittedAtText}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+export function buildHostNotificationEmailText(submission: RsvpSubmissionPayload): string {
+  const partyLines = submission.party
+    .map((guest: GuestResponse) => {
+      const statusText = guest.attending ? "✓ Joyfully Accept" : "✕ Regretfully Decline";
+      return `• ${guest.name}: ${statusText}`;
+    })
+    .join("\n");
+
+  const dietaryText =
+    submission.dietary && submission.dietary.trim().length > 0
+      ? submission.dietary.trim()
+      : "None provided";
+
+  const emailText =
+    submission.email && submission.email.trim().length > 0
+      ? submission.email.trim()
+      : "Not provided";
+
+  const localeLabel = submission.lang === "es" ? "Español" : "English";
+  const submittedAtText = submission.submittedAt || new Date().toISOString();
+
+  return `NEW RSVP SUBMISSION — LUCAS & LIANNE'S WEDDING
+==================================================
+
+PARTY MEMBERS & STATUS:
+${partyLines}
+
+DIETARY RESTRICTIONS / NOTES:
+${dietaryText}
+
+SUBMISSION DETAILS:
+• Guest Email: ${emailText}
+• Locale: ${localeLabel}
+• Submitted At: ${submittedAtText}
+`;
+}
