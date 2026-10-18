@@ -935,7 +935,18 @@ export async function handleRsvpSubmit(
   let notificationSent: boolean;
   let notificationError: string | undefined;
 
-  if (apiKey) {
+  const isPennyTestParty = submission.party.some((g) => {
+    const norm = normalizeName(g.name);
+    return norm === "mrpenny" || norm === "mrspenny" || norm === "penny";
+  });
+
+  if (isPennyTestParty) {
+    console.log(JSON.stringify({
+      event: "host_notification_skipped_test_party",
+      party: submission.party.map((g) => g.name),
+    }));
+    notificationSent = false;
+  } else if (apiKey) {
     const notifyResult = await sendHostNotificationEmail(
       submission,
       apiKey,
