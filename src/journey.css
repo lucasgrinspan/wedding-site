@@ -104,7 +104,6 @@ nav a.active {
   padding: 1rem;
   border-left: 2px solid #ccc;
   cursor: pointer;
-  transition: background-color 0.2s;
   margin-left: 10px;
   position: relative;
 }
@@ -118,7 +117,6 @@ nav a.active {
   height: 12px;
   background-color: #ccc;
   border-radius: 50%;
-  transition: background-color 0.2s;
 }
 
 .timeline-item:hover,
