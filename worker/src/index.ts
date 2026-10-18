@@ -13,7 +13,7 @@ import {
   SubmitResult,
 } from "./types";
 
-const lookupRecord = rsvpLookupData as Record<string, string[]>;
+const rawLookupData = rsvpLookupData as Record<string, unknown>;
 
 /**
  * Normalizes a name string by removing diacritics/accents, lowercasing,
@@ -31,6 +31,72 @@ export function getLookupKey(first: string, last: string): string {
   return normalizeName(`${first}${last}`);
 }
 
+const { lookupRecord, firstNameAliases } = (() => {
+  const records: Record<string, string[]> = {};
+  const aliases: Record<string, string[]> = {};
+
+  for (const [key, val] of Object.entries(rawLookupData)) {
+    if (key.startsWith("_") || !Array.isArray(val)) continue;
+    records[normalizeName(key)] = val.map((m) => String(m));
+  }
+
+  const addFirstAlias = (alias: string, canonical: string) => {
+    const normAlias = normalizeName(alias);
+    const normCanon = normalizeName(canonical);
+    if (!normAlias || !normCanon || normAlias === normCanon) return;
+    const list = aliases[normAlias] ?? [];
+    if (!list.includes(normCanon)) {
+      list.push(normCanon);
+    }
+    aliases[normAlias] = list;
+  };
+
+  const rawAliases = rawLookupData._aliases ?? rawLookupData.aliases;
+  if (rawAliases && typeof rawAliases === "object" && !Array.isArray(rawAliases)) {
+    for (const [rawKey, rawVal] of Object.entries(rawAliases as Record<string, unknown>)) {
+      const normKey = normalizeName(rawKey);
+      const valList = Array.isArray(rawVal)
+        ? rawVal.map((v) => String(v))
+        : typeof rawVal === "string"
+        ? [rawVal]
+        : [];
+
+      // Support both:
+      // 1. Canonical guest name -> array of aliases (e.g. "Mr. Penny": ["Penny"])
+      // 2. Nickname/alias -> canonical first name(s) (e.g. "penny": ["mrpenny"])
+      if (records[normKey]) {
+        const party = records[normKey];
+        const canonFirst = normalizeName(rawKey.trim().split(/[\s-]+/)[0] || rawKey);
+        for (const aliasStr of valList) {
+          const normAliasFull = normalizeName(aliasStr);
+          if (!normAliasFull) continue;
+          const aliasTokens = aliasStr.trim().split(/[\s-]+/).filter(Boolean);
+          if (aliasTokens.length > 1) {
+            records[normAliasFull] = party;
+          }
+          if (aliasTokens.length >= 1) {
+            addFirstAlias(aliasTokens[0], canonFirst);
+          }
+        }
+      } else {
+        for (const target of valList) {
+          const normTarget = normalizeName(target);
+          if (records[normTarget]) {
+            records[normKey] = records[normTarget];
+            const aliasFirst = rawKey.trim().split(/[\s-]+/)[0] || rawKey;
+            const targetFirst = target.trim().split(/[\s-]+/)[0] || target;
+            addFirstAlias(aliasFirst, targetFirst);
+          } else {
+            addFirstAlias(rawKey, target);
+          }
+        }
+      }
+    }
+  }
+
+  return { lookupRecord: records, firstNameAliases: aliases };
+})();
+
 /**
  * Generates CORS headers allowing requests from lucasandlianne.com and localhost.
  */
@@ -45,6 +111,274 @@ export function getCorsHeaders(request: Request): Record<string, string> {
     "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
     "Access-Control-Max-Age": "86400",
   };
+}
+
+/**
+ * Computes the standard Levenshtein edit distance between two strings.
+ */
+export function levenshteinDistance(a: string, b: string): number {
+  if (a === b) return 0;
+  const m = a.length;
+  const n = b.length;
+  if (m === 0) return n;
+  if (n === 0) return m;
+
+  let prev = new Array<number>(n + 1);
+  let curr = new Array<number>(n + 1);
+
+  for (let j = 0; j <= n; j++) {
+    prev[j] = j;
+  }
+
+  for (let i = 1; i <= m; i++) {
+    curr[0] = i;
+    for (let j = 1; j <= n; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      curr[j] = Math.min(
+        prev[j] + 1,      // deletion
+        curr[j - 1] + 1,  // insertion
+        prev[j - 1] + cost // substitution
+      );
+    }
+    [prev, curr] = [curr, prev];
+  }
+
+  return prev[n];
+}
+
+function isAdjacentTransposition(a: string, b: string): boolean {
+  if (a.length !== b.length || a.length < 2) return false;
+  let diffIndex = -1;
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) {
+      if (diffIndex === -1) {
+        diffIndex = i;
+      } else if (
+        diffIndex === i - 1 &&
+        a[diffIndex] === b[i] &&
+        a[i] === b[diffIndex] &&
+        a.slice(i + 1) === b.slice(i + 1)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+  return false;
+}
+
+interface StructuredCandidate {
+  first: string;
+  last: string;
+  party: string[];
+  partyId: string;
+}
+
+const STRUCTURED_CANDIDATES: StructuredCandidate[] = (() => {
+  const candidates: StructuredCandidate[] = [];
+  const seen = new Set<string>();
+  const uniqueParties = new Map<string, string[]>();
+
+  for (const party of Object.values(lookupRecord)) {
+    const partyId = JSON.stringify(party);
+    if (!uniqueParties.has(partyId)) {
+      uniqueParties.set(partyId, party);
+    }
+  }
+
+  // Build reverse map from canonical first name -> nicknames (length >= 3)
+  const reverseAliases = new Map<string, string[]>();
+  for (const [alias, canonicals] of Object.entries(firstNameAliases)) {
+    if (alias.length < 3) continue;
+    for (const canon of canonicals) {
+      const list = reverseAliases.get(canon) ?? [];
+      if (!list.includes(alias)) list.push(alias);
+      reverseAliases.set(canon, list);
+    }
+  }
+
+  const addCandidate = (first: string, last: string, party: string[], partyId: string) => {
+    if (!first || !last) return;
+    const dedupKey = `${first}|${last}|${partyId}`;
+    if (!seen.has(dedupKey)) {
+      seen.add(dedupKey);
+      candidates.push({ first, last, party, partyId });
+    }
+  };
+
+  for (const [partyId, party] of uniqueParties.entries()) {
+    for (const member of party) {
+      const tokens = member
+        .split(/[\s-]+/)
+        .map(t => normalizeName(t))
+        .filter(Boolean);
+
+      if (tokens.length < 2) continue;
+
+      const canonicalFirst = tokens[0];
+      const firstOptions = [
+        canonicalFirst,
+        ...(reverseAliases.get(canonicalFirst) ?? []),
+      ];
+
+      if (tokens.length === 2) {
+        const last = tokens[1];
+        for (const f of firstOptions) {
+          addCandidate(f, last, party, partyId);
+        }
+      } else if (tokens.length >= 3) {
+        // Multi-word or hyphenated surnames (e.g. first + two last names)
+        const combinedLast = tokens.slice(1).join("");
+        const part1 = tokens[1];
+        const part2 = tokens.slice(2).join("");
+        for (const f of firstOptions) {
+          addCandidate(f, combinedLast, party, partyId);
+          addCandidate(f, part1, party, partyId);
+          addCandidate(f, part2, party, partyId);
+          addCandidate(`${f}${part1}`, part2, party, partyId);
+        }
+      }
+    }
+  }
+
+  return candidates;
+})();
+
+function isComponentDistanceAllowed(inputPart: string, candPart: string, dist: number): boolean {
+  if (dist === 0) return true;
+  if (dist > 2) return false;
+
+  const minLen = Math.min(inputPart.length, candPart.length);
+  const maxLen = Math.max(inputPart.length, candPart.length);
+
+  if (minLen <= 2) {
+    // Prevent 2-letter names from fuzzy-matching unrelated short names
+    return dist === 1 && maxLen >= 3 && inputPart[0] === candPart[0];
+  }
+
+  if (minLen === 3) {
+    // For 3-letter names, require matching first letter and at most 1 edit
+    return dist === 1 && inputPart[0] === candPart[0];
+  }
+
+  if (minLen <= 5) {
+    if (dist === 1) return true;
+    // For 4-5 letter names, only allow distance 2 if it's an adjacent transposition or prefix match
+    return (
+      isAdjacentTransposition(inputPart, candPart) ||
+      candPart.startsWith(inputPart) ||
+      inputPart.startsWith(candPart)
+    );
+  }
+
+  // For names of length >= 6, allow edit distance up to 2
+  return dist <= 2;
+}
+
+/**
+ * Resolves a guest's party by checking:
+ * 1. Exact key match in rsvp_lookup.json
+ * 2. First-name alias expansion + compound name variations
+ * 3. Safe Levenshtein fuzzy matching fallback (requiring an unambiguous best party match)
+ */
+export function findPartyForGuest(first: string, last: string): string[] | null {
+  const exactKey = getLookupKey(first, last);
+  if (lookupRecord[exactKey]) {
+    return lookupRecord[exactKey];
+  }
+
+  const normFirst = normalizeName(first);
+  const normLast = normalizeName(last);
+  if (!normFirst || !normLast) {
+    return null;
+  }
+
+  // Step 2: First-name alias lookup (including multi-token first names)
+  const aliasMatches = new Map<string, string[]>();
+  const directAliases = firstNameAliases[normFirst] ?? [];
+  for (const altFirst of directAliases) {
+    const party = lookupRecord[`${altFirst}${normLast}`];
+    if (party) {
+      aliasMatches.set(JSON.stringify(party), party);
+    }
+  }
+
+  const firstTokens = first
+    .trim()
+    .split(/[\s-]+/)
+    .map(t => normalizeName(t))
+    .filter(Boolean);
+  if (firstTokens.length > 1) {
+    const firstWordAliases = firstNameAliases[firstTokens[0]] ?? [];
+    const restFirst = firstTokens.slice(1).join("");
+    for (const altFirst of firstWordAliases) {
+      const party = lookupRecord[`${altFirst}${restFirst}${normLast}`];
+      if (party) {
+        aliasMatches.set(JSON.stringify(party), party);
+      }
+    }
+  }
+
+  if (aliasMatches.size === 1) {
+    return Array.from(aliasMatches.values())[0];
+  }
+  if (aliasMatches.size > 1) {
+    return null;
+  }
+
+  // Step 3: Structured candidate + Levenshtein fuzzy matching fallback
+  const firstVariants = [normFirst, ...directAliases];
+  if (firstTokens.length > 1) {
+    const firstWordAliases = firstNameAliases[firstTokens[0]] ?? [];
+    const restFirst = firstTokens.slice(1).join("");
+    for (const altFirst of firstWordAliases) {
+      const combinedVariant = `${altFirst}${restFirst}`;
+      if (!firstVariants.includes(combinedVariant)) {
+        firstVariants.push(combinedVariant);
+      }
+    }
+  }
+
+  let bestTotalDist = Infinity;
+  let bestPartyMatches = new Map<string, string[]>();
+
+  for (const cand of STRUCTURED_CANDIDATES) {
+    const lastDist = levenshteinDistance(normLast, cand.last);
+    if (!isComponentDistanceAllowed(normLast, cand.last, lastDist)) {
+      continue;
+    }
+
+    for (const f of firstVariants) {
+      const firstDist = levenshteinDistance(f, cand.first);
+      if (!isComponentDistanceAllowed(f, cand.first, firstDist)) {
+        continue;
+      }
+
+      const totalDist = firstDist + lastDist;
+      if (totalDist > 2) {
+        continue;
+      }
+
+      // If both first and last name have typos (1 + 1), require both parts to be at least 4 chars
+      if (firstDist > 0 && lastDist > 0 && (f.length < 4 || normLast.length < 4)) {
+        continue;
+      }
+
+      if (totalDist < bestTotalDist) {
+        bestTotalDist = totalDist;
+        bestPartyMatches = new Map([[cand.partyId, cand.party]]);
+      } else if (totalDist === bestTotalDist) {
+        bestPartyMatches.set(cand.partyId, cand.party);
+      }
+    }
+  }
+
+  if (bestPartyMatches.size === 1) {
+    return Array.from(bestPartyMatches.values())[0];
+  }
+
+  return null;
 }
 
 /**
@@ -65,8 +399,7 @@ export function handleLookup(url: URL, corsHeaders: Record<string, string>): Res
     });
   }
 
-  const key = getLookupKey(first, last);
-  const party = lookupRecord[key];
+  const party = findPartyForGuest(first, last);
 
   if (!party) {
     return new Response(JSON.stringify({ error: "Guest not found" }), {
@@ -169,7 +502,7 @@ export function extractSubmissionPayload(raw: Record<string, unknown>): RsvpSubm
     }
   }
 
-  // Case 3: raw.party_members is provided (comma-separated string e.g. "Doris Anaya, Oscar Anaya")
+  // Case 3: raw.party_members is provided (comma-separated string e.g. "Mr. Penny, Mrs. Penny")
   if (typeof raw.party_members === "string" && raw.party_members.trim().length > 0) {
     const names = raw.party_members.split(",").map(n => n.trim()).filter(Boolean);
     for (const name of names) {
