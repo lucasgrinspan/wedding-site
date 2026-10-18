@@ -109,6 +109,7 @@ export function getCorsHeaders(request: Request): Record<string, string> {
     "Access-Control-Allow-Origin": allowOrigin,
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
+    "Access-Control-Expose-Headers": "X-Matched-Guest",
     "Access-Control-Max-Age": "86400",
   };
 }
@@ -382,6 +383,130 @@ export function findPartyForGuest(first: string, last: string): string[] | null 
 }
 
 /**
+ * Resolves which specific canonical member of a party matches the given first and last name,
+ * accounting for compound surnames, first-name aliases, and typos.
+ */
+export function resolvePartyMember(first: string, last: string, party: string[]): string | null {
+  if (!Array.isArray(party) || party.length === 0) return null;
+  if (party.length === 1) return party[0];
+
+  const exactFullKey = getLookupKey(first, last);
+  const exactFullMatch = party.find((m) => normalizeName(m) === exactFullKey);
+  if (exactFullMatch) return exactFullMatch;
+
+  const normFirst = normalizeName(first);
+  const normLast = normalizeName(last);
+  if (!normFirst) return null;
+
+  const firstVariants = new Set<string>([
+    normFirst,
+    ...(firstNameAliases[normFirst] ?? []),
+  ]);
+
+  const firstTokens = first
+    .trim()
+    .split(/[\s-]+/)
+    .map((t) => normalizeName(t))
+    .filter(Boolean);
+  if (firstTokens.length > 0) {
+    const firstWord = firstTokens[0];
+    firstVariants.add(firstWord);
+    for (const alt of firstNameAliases[firstWord] ?? []) {
+      firstVariants.add(alt);
+      if (firstTokens.length > 1) {
+        firstVariants.add(`${alt}${firstTokens.slice(1).join("")}`);
+      }
+    }
+  }
+
+  let bestMember: string | null = null;
+  let bestScore = Infinity;
+  let bestFirstDist = Infinity;
+
+  for (const member of party) {
+    const tokens = member
+      .split(/[\s-]+/)
+      .map((t) => normalizeName(t))
+      .filter(Boolean);
+    if (tokens.length === 0) continue;
+
+    const candPairs: Array<[string, string]> = [];
+    if (tokens.length === 1) {
+      candPairs.push([tokens[0], ""]);
+    } else if (tokens.length === 2) {
+      candPairs.push([tokens[0], tokens[1]]);
+    } else {
+      const combinedLast = tokens.slice(1).join("");
+      const part1 = tokens[1];
+      const part2 = tokens.slice(2).join("");
+      candPairs.push([tokens[0], combinedLast]);
+      candPairs.push([tokens[0], part1]);
+      candPairs.push([tokens[0], part2]);
+      candPairs.push([`${tokens[0]}${part1}`, part2]);
+    }
+
+    for (const [cFirst, cLast] of candPairs) {
+      const lastDist = normLast && cLast ? levenshteinDistance(normLast, cLast) : 0;
+      for (const fVar of firstVariants) {
+        const firstDist = levenshteinDistance(fVar, cFirst);
+        // Weight first-name similarity heavily because party members frequently share a surname
+        const score = firstDist * 3 + Math.min(lastDist, 3);
+        if (score < bestScore || (score === bestScore && firstDist < bestFirstDist)) {
+          bestScore = score;
+          bestFirstDist = firstDist;
+          bestMember = member;
+        }
+      }
+    }
+  }
+
+  if (bestMember && bestFirstDist <= 2) {
+    return bestMember;
+  }
+
+  return null;
+}
+
+/**
+ * Normalizes a submitted_by string to the matching canonical party member name if possible,
+ * or falls back to the cleaned input string.
+ */
+export function resolveSubmittedBy(rawInput: string, party: string[]): string | undefined {
+  const trimmed = rawInput.trim();
+  if (!trimmed) return undefined;
+
+  const cleanParty = party.map((p) => p.trim()).filter(Boolean);
+  if (cleanParty.length === 0) return trimmed;
+
+  const normInput = normalizeName(trimmed);
+  if (!normInput) return trimmed;
+
+  const exactMatch = cleanParty.find((m) => normalizeName(m) === normInput);
+  if (exactMatch) return exactMatch;
+
+  const parts = trimmed.split(/\s+/).filter(Boolean);
+  if (parts.length === 1) {
+    const matchedSingle = resolvePartyMember(parts[0], "", cleanParty);
+    if (matchedSingle) return matchedSingle;
+    return trimmed;
+  }
+
+  const matchedFirstSplit = resolvePartyMember(parts[0], parts.slice(1).join(" "), cleanParty);
+  if (matchedFirstSplit) return matchedFirstSplit;
+
+  if (parts.length >= 3) {
+    const matchedLastSplit = resolvePartyMember(
+      parts.slice(0, -1).join(" "),
+      parts[parts.length - 1],
+      cleanParty
+    );
+    if (matchedLastSplit) return matchedLastSplit;
+  }
+
+  return trimmed;
+}
+
+/**
  * Handles guest party lookup queries:
  * GET /?first=...&last=... or GET /lookup?first=...&last=...
  */
@@ -411,10 +536,13 @@ export function handleLookup(url: URL, corsHeaders: Record<string, string>): Res
     });
   }
 
+  const matchedGuest = resolvePartyMember(first, last, party);
+
   return new Response(JSON.stringify(party), {
     status: 200,
     headers: {
       "Content-Type": "application/json",
+      ...(matchedGuest ? { "X-Matched-Guest": matchedGuest } : {}),
       ...corsHeaders,
     },
   });
@@ -537,11 +665,33 @@ export function extractSubmissionPayload(raw: Record<string, unknown>): RsvpSubm
     }
   }
 
+  const rawSubmittedBy = (
+    raw.submitted_by ||
+    raw.submittedBy ||
+    raw.submitter ||
+    (typeof raw.first_name === "string" && typeof raw.last_name === "string"
+      ? `${raw.first_name.trim()} ${raw.last_name.trim()}`
+      : "") ||
+    (typeof raw.firstName === "string" && typeof raw.lastName === "string"
+      ? `${raw.firstName.trim()} ${raw.lastName.trim()}`
+      : "") ||
+    ""
+  ) as string;
+
+  const submittedBy =
+    typeof rawSubmittedBy === "string" && rawSubmittedBy.trim().length > 0
+      ? resolveSubmittedBy(
+          rawSubmittedBy,
+          partyList.map((p) => p.name)
+        )
+      : undefined;
+
   const rawLang = typeof raw.lang === "string" ? raw.lang.trim().toLowerCase() : "";
   const lang: "en" | "es" = rawLang === "es" ? "es" : "en";
 
   return {
     party: partyList,
+    ...(submittedBy ? { submittedBy } : {}),
     dietary: typeof dietary === "string" && dietary.trim().length > 0 ? dietary.trim() : undefined,
     email: typeof email === "string" && email.trim().length > 0 ? email.trim() : undefined,
     lang,
@@ -749,6 +899,7 @@ export async function handleRsvpSubmit(
   // Structured logging for Cloudflare Workers Observability
   console.log(JSON.stringify({
     event: "rsvp_submission_received",
+    submittedBy: submission.submittedBy ?? null,
     partyCount: submission.party.length,
     party: submission.party,
     hasDietary: Boolean(submission.dietary),

@@ -252,6 +252,7 @@ export function buildHostNotificationEmailHtml(submission: RsvpSubmissionPayload
   const totalCount = submission.party.length;
   const acceptingCount = submission.party.filter((g) => g.attending).length;
   const decliningCount = totalCount - acceptingCount;
+  const submittedByNormalized = submission.submittedBy?.trim().toLowerCase();
 
   const partyRowsHtml = submission.party
     .map((guest: GuestResponse) => {
@@ -260,11 +261,17 @@ export function buildHostNotificationEmailHtml(submission: RsvpSubmissionPayload
       const statusBg = isAttending ? "#2E4A3D" : "#ECEBE9";
       const statusColor = isAttending ? "#FFFFFF" : "#6E6259";
       const statusBorder = isAttending ? "#2E4A3D" : "#D4CEC5";
+      const isSubmitter =
+        Boolean(submittedByNormalized) &&
+        guest.name.trim().toLowerCase() === submittedByNormalized;
+      const submitterBadgeHtml = isSubmitter
+        ? ` <span style="display: inline-block; margin-left: 8px; padding: 2px 8px; background-color: #F4F2EC; color: #8B5A2B; border: 1px solid rgba(139, 90, 43, 0.3); border-radius: 2px; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; vertical-align: middle;">Filled Out RSVP</span>`
+        : "";
 
       return `
         <tr>
           <td style="padding: 14px 0; border-bottom: 1px dashed rgba(46, 74, 61, 0.15); font-family: 'Playfair Display', Georgia, serif; font-size: 17px; color: #2E4A3D; font-weight: 600;">
-            ${escapeHtml(guest.name)}
+            ${escapeHtml(guest.name)}${submitterBadgeHtml}
           </td>
           <td align="right" style="padding: 14px 0; border-bottom: 1px dashed rgba(46, 74, 61, 0.15);">
             <span style="display: inline-block; padding: 6px 14px; background-color: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; border-radius: 2px; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.5px;">
@@ -280,6 +287,11 @@ export function buildHostNotificationEmailHtml(submission: RsvpSubmissionPayload
     submission.dietary && submission.dietary.trim().length > 0
       ? escapeHtml(submission.dietary.trim())
       : "None provided";
+
+  const submittedByHtml =
+    submission.submittedBy && submission.submittedBy.trim().length > 0
+      ? `<strong style="color: #2E4A3D;">${escapeHtml(submission.submittedBy.trim())}</strong>`
+      : `<span style="color: #7A8680; font-style: italic;">Not provided</span>`;
 
   const guestEmailHtml =
     submission.email && submission.email.trim().length > 0
@@ -337,6 +349,10 @@ export function buildHostNotificationEmailHtml(submission: RsvpSubmissionPayload
                       <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 10px; font-weight: 600;">Submission Metadata</span>
                       <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #2C3531;">
                         <tr>
+                          <td style="padding: 4px 0; color: #4A5650; width: 140px;"><strong>Submitted By:</strong></td>
+                          <td style="padding: 4px 0;">${submittedByHtml}</td>
+                        </tr>
+                        <tr>
                           <td style="padding: 4px 0; color: #4A5650; width: 140px;"><strong>Guest Email:</strong></td>
                           <td style="padding: 4px 0;">${guestEmailHtml}</td>
                         </tr>
@@ -376,6 +392,11 @@ export function buildHostNotificationEmailText(submission: RsvpSubmissionPayload
       ? submission.dietary.trim()
       : "None provided";
 
+  const submittedByText =
+    submission.submittedBy && submission.submittedBy.trim().length > 0
+      ? submission.submittedBy.trim()
+      : "Not provided";
+
   const emailText =
     submission.email && submission.email.trim().length > 0
       ? submission.email.trim()
@@ -394,6 +415,7 @@ DIETARY RESTRICTIONS / NOTES:
 ${dietaryText}
 
 SUBMISSION DETAILS:
+• Submitted By: ${submittedByText}
 • Guest Email: ${emailText}
 • Locale: ${localeLabel}
 • Submitted At: ${submittedAtText}

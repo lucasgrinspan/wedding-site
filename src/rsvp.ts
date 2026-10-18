@@ -18,7 +18,35 @@ document.addEventListener("DOMContentLoaded", () => {
   const submitError = document.getElementById("submit-error");
   const guestRowsContainer = document.getElementById("guest-rows-container");
   const partyListHiddenInput = document.getElementById("rsvp-party-list") as HTMLInputElement | null;
+  const submittedByHiddenInput = document.getElementById("rsvp-submitted-by") as HTMLInputElement | null;
   const emailInput = document.getElementById("email") as HTMLInputElement | null;
+
+  function normalizeName(name: string): string {
+    return name
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
+  }
+
+  function resolveSubmittedBy(first: string, last: string, party: string[]): string {
+    const cleanFallback = `${first.trim()} ${last.trim()}`.trim();
+    if (!Array.isArray(party) || party.length === 0) {
+      return cleanFallback;
+    }
+    if (party.length === 1) {
+      return party[0];
+    }
+
+    const normFull = normalizeName(`${first}${last}`);
+    const normFirst = normalizeName(first.trim().split(/[\s-]+/)[0] || first);
+
+    return (
+      party.find((member) => normalizeName(member) === normFull) ||
+      party.find((member) => normalizeName(member.split(/[\s-]+/)[0] || "") === normFirst) ||
+      cleanFallback
+    );
+  }
 
   if (rsvpForm) {
     rsvpForm.addEventListener("submit", async (event) => {
@@ -81,7 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (response.ok) {
           const party = await response.json();
-          setupRsvpForm(party);
+          const headerMatchedGuest = response.headers.get("X-Matched-Guest")?.trim();
+          const submittedBy = headerMatchedGuest || resolveSubmittedBy(first, last, party);
+          setupRsvpForm(party, submittedBy);
         } else if (response.status === 404) {
           showError(copy.notFound);
         } else {
@@ -119,14 +149,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function setupRsvpForm(party: string[]) {
+  function setupRsvpForm(party: string[], submittedBy: string) {
     if (!guestRowsContainer || !partyListHiddenInput || !searchStep || !rsvpForm) return;
 
     // Clear old rows
     guestRowsContainer.innerHTML = "";
     
-    // Populate hidden list of members
+    // Populate hidden list of members and who searched/submitted
     partyListHiddenInput.value = party.join(", ");
+    if (submittedByHiddenInput) {
+      submittedByHiddenInput.value = submittedBy;
+    }
 
     // Inject row for each party member
     party.forEach(guest => {

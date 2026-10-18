@@ -8,6 +8,7 @@ export interface GuestResponse {
 
 export interface RsvpSubmissionPayload {
   party: GuestResponse[];
+  submittedBy?: string;
   dietary?: string;
   email?: string;
   lang?: "en" | "es";
