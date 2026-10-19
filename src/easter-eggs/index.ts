@@ -305,8 +305,18 @@ export function getGuestQueryFromUrl(): { first: string; last: string } | null {
         first: parts[0],
         last: parts.slice(1).join(" "),
       };
+    } else if (parts.length === 1 && parts[0].toLowerCase() === "gilmer") {
+      return {
+        first: "Gilmer",
+        last: "Rojas",
+      };
     }
   }
+
+  if (firstParam.toLowerCase() === "gilmer" && !lastParam) {
+    return { first: "Gilmer", last: "Rojas" };
+  }
+
   return null;
 }
 

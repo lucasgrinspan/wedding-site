@@ -1,5 +1,6 @@
 import { bocaRiverEffect } from "./effects/boca-river";
 import { runawayButtonEffect } from "./effects/runaway-button";
+import { threesTourneyEffect } from "./effects/threes-tourney";
 import type { EasterEggModule } from "./types";
 
 /**
@@ -17,4 +18,5 @@ import type { EasterEggModule } from "./types";
 export const EASTER_EGG_REGISTRY: EasterEggModule[] = [
   runawayButtonEffect,
   bocaRiverEffect,
+  threesTourneyEffect,
 ];
