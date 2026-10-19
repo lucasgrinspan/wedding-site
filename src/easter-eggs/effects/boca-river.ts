@@ -55,7 +55,7 @@ export const bocaRiverEffect: EasterEggModule = {
     checkbox.style.cursor = "pointer";
 
     const labelText = document.createElement("span");
-    labelText.textContent = "Boca es mas grande que River?";
+    labelText.textContent = "Boca es más grande que River?";
 
     label.appendChild(checkbox);
     label.appendChild(labelText);
@@ -81,7 +81,7 @@ export const bocaRiverEffect: EasterEggModule = {
         if (timer) clearTimeout(timer);
         timer = setTimeout(() => {
           checkbox.checked = true;
-        }, 2000);
+        }, 500);
       } else {
         if (timer) {
           clearTimeout(timer);
