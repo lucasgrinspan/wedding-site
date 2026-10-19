@@ -28,3 +28,10 @@ dist-ssr
 
 # RSVP guest data
 rsvp_*.json
+
+# Agent skills and lockfiles
+.agents/
+skills-lock.json
+
+# Documentation
+docs/
