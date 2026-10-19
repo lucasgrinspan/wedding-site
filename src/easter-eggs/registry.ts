@@ -10,8 +10,8 @@ import type { EasterEggModule } from "./types";
  *    implementing `EasterEggModule`.
  * 2. Register it in `EASTER_EGG_REGISTRY` below.
  * 3. Trigger it either by:
- *    - Adding `"effect": "<id>"` to a guest or party in `worker/data/rsvp_delights.json`, OR
- *    - Specifying `guests` / `parties` / `matches` directly on the module's `trigger` object, OR
+ *    - Adding `"effect": "<id>"` to a guest or party in `worker/data/rsvp_delights.json`
+ *      (kept server-side so guest names are never exposed in the public repo), OR
  *    - Appending `?preview_effect=<id>` to `/rsvp.html` or `/thanks.html`.
  */
 export const EASTER_EGG_REGISTRY: EasterEggModule[] = [

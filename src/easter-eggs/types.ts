@@ -40,16 +40,6 @@ export interface EasterEggTrigger {
    */
   effectIds?: string[];
   /**
-   * Optional guest names (display or normalized, e.g. `"mrpenny"`)
-   * that directly trigger this module on the client when that specific guest searches.
-   */
-  guests?: string[];
-  /**
-   * Optional party member names (display or normalized) where anyone in that party
-   * triggers this module.
-   */
-  parties?: string[];
-  /**
    * Which page(s) this module should run on. Defaults to `["rsvp"]`.
    */
   pages?: Array<"rsvp" | "thanks">;

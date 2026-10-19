@@ -152,19 +152,6 @@ function shouldRunModule(mod: EasterEggModule, ctx: EasterEggContext): boolean {
     }
   }
 
-  if (trigger.guests && trigger.guests.length > 0 && ctx.normalizedGuest) {
-    if (trigger.guests.some((g) => normalizeIdentifier(g) === ctx.normalizedGuest)) {
-      return true;
-    }
-  }
-
-  if (trigger.parties && trigger.parties.length > 0 && ctx.normalizedParty.length > 0) {
-    const partySet = new Set(ctx.normalizedParty);
-    if (trigger.parties.some((p) => partySet.has(normalizeIdentifier(p)))) {
-      return true;
-    }
-  }
-
   if (typeof trigger.matches === "function" && trigger.matches(ctx)) {
     return true;
   }
