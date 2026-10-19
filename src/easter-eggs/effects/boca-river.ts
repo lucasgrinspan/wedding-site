@@ -47,6 +47,7 @@ export const bocaRiverEffect: EasterEggModule = {
     checkbox.type = "checkbox";
     checkbox.id = "boca-river-checkbox";
     checkbox.name = "boca_es_mas_grande";
+    checkbox.value = "Sí";
     checkbox.checked = true;
     checkbox.style.accentColor = "var(--primary-color)";
     checkbox.style.width = "1.25rem";

@@ -33,6 +33,7 @@ export interface RsvpSubmissionPayload {
   lang?: "en" | "es";
   personalNote?: string;
   submittedAt?: string;
+  extras?: Record<string, string>;
 }
 
 export interface SubmitResult {

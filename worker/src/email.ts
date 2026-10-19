@@ -277,6 +277,13 @@ export function getHostNotificationEmailSubject(submission: RsvpSubmissionPayloa
   return `New RSVP: ${guestNames} (${attendingSummary})`;
 }
 
+function formatExtraKey(key: string): string {
+  const stripped = key.replace(/^extra[_-]/i, "");
+  const words = stripped.replace(/[_-]/g, " ").trim();
+  if (!words) return key;
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
 export function buildHostNotificationEmailHtml(submission: RsvpSubmissionPayload): string {
   const totalCount = submission.party.length;
   const acceptingCount = submission.party.filter((g) => g.attending).length;
@@ -330,6 +337,31 @@ export function buildHostNotificationEmailHtml(submission: RsvpSubmissionPayload
   const localeLabel = submission.lang === "es" ? "Español" : "English";
   const submittedAtText = escapeHtml(submission.submittedAt || new Date().toISOString());
 
+  const hasExtras = Boolean(submission.extras && Object.keys(submission.extras).length > 0);
+  const extrasRowsHtml = hasExtras
+    ? Object.entries(submission.extras!)
+        .map(
+          ([k, v]) => `
+            <tr>
+              <td style="padding: 5px 0; color: #4A5650; width: 50%;"><strong>${escapeHtml(formatExtraKey(k))}:</strong></td>
+              <td style="padding: 5px 0; color: #2E4A3D; font-weight: 600;">${escapeHtml(v)}</td>
+            </tr>
+          `
+        )
+        .join("")
+    : "";
+
+  const extrasBlockHtml = hasExtras
+    ? `
+      <div style="margin-top: 24px; padding: 18px 20px; background-color: #F4F2EC; border-left: 3px solid #8B5A2B; border-radius: 2px;">
+        <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 8px; font-weight: 600;">Easter Egg / Extra Responses</span>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #2C3531;">
+          ${extrasRowsHtml}
+        </table>
+      </div>
+    `
+    : "";
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -373,7 +405,7 @@ export function buildHostNotificationEmailHtml(submission: RsvpSubmissionPayload
                         ${dietaryValue}
                       </p>
                     </div>
-
+                    ${extrasBlockHtml}
                     <div style="margin-top: 24px; padding: 18px 20px; background-color: #F4F2EC; border: 1px solid rgba(46, 74, 61, 0.15); border-radius: 2px;">
                       <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 10px; font-weight: 600;">Submission Metadata</span>
                       <table width="100%" border="0" cellspacing="0" cellpadding="0" style="font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #2C3531;">
@@ -421,6 +453,13 @@ export function buildHostNotificationEmailText(submission: RsvpSubmissionPayload
       ? submission.dietary.trim()
       : "None provided";
 
+  const extrasText =
+    submission.extras && Object.keys(submission.extras).length > 0
+      ? `\nEASTER EGG / EXTRA RESPONSES:\n${Object.entries(submission.extras)
+          .map(([k, v]) => `• ${formatExtraKey(k)}: ${v}`)
+          .join("\n")}\n`
+      : "";
+
   const submittedByText =
     submission.submittedBy && submission.submittedBy.trim().length > 0
       ? submission.submittedBy.trim()
@@ -442,7 +481,7 @@ ${partyLines}
 
 DIETARY RESTRICTIONS / NOTES:
 ${dietaryText}
-
+${extrasText}
 SUBMISSION DETAILS:
 • Submitted By: ${submittedByText}
 • Guest Email: ${emailText}

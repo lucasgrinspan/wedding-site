@@ -712,6 +712,41 @@ export function extractSubmissionPayload(raw: Record<string, unknown>): RsvpSubm
         : undefined,
   });
 
+  const KNOWN_KEYS = new Set([
+    "_next",
+    "lang",
+    "party",
+    "party_members",
+    "partyMembers",
+    "responses",
+    "submitted_by",
+    "submittedBy",
+    "submitter",
+    "first_name",
+    "last_name",
+    "firstName",
+    "lastName",
+    "email",
+    "guest_email",
+    "guestEmail",
+    "dietary",
+    "message",
+    "notes",
+    "dietary_restrictions",
+    "dietaryRestrictions",
+    "personal_note",
+    "personalNote",
+  ]);
+
+  const extras: Record<string, string> = {};
+  for (const [key, rawVal] of Object.entries(raw)) {
+    if (KNOWN_KEYS.has(key) || key.startsWith("attending_")) continue;
+    if (rawVal === undefined || rawVal === null) continue;
+    const strVal = String(rawVal).trim();
+    if (!strVal) continue;
+    extras[key] = strVal.toLowerCase() === "on" ? "Yes" : strVal;
+  }
+
   return {
     party: partyList,
     ...(submittedBy ? { submittedBy } : {}),
@@ -719,6 +754,7 @@ export function extractSubmissionPayload(raw: Record<string, unknown>): RsvpSubm
     email: typeof email === "string" && email.trim().length > 0 ? email.trim() : undefined,
     lang,
     ...(personalNote ? { personalNote } : {}),
+    ...(Object.keys(extras).length > 0 ? { extras } : {}),
     submittedAt: new Date().toISOString(),
   };
 }
@@ -928,6 +964,8 @@ export async function handleRsvpSubmit(
     party: submission.party,
     hasDietary: Boolean(submission.dietary),
     hasEmail: Boolean(submission.email),
+    hasExtras: Boolean(submission.extras && Object.keys(submission.extras).length > 0),
+    extras: submission.extras ?? null,
     submittedAt: submission.submittedAt,
   }));
 
