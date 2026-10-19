@@ -51,7 +51,7 @@ export const bocaRiverEffect: EasterEggModule = {
     checkbox.checked = true;
     checkbox.style.accentColor = "var(--primary-color)";
     checkbox.style.width = "1.25rem";
-    checkbox.style.height = "1.25rem";
+    checkbox.style.height = "1.25rem"; //https://youtube.com
     checkbox.style.cursor = "pointer";
 
     const labelText = document.createElement("span");

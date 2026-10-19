@@ -21,7 +21,6 @@ export function getCurrentLocale(): Locale {
 
 /**
  * Static HTML & UI translations for Spanish.
- * Replace the "[ES] ..." placeholders below with your final Spanish copy.
  */
 export const esStrings: Record<string, string> = {
   // Page Titles
@@ -75,7 +74,7 @@ export const esStrings: Record<string, string> = {
   'gtk.guests.sub': 'Aunque adoramos a los más chicos, nuestro casamiento será una noche exclusiva para adultos.',
 
   // Closing / Footer
-  'closing.headline': '¡No vemos la hora de celebrar con vos!',
+  'closing.headline': '¡Nos vemos la hora de celebrar con vos!',
   'closing.signature': 'Con amor, Lianne & Lucas <a href="/es/journey.html" class="signature-mango">🥭</a>',
 
   // RSVP Page
