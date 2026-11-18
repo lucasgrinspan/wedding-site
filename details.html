@@ -8,17 +8,18 @@
   <title data-i18n="meta.detailsTitle">Details - Lucas & Lianne</title>
   <!-- Reusing main.ts which imports style.css -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@400;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap"
     rel="stylesheet">
 </head>
 
 <body>
   <header>
-    <div class="logo">L & L</div>
-    <nav>
+    <a href="/" class="logo" style="text-decoration: none;">L &amp; L</a>
+    <nav aria-label="Primary">
       <ul>
         <li><a href="/" data-i18n="nav.home">Home</a></li>
         <li><a href="/details.html" class="active" data-i18n="nav.details">Details</a></li>
+        <li><a href="/rsvp.html" data-i18n="nav.rsvp">RSVP</a></li>
         <li><a href="/journey.html" data-i18n="nav.journey">Journey</a></li>
       </ul>
     </nav>
@@ -27,45 +28,121 @@
   <main>
     <section class="details-editorial-container" style="padding-top: 120px;">
       <div class="editorial-header">
-        <h2 class="editorial-title" data-i18n="hero.gettingMarried">We're Getting Married!</h2>
+        <h1 class="editorial-title" data-i18n="hero.gettingMarried">We're Getting Married!</h1>
         <div class="editorial-divider"></div>
       </div>
 
       <div class="editorial-grid">
         <div class="editorial-item">
           <span class="editorial-num">I</span>
-          <h3 data-i18n="details.when.title">When</h3>
+          <h2 class="editorial-item-heading" data-i18n="details.when.title">When</h2>
           <p class="editorial-main-detail" data-i18n="details.when.date">February 20, 2027</p>
-          <p class="editorial-sub-detail" data-i18n="details.when.time">At Five O'Clock in the Evening</p>
+          <p class="editorial-sub-detail" data-i18n="details.when.time">Ceremony at 5:30 PM</p>
         </div>
 
         <div class="editorial-item">
           <span class="editorial-num">II</span>
-          <h3 data-i18n="details.where.title">Where</h3>
+          <h2 class="editorial-item-heading" data-i18n="details.where.title">Where</h2>
           <p class="editorial-main-detail" data-i18n="details.where.venue">Deering Estate</p>
           <p class="editorial-sub-detail" data-i18n="details.where.address">16701 SW 72nd Ave, Miami, FL 33157</p>
         </div>
 
         <div class="editorial-item">
           <span class="editorial-num">III</span>
-          <h3 data-i18n="details.travel.title">Travel & Stay</h3>
-          <p class="editorial-main-detail" data-i18n="details.travel.main">Accommodations</p>
-          <p class="editorial-sub-detail" data-i18n="details.travel.sub">We recommend booking your stay at Deering Estate local suites.</p>
-        </div>
-
-        <div class="editorial-item">
-          <span class="editorial-num">IV</span>
-          <h3 data-i18n="details.rsvp.title">RSVP</h3>
+          <h2 class="editorial-item-heading" data-i18n="details.rsvp.title">RSVP</h2>
           <p class="editorial-main-detail" data-i18n="details.rsvp.main">Kindly Respond</p>
-          <p class="editorial-sub-detail" data-i18n="details.rsvp.sub">Please RSVP by December 1, 2026. Private RSVP links are sent to guests.</p>
+          <p class="editorial-sub-detail" data-i18n="details.rsvp.sub">Please RSVP by December 31, 2026.</p>
+          <a href="/rsvp.html" class="editorial-inline-cta" data-i18n="details.rsvp.link">Respond Online &rarr;</a>
         </div>
       </div>
     </section>
 
-    <!-- Placeholder for future gallery/images -->
+    <section id="timeline" class="details-editorial-container timeline-section">
+      <div class="editorial-header">
+        <span class="editorial-subtitle" data-i18n="timeline.subtitle">The Evening</span>
+        <h2 class="editorial-title" data-i18n="timeline.title">Timeline</h2>
+        <div class="editorial-divider"></div>
+      </div>
+
+      <ol class="wedding-timeline" role="list">
+        <li class="wedding-timeline-item">
+          <span class="wedding-timeline-time" data-i18n="timeline.ceremony.time">5:30 PM</span>
+          <div class="wedding-timeline-track" aria-hidden="true">
+            <span class="wedding-timeline-dot"></span>
+          </div>
+          <h3 class="wedding-timeline-event" data-i18n="timeline.ceremony.title">Ceremony</h3>
+        </li>
+        <li class="wedding-timeline-item">
+          <span class="wedding-timeline-time" data-i18n="timeline.cocktail.time">6:00 PM</span>
+          <div class="wedding-timeline-track" aria-hidden="true">
+            <span class="wedding-timeline-dot"></span>
+          </div>
+          <h3 class="wedding-timeline-event" data-i18n="timeline.cocktail.title">Cocktail Hour</h3>
+        </li>
+        <li class="wedding-timeline-item">
+          <span class="wedding-timeline-time" data-i18n="timeline.dinner.time">7:15 PM</span>
+          <div class="wedding-timeline-track" aria-hidden="true">
+            <span class="wedding-timeline-dot"></span>
+          </div>
+          <h3 class="wedding-timeline-event" data-i18n="timeline.dinner.title">Dinner</h3>
+        </li>
+      </ol>
+    </section>
+
+    <section id="good-to-know" class="details-editorial-container good-to-know-section">
+      <div class="editorial-header">
+        <span class="editorial-subtitle" data-i18n="gtk.subtitle">Finer Details</span>
+        <h2 class="editorial-title" data-i18n="gtk.title">Good to Know</h2>
+        <div class="editorial-divider"></div>
+      </div>
+
+      <div class="editorial-grid">
+        <div class="editorial-item">
+          <h3 data-i18n="gtk.dress.title">Dress Code</h3>
+          <p class="editorial-main-detail" data-i18n="gtk.dress.main">Formal (Suit &amp; Tie)</p>
+          <p class="editorial-sub-detail" data-i18n="gtk.dress.sub">Suits and ties, and floor-length or formal midi dresses.</p>
+        </div>
+
+        <div class="editorial-item">
+          <h3 data-i18n="gtk.palette.title">Color Palette</h3>
+          <p class="editorial-main-detail" data-i18n="gtk.palette.main">Dark Green &amp; Browns</p>
+          <p class="editorial-sub-detail" data-i18n="gtk.palette.sub">Our wedding palette features dark greens and warm browns (just in case you want to match).</p>
+          <div class="palette-swatches" role="img" data-i18n-aria-label="gtk.palette.aria" aria-label="Wedding color palette: dark greens and earthy browns">
+            <span class="palette-swatch" style="background-color: #2E4A3D;"></span>
+            <span class="palette-swatch" style="background-color: #5a9178;"></span>
+            <span class="palette-swatch" style="background-color: #5C3D28;"></span>
+            <span class="palette-swatch" style="background-color: #8B5A2B;"></span>
+          </div>
+        </div>
+
+        <div class="editorial-item">
+          <h3 data-i18n="gtk.venue.title">The Venue</h3>
+          <p class="editorial-main-detail" data-i18n="gtk.venue.main">Ceremony on Grass</p>
+          <p class="editorial-sub-detail" data-i18n="gtk.venue.sub">Our ceremony will take place outdoors on the lawn and the cocktail hour will take place on a stone courtyard.</p>
+        </div>
+
+        <div class="editorial-item">
+          <h3 data-i18n="gtk.guests.title">Guests</h3>
+          <p class="editorial-main-detail" data-i18n="gtk.guests.main">Adults-Only Celebration</p>
+          <p class="editorial-sub-detail" data-i18n="gtk.guests.sub">While we love your little ones, our wedding will be an adults-only evening.</p>
+        </div>
+
+        <div class="editorial-item">
+          <h3 data-i18n="gtk.registry.title">Registry</h3>
+          <p class="editorial-main-detail" data-i18n="gtk.registry.main">No Traditional Registry</p>
+          <p class="editorial-sub-detail" data-i18n="gtk.registry.sub">Your presence is the greatest gift! We don't have a registry other than the National Audubon Society's donation page.</p>
+          <a href="https://act.audubon.org/a/donate" target="_blank" rel="noopener noreferrer" class="editorial-inline-cta" data-i18n="gtk.registry.link">Donate to Audubon &rarr;</a>
+        </div>
+      </div>
+    </section>
+
     <section class="editorial-closing">
       <div class="editorial-divider" style="margin-bottom: 3rem;"></div>
-      <h2 class="closing-headline" data-i18n="details.closingHeadline">More Photos Coming Soon</h2>
+      <h2 class="closing-headline" data-i18n="details.closingHeadline">We can't wait to celebrate with you!</h2>
+      <p class="closing-rsvp-deadline" data-i18n="closing.rsvpDeadline">Kindly respond by December 31, 2026</p>
+      <div class="closing-cta-wrapper">
+        <a href="/rsvp.html" class="btn btn-dark-green" data-i18n="closing.rsvpBtn">RSVP Now</a>
+      </div>
       <p class="closing-signature" data-i18n="closing.signature">Love, Lianne & Lucas <a href="/journey.html" class="signature-mango">🥭</a></p>
     </section>
   </main>

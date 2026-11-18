@@ -34,27 +34,41 @@ export const esStrings: Record<string, string> = {
   'nav.home': 'Inicio',
   'nav.details': 'Detalles',
   'nav.journey': 'Nuestra Historia',
+  'nav.rsvp': 'RSVP',
 
   // Home / Hero
   'hero.gettingMarried': '¡Nos casamos!',
   'hero.dateLocation': '20 DE FEBRERO DE 2027 \u2022 MIAMI, FL',
   'hero.countdownPlaceholder': '¡FALTAN --- DÍAS!',
+  'hero.rsvpBtn': 'Confirmar Asistencia',
+  'hero.rsvpDeadline': 'Confirmar antes del 31 de diciembre',
   'hero.detailsBtn': 'Detalles',
 
   // Details Section (Home & Details Page)
   'details.when.title': 'Cuándo',
   'details.when.date': '20 de febrero de 2027',
-  'details.when.time': 'A las cinco de la tarde',
+  'details.when.time': 'Ceremonia a las 5:30 PM',
   'details.where.title': 'Dónde',
   'details.where.venue': 'Deering Estate',
   'details.where.address': '16701 SW 72nd Ave, Miami, FL 33157',
   'details.travel.title': 'Viaje y Estadía',
   'details.travel.main': 'Alojamiento',
-  'details.travel.sub': 'Recomendamos reservar tu estadía en las suites cercanas a Deering Estate.',
+  'details.travel.sub': 'Recomendamos hospedarse por la zona de Coral Gables, Coconut Grove o Pinecrest.',
   'details.rsvp.title': 'RSVP',
   'details.rsvp.main': 'Confirmar Asistencia',
-  'details.rsvp.sub': 'Por favor confirmá tu asistencia antes del 1 de diciembre de 2026. Los links privados de confirmación se envían a cada invitado.',
-  'details.closingHeadline': 'Más fotos muy pronto',
+  'details.rsvp.sub': 'Por favor confirmá tu asistencia antes del 31 de diciembre de 2026.',
+  'details.rsvp.link': 'Responder Online \u2192',
+  'details.closingHeadline': '¡No vemos la hora de celebrar con vos!',
+
+  // Timeline Section (Home & Details Page)
+  'timeline.subtitle': 'La Noche',
+  'timeline.title': 'Cronograma',
+  'timeline.ceremony.time': '5:30 PM',
+  'timeline.ceremony.title': 'Ceremonia',
+  'timeline.cocktail.time': '6:00 PM',
+  'timeline.cocktail.title': 'Cóctel',
+  'timeline.dinner.time': '7:15 PM',
+  'timeline.dinner.title': 'Cena',
 
   // Good to Know Section (Home)
   'gtk.subtitle': 'Más Detalles',
@@ -72,26 +86,31 @@ export const esStrings: Record<string, string> = {
   'gtk.guests.title': 'Invitados',
   'gtk.guests.main': 'Celebración Solo para Adultos',
   'gtk.guests.sub': 'Aunque adoramos a los más chicos, nuestro casamiento será una noche exclusiva para adultos.',
+  'gtk.registry.title': 'Regalos',
+  'gtk.registry.main': 'Sin Lista de Regalos',
+  'gtk.registry.sub': '¡Tu presencia es el mejor regalo! No tenemos lista de regalos, más allá de la página de donaciones de la National Audubon Society.',
+  'gtk.registry.link': 'Donar a Audubon \u2192',
 
   // Closing / Footer
-  'closing.headline': '¡Nos vemos la hora de celebrar con vos!',
+  'closing.headline': '¡No vemos la hora de celebrar con vos!',
+  'closing.rsvpDeadline': 'Por favor confirmá tu asistencia antes del 31 de diciembre de 2026',
+  'closing.rsvpBtn': 'Confirmar Asistencia',
   'closing.signature': 'Con amor, Lianne & Lucas <a href="/es/journey.html" class="signature-mango">🥭</a>',
 
   // RSVP Page
   'rsvp.subtitle': 'Confirmación',
   'rsvp.title': 'Confirmá tu Asistencia',
-  'rsvp.deadline': 'Por favor avisanos si podés acompañarnos antes del 1 de diciembre de 2026.',
+  'rsvp.deadline': 'Por favor avisanos si podés acompañarnos antes del 31 de diciembre de 2026.',
   'rsvp.firstNameLabel': 'Nombre',
-  'rsvp.firstNamePlaceholder': 'Ej. Lucas',
+  'rsvp.firstNamePlaceholder': 'Larry',
   'rsvp.lastNameLabel': 'Apellido',
-  'rsvp.lastNamePlaceholder': 'Ej. Grinspan',
+  'rsvp.lastNamePlaceholder': 'Penny',
   'rsvp.notFoundError': 'No pudimos encontrar tu invitación. Por favor revisá cómo está escrito o probá buscando a otro integrante de tu grupo.',
   'rsvp.findBtn': 'Buscar Invitación',
   'rsvp.confirmSubtitle': 'Confirmar Asistencia',
   'rsvp.forYourParty': 'Para tu Grupo',
-  'rsvp.updateAnytimeNote': '¿Todavía no estás seguro por todos en tu grupo o necesitás hacer un cambio más adelante? Podés volver a esta página en cualquier momento para enviar una respuesta actualizada.',
+  'rsvp.updateAnytimeNote': '¿Todavía no estás seguro por todos en tu grupo o necesitás hacer un cambio más adelante? Podés volver a esta página hasta el 31 de diciembre de 2026 para enviar una respuesta actualizada.',
   'rsvp.emailLabel': 'Correo Electrónico (Opcional)',
-  'rsvp.emailPlaceholder': 'Solo si querés recibir una confirmación por mail',
   'rsvp.emailHelp': 'Solo si querés recibir una confirmación por mail',
   'rsvp.dietaryLabel': 'Restricciones Alimentarias o Temas Musicales',
   'rsvp.dietaryPlaceholder': 'Vegetariano, sin TACC / sin gluten, temas que no pueden faltar, etc.',
@@ -104,7 +123,7 @@ export const esStrings: Record<string, string> = {
   'thanks.received': 'Recibimos tu confirmación de asistencia.',
   'thanks.celebrate': '¡No vemos la hora de celebrar con vos!',
   'thanks.personalNoteLabel': 'Una Nota Personal de Lucas y Lianne',
-  'thanks.updateNote': '¿Necesitás hacer algún cambio más adelante? Podés volver a la <a href="/es/rsvp.html" style="color: var(--primary-color); text-decoration: underline;">página de confirmación</a> en cualquier momento para actualizar la respuesta de tu grupo.',
+  'thanks.updateNote': '¿Necesitás hacer algún cambio más adelante? Podés volver a la <a href="/es/rsvp.html" style="color: var(--primary-color); text-decoration: underline;">página de confirmación</a> hasta el 31 de diciembre de 2026 para actualizar la respuesta de tu grupo.',
   'thanks.backHome': 'Volver al Inicio',
 
   // Journey Page
@@ -124,11 +143,16 @@ export const dynamicCopy = {
     },
     rsvp: {
       missingFields: 'Please fill out both first and last name fields.',
+      missingAttendance: 'Please select an attendance option for each member of your party.',
+      invalidEmail: 'Please enter a complete email address (e.g. name@example.com), or leave it blank.',
       notFound: "We couldn't find your invitation. Please check the spelling or try searching for another member of your party.",
       serverError: 'Something went wrong on our end. Please try again in a few moments.',
       networkError: 'Connection error. Please check your internet connection and try again.',
       acceptLabel: 'Joyfully Accept',
       declineLabel: 'Regretfully Decline',
+    },
+    thanks: {
+      declinedCelebrate: "We'll miss celebrating with you, and thank you for letting us know!",
     },
     journey: {
       'coral-reef': {
@@ -186,11 +210,16 @@ export const dynamicCopy = {
     },
     rsvp: {
       missingFields: 'Por favor completá tanto el nombre como el apellido.',
+      missingAttendance: 'Por favor seleccioná una opción de asistencia para cada integrante de tu grupo.',
+      invalidEmail: 'Por favor ingresá un correo electrónico completo (ej. nombre@ejemplo.com), o dejalo en blanco.',
       notFound: 'No pudimos encontrar tu invitación. Por favor revisá cómo está escrito o probá buscando a otro integrante de tu grupo.',
       serverError: 'Hubo un problema de nuestro lado. Por favor intentá de nuevo en unos instantes.',
       networkError: 'Error de conexión. Por favor revisá tu conexión a internet e intentá de nuevo.',
       acceptLabel: 'Confirmo con alegría',
       declineLabel: 'No voy a poder asistir',
+    },
+    thanks: {
+      declinedCelebrate: '¡Te vamos a extrañar mucho, y muchas gracias por avisarnos!',
     },
     journey: {
       'coral-reef': {

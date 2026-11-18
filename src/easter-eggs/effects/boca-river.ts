@@ -91,14 +91,14 @@ export const bocaRiverEffect: EasterEggModule = {
     };
 
     const handleFormSubmit = () => {
-      // If user tries to submit during the 2s unchecked window, ensure it's checked
+      // Ensure it is checked in capture phase BEFORE FormData is read
       if (!checkbox.checked) {
         checkbox.checked = true;
       }
     };
 
     checkbox.addEventListener("change", handleChange);
-    form.addEventListener("submit", handleFormSubmit);
+    form.addEventListener("submit", handleFormSubmit, { capture: true });
 
     return () => {
       if (timer) {
@@ -106,7 +106,7 @@ export const bocaRiverEffect: EasterEggModule = {
         timer = null;
       }
       checkbox.removeEventListener("change", handleChange);
-      form.removeEventListener("submit", handleFormSubmit);
+      form.removeEventListener("submit", handleFormSubmit, { capture: true });
       fieldContainer.remove();
     };
   },

@@ -4,9 +4,22 @@
   "main": "src/index.ts",
   "compatibility_date": "2026-10-18",
   "compatibility_flags": ["nodejs_compat"],
+  "kv_namespaces": [
+    {
+      "binding": "RSVP_KV",
+      "id": "86cc6ee96c514f31b1af435b6ac5a5ff"
+    }
+  ],
+  "triggers": {
+    "crons": ["*/10 * * * *"]
+  },
   "observability": {
     "enabled": true,
     "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1
+    },
+    "traces": {
       "enabled": true,
       "head_sampling_rate": 1
     }

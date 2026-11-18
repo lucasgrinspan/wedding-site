@@ -64,6 +64,17 @@ function extractEffectsList(payload?: DelightPayload | null): string[] {
   return Array.from(new Set(list));
 }
 
+export function decodeMatchedGuestHeader(response?: Response | null): string | undefined {
+  if (!response) return undefined;
+  const raw = response.headers.get("X-Matched-Guest")?.trim();
+  if (!raw) return undefined;
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
+}
+
 /**
  * Decodes the `X-Rsvp-Delight` header sent by the Cloudflare Worker.
  */
@@ -246,26 +257,26 @@ export function applyRsvpDelights(options: {
  * Single hook called by `src/rsvp.ts` right before redirecting to `thanks.html`.
  * Saves `thanksNote` and party attendance state to `sessionStorage`.
  */
-export function persistThanksDelightOnSubmit(formElement: HTMLFormElement): void {
+export function persistThanksDelightOnSubmit(
+  formElement: HTMLFormElement,
+  explicitAnyAttending?: boolean
+): void {
   try {
-    const formData = new FormData(formElement);
-    let anyAttending = false;
-    for (const [key, val] of formData.entries()) {
-      if (key.startsWith("attending_") && typeof val === "string") {
-        const lower = val.toLowerCase();
-        if (!lower.includes("decline") && !lower.includes("regret")) {
-          anyAttending = true;
+    let anyAttending = explicitAnyAttending ?? false;
+    if (explicitAnyAttending === undefined) {
+      const formData = new FormData(formElement);
+      for (const [key, val] of formData.entries()) {
+        if (key.startsWith("attending_") && typeof val === "string") {
+          const lower = val.toLowerCase();
+          if (!lower.includes("decline") && !lower.includes("regret")) {
+            anyAttending = true;
+          }
         }
       }
     }
 
     const thanksNote = normalizeLocalizedNote(activeDelightPayload?.thanksNote);
     const effects = extractEffectsList(activeDelightPayload);
-
-    if (!thanksNote && effects.length === 0) {
-      sessionStorage.removeItem(THANKS_STORAGE_KEY);
-      return;
-    }
 
     const stored: StoredThanksDelight = {
       ...(thanksNote ? { thanksNote } : {}),
@@ -278,6 +289,15 @@ export function persistThanksDelightOnSubmit(formElement: HTMLFormElement): void
     sessionStorage.setItem(THANKS_STORAGE_KEY, JSON.stringify(stored));
   } catch {
     // Ignore storage errors in private browsing
+  }
+}
+
+export function getStoredThanksState(): StoredThanksDelight | null {
+  try {
+    const raw = sessionStorage.getItem(THANKS_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as StoredThanksDelight) : null;
+  } catch {
+    return null;
   }
 }
 
@@ -385,7 +405,7 @@ export function initThanksDelights(workerUrl: string = DEFAULT_WORKER_URL): void
         if (response.ok) {
           const party = (await response.json()) as string[];
           const matchedGuest =
-            response.headers.get("X-Matched-Guest")?.trim() ||
+            decodeMatchedGuestHeader(response) ||
             `${guestQuery.first} ${guestQuery.last}`;
           const headerDelight = parseDelightHeader(response);
           const merged = mergeDelightPayloads(headerDelight, preview);

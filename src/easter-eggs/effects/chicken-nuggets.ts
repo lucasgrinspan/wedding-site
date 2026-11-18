@@ -1,15 +1,23 @@
 import type { EasterEggModule } from "../types";
 
 export const chickenNuggetsEffect: EasterEggModule = {
-  id: 'chicken_nuggets',
-  description: 'shows chicken nuggets as requested meal',
+  id: "chicken_nuggets",
+  description: "shows chicken nuggets as requested meal",
   trigger: {
-    effectIds: ['chicken_nuggets'],
-    pages: ['rsvp'],
+    effectIds: ["chicken_nuggets"],
+    pages: ["rsvp"],
   },
   mount(ctx) {
-    const foodTextArea = ctx.formElement?.querySelector('textarea#dietary');
+    const foodTextArea = ctx.formElement?.querySelector(
+      "textarea#dietary"
+    ) as HTMLTextAreaElement | null;
     if (!foodTextArea) return;
-    (foodTextArea as HTMLTextAreaElement).value = 'chicken nuggets only pls';
-  }
-}
+    const previousValue = foodTextArea.value;
+    foodTextArea.value = "chicken nuggets only pls";
+    return () => {
+      if (foodTextArea.value === "chicken nuggets only pls") {
+        foodTextArea.value = previousValue;
+      }
+    };
+  },
+};

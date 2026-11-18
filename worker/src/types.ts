@@ -26,18 +26,40 @@ export interface GuestDelightPayload {
 }
 
 export interface RsvpSubmissionPayload {
+  id?: string;
+  partyKey?: string;
   party: GuestResponse[];
   submittedBy?: string;
   dietary?: string;
   email?: string;
+  emailValid?: boolean;
   lang?: "en" | "es";
   personalNote?: string;
   submittedAt?: string;
   extras?: Record<string, string>;
+  isTest?: boolean;
+}
+
+export interface StoredRsvpRecord {
+  id: string;
+  partyKey: string;
+  revisionCount: number;
+  submission: RsvpSubmissionPayload;
+  isTest: boolean;
+  notificationSent: boolean;
+  notificationError?: string;
+  notificationAttempts: number;
+  confirmationSent?: boolean;
+  confirmationError?: string;
+  userAgent?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SubmitResult {
   success: boolean;
+  submissionId?: string;
+  persisted?: boolean;
   message: string;
   party: GuestResponse[];
   emailSent?: boolean;
@@ -49,6 +71,7 @@ export interface SubmitResult {
 export interface ResendEmailPayload {
   from: string;
   to: string[];
+  reply_to?: string | string[];
   subject: string;
   html: string;
   text: string;
@@ -56,11 +79,13 @@ export interface ResendEmailPayload {
 
 declare global {
   interface Env {
-    NOTIFICATION_EMAIL?: string;
+    ADMIN_API_TOKEN?: string;
+    RSVP_DB?: D1Database;
   }
   namespace Cloudflare {
     interface Env {
-      NOTIFICATION_EMAIL?: string;
+      ADMIN_API_TOKEN?: string;
+      RSVP_DB?: D1Database;
     }
   }
 }

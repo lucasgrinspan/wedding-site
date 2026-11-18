@@ -11,8 +11,8 @@ export type CountdownFunction = (
 export type CountdownVariant =
   CountdownFunction | { fn: CountdownFunction; intervalPeriod: number };
 
-// Ceremony time: February 20, 2027 at 5:00 PM EST (UTC-5)
-export const weddingDate = new Date("2027-02-20T17:00:00-05:00");
+// Ceremony time: February 20, 2027 at 5:30 PM EST (UTC-5)
+export const weddingDate = new Date("2027-02-20T17:30:00-05:00");
 
 let currentCountdownIndex = 0;
 let countdownIntervalId: number | undefined = undefined;

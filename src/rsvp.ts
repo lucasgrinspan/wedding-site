@@ -1,5 +1,6 @@
 import {
   applyRsvpDelights,
+  decodeMatchedGuestHeader,
   getGuestQueryFromUrl,
   initRsvpPreviewIfRequested,
   persistThanksDelightOnSubmit,
@@ -7,14 +8,28 @@ import {
 } from "./easter-eggs";
 import { dynamicCopy, getCurrentLocale } from "./i18n";
 
-// Configurable variables loaded from Vite environment variables (with fallbacks)
-const WORKER_URL = import.meta.env.VITE_RSVP_WORKER_URL || "https://wedding-rsvp-worker.lucasaffalter.workers.dev/";
+const WORKER_URL =
+  import.meta.env.VITE_RSVP_WORKER_URL ||
+  "https://wedding-rsvp-worker.lucasaffalter.workers.dev/";
+
+const STRICT_EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$/;
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   const locale = getCurrentLocale();
   const copy = dynamicCopy[locale].rsvp;
 
   const searchStep = document.getElementById("rsvp-search-step");
+  const searchForm = document.getElementById("rsvp-search-form") as HTMLFormElement | null;
   const rsvpForm = document.getElementById("rsvp-form") as HTMLFormElement | null;
   const firstNameInput = document.getElementById("first-name") as HTMLInputElement | null;
   const lastNameInput = document.getElementById("last-name") as HTMLInputElement | null;
@@ -27,6 +42,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const partyListHiddenInput = document.getElementById("rsvp-party-list") as HTMLInputElement | null;
   const submittedByHiddenInput = document.getElementById("rsvp-submitted-by") as HTMLInputElement | null;
   const emailInput = document.getElementById("email") as HTMLInputElement | null;
+  const dietaryInput = document.getElementById("dietary") as HTMLTextAreaElement | null;
+  const step2Heading = document.getElementById("rsvp-step2-heading") as HTMLElement | null;
+
+  let currentParty: string[] = [];
+  let currentSubmittedBy = "";
+
+  function resetInteractiveLocks(): void {
+    const findSpinner = btnFindInvitation?.querySelector(".spinner") as HTMLElement | null;
+    if (findSpinner) findSpinner.style.display = "none";
+    if (btnFindInvitation) btnFindInvitation.disabled = false;
+
+    const submitSpinner = btnSubmitRsvp?.querySelector(".spinner") as HTMLElement | null;
+    if (submitSpinner) submitSpinner.style.display = "none";
+    if (btnSubmitRsvp) btnSubmitRsvp.disabled = false;
+    if (btnBackSearch) btnBackSearch.disabled = false;
+  }
+
+  // Prevent frozen disabled buttons if user navigates back from thanks.html via bfcache
+  window.addEventListener("pageshow", () => {
+    resetInteractiveLocks();
+  });
 
   function normalizeName(name: string): string {
     return name
@@ -55,83 +91,194 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
+  if (emailInput) {
+    emailInput.addEventListener("input", () => {
+      emailInput.removeAttribute("aria-invalid");
+      if (submitError && submitError.textContent === copy.invalidEmail) {
+        submitError.style.display = "none";
+      }
+    });
+  }
+
   if (rsvpForm) {
     rsvpForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
+      if (submitError) submitError.style.display = "none";
+
+      // 1. Verify every party member has an explicit selection
+      const partyPayload: Array<{ name: string; status: string; attending: boolean }> = [];
+      for (let idx = 0; idx < currentParty.length; idx++) {
+        const selected = rsvpForm.querySelector(
+          `input[name="attending_${idx}"]:checked`
+        ) as HTMLInputElement | null;
+        if (!selected) {
+          showSubmitError(copy.missingAttendance);
+          const firstRadio = rsvpForm.querySelector(
+            `input[name="attending_${idx}"]`
+          ) as HTMLInputElement | null;
+          firstRadio?.focus();
+          return;
+        }
+        const isAccepting = !selected.value.toLowerCase().includes("decline");
+        partyPayload.push({
+          name: currentParty[idx],
+          status: isAccepting ? "Joyfully Accept" : "Regretfully Decline",
+          attending: isAccepting,
+        });
+      }
+
+      // 2. Validate optional email format (catches missing TLD like "name@gmail")
+      const cleanEmail = emailInput?.value.trim() || "";
       if (emailInput) {
-        emailInput.value = emailInput.value.trim();
+        emailInput.value = cleanEmail;
+      }
+      if (cleanEmail && !STRICT_EMAIL_REGEX.test(cleanEmail)) {
+        emailInput?.setAttribute("aria-invalid", "true");
+        showSubmitError(copy.invalidEmail);
+        emailInput?.focus();
+        return;
+      }
+
+      // 3. Collect any extra easter-egg fields injected into #rsvp-form
+      const KNOWN_FORM_KEYS = new Set([
+        "_next",
+        "lang",
+        "party_members",
+        "submitted_by",
+        "email",
+        "message",
+        "dietary",
+      ]);
+      const formData = new FormData(rsvpForm);
+      const extras: Record<string, string> = {};
+      for (const [key, val] of formData.entries()) {
+        if (
+          KNOWN_FORM_KEYS.has(key) ||
+          key.startsWith("attending_") ||
+          key.startsWith("guest_name_")
+        ) {
+          continue;
+        }
+        if (typeof val === "string" && val.trim()) {
+          extras[key] = val.trim();
+        }
       }
 
       const spinner = btnSubmitRsvp?.querySelector(".spinner") as HTMLElement | null;
       if (spinner) spinner.style.display = "inline-block";
       if (btnSubmitRsvp) btnSubmitRsvp.disabled = true;
       if (btnBackSearch) btnBackSearch.disabled = true;
-      if (submitError) submitError.style.display = "none";
 
       try {
-        const formData = new FormData(rsvpForm);
-        const submitEndpoint = WORKER_URL.endsWith("/") ? `${WORKER_URL}submit` : `${WORKER_URL}/submit`;
+        const submitEndpoint = WORKER_URL.endsWith("/")
+          ? `${WORKER_URL}submit`
+          : `${WORKER_URL}/submit`;
+
+        const payload = {
+          party: partyPayload,
+          submittedBy: currentSubmittedBy || undefined,
+          email: cleanEmail || undefined,
+          dietary: dietaryInput?.value.trim() || undefined,
+          lang: locale,
+          ...(Object.keys(extras).length > 0 ? { extras } : {}),
+        };
+
         const response = await fetch(submitEndpoint, {
           method: "POST",
-          body: formData,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+          signal: AbortSignal.timeout(15000),
         });
 
-        if (response.ok) {
-          persistThanksDelightOnSubmit(rsvpForm);
-          const nextInput = rsvpForm.querySelector('input[name="_next"]') as HTMLInputElement | null;
-          const nextUrl = nextInput?.value || (locale === "es" ? "/es/thanks.html" : "/thanks.html");
+        let resultData: { success?: boolean; error?: string } | null = null;
+        try {
+          resultData = (await response.json()) as { success?: boolean; error?: string };
+        } catch {
+          resultData = null;
+        }
+
+        if (response.ok && resultData?.success !== false) {
+          const anyAttending = partyPayload.some((p) => p.attending);
+          persistThanksDelightOnSubmit(rsvpForm, anyAttending);
+          const nextUrl = locale === "es" ? "/es/thanks.html" : "/thanks.html";
           window.location.href = nextUrl;
           return;
         } else {
           showSubmitError(copy.serverError);
         }
-      } catch (err) {
+      } catch {
         showSubmitError(copy.networkError);
       }
 
-      if (spinner) spinner.style.display = "none";
-      if (btnSubmitRsvp) btnSubmitRsvp.disabled = false;
-      if (btnBackSearch) btnBackSearch.disabled = false;
+      resetInteractiveLocks();
     });
   }
 
-  if (btnFindInvitation && firstNameInput && lastNameInput) {
-    btnFindInvitation.addEventListener("click", async () => {
-      const first = firstNameInput.value.trim();
-      const last = lastNameInput.value.trim();
+  async function runInvitationLookup(): Promise<void> {
+    if (!firstNameInput || !lastNameInput || !btnFindInvitation) return;
 
-      if (!first || !last) {
-        showError(copy.missingFields);
-        return;
+    let first = firstNameInput.value.trim();
+    let last = lastNameInput.value.trim();
+
+    // Handle mobile autofill putting full name ("First Last") into first-name input
+    if (first && !last) {
+      const parts = first.split(/\s+/).filter(Boolean);
+      if (parts.length >= 2) {
+        first = parts[0];
+        last = parts.slice(1).join(" ");
+        firstNameInput.value = first;
+        lastNameInput.value = last;
       }
+    }
 
-      // Show loading spinner
-      const spinner = btnFindInvitation.querySelector(".spinner") as HTMLElement | null;
-      if (spinner) spinner.style.display = "inline-block";
-      btnFindInvitation.disabled = true;
-      if (searchError) searchError.style.display = "none";
+    if (!first || !last) {
+      showError(copy.missingFields);
+      if (!first) firstNameInput.focus();
+      else lastNameInput.focus();
+      return;
+    }
 
-      try {
-        const response = await fetch(`${WORKER_URL}?first=${encodeURIComponent(first)}&last=${encodeURIComponent(last)}`);
-        
-        if (response.ok) {
-          const party = await response.json();
-          const headerMatchedGuest = response.headers.get("X-Matched-Guest")?.trim();
-          const submittedBy = headerMatchedGuest || resolveSubmittedBy(first, last, party);
-          setupRsvpForm(party, submittedBy, response);
-        } else if (response.status === 404) {
-          showError(copy.notFound);
-        } else {
-          showError(copy.serverError);
-        }
-      } catch (error) {
-        showError(copy.networkError);
-      } finally {
-        // Hide loading spinner
-        if (spinner) spinner.style.display = "none";
-        btnFindInvitation.disabled = false;
+    const spinner = btnFindInvitation.querySelector(".spinner") as HTMLElement | null;
+    if (spinner) spinner.style.display = "inline-block";
+    btnFindInvitation.disabled = true;
+    if (searchError) searchError.style.display = "none";
+
+    try {
+      const lookupBase = WORKER_URL.endsWith("/") ? WORKER_URL : `${WORKER_URL}/`;
+      const response = await fetch(
+        `${lookupBase}?first=${encodeURIComponent(first)}&last=${encodeURIComponent(last)}`,
+        { signal: AbortSignal.timeout(15000) }
+      );
+
+      if (response.ok) {
+        const party = (await response.json()) as string[];
+        const headerMatchedGuest = decodeMatchedGuestHeader(response);
+        const submittedBy = headerMatchedGuest || resolveSubmittedBy(first, last, party);
+        setupRsvpForm(party, submittedBy, response);
+      } else if (response.status === 404) {
+        showError(copy.notFound);
+      } else {
+        showError(copy.serverError);
       }
+    } catch {
+      showError(copy.networkError);
+    } finally {
+      if (spinner) spinner.style.display = "none";
+      btnFindInvitation.disabled = false;
+    }
+  }
+
+  if (searchForm) {
+    searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      void runInvitationLookup();
+    });
+  } else if (btnFindInvitation) {
+    btnFindInvitation.addEventListener("click", () => {
+      void runInvitationLookup();
     });
   }
 
@@ -139,8 +286,12 @@ document.addEventListener("DOMContentLoaded", () => {
     btnBackSearch.addEventListener("click", () => {
       if (submitError) submitError.style.display = "none";
       resetRsvpDelights();
+      rsvpForm.reset();
+      currentParty = [];
+      currentSubmittedBy = "";
       rsvpForm.style.display = "none";
       searchStep.style.display = "block";
+      firstNameInput?.focus();
     });
   }
 
@@ -161,10 +312,16 @@ document.addEventListener("DOMContentLoaded", () => {
   function setupRsvpForm(party: string[], submittedBy: string, response?: Response) {
     if (!guestRowsContainer || !partyListHiddenInput || !searchStep || !rsvpForm) return;
 
-    // Clear old rows
+    // Clean up any previous party's state, notes, or input values before populating
+    resetRsvpDelights();
+    rsvpForm.reset();
+    emailInput?.removeAttribute("aria-invalid");
+    if (submitError) submitError.style.display = "none";
+
+    currentParty = [...party];
+    currentSubmittedBy = submittedBy;
+
     guestRowsContainer.innerHTML = "";
-    
-    // Populate hidden list of members and who searched/submitted
     partyListHiddenInput.value = party.join(", ");
     if (submittedByHiddenInput) {
       submittedByHiddenInput.value = submittedBy;
@@ -174,32 +331,41 @@ document.addEventListener("DOMContentLoaded", () => {
       langHiddenInput.value = locale;
     }
 
-    // Inject row for each party member
-    party.forEach(guest => {
-      const sanitizedGuestName = guest.replace(/[^a-zA-Z0-9]/g, "_");
+    party.forEach((guest, idx) => {
+      const safeName = escapeHtml(guest);
       const rowHtml = `
-        <div class="guest-rsvp-row">
-          <span class="guest-name-label">${guest}</span>
+        <fieldset class="guest-rsvp-row">
+          <legend class="guest-name-label">${safeName}</legend>
+          <input type="hidden" name="guest_name_${idx}" value="${safeName}">
           <div class="guest-options-group">
             <label class="radio-option">
-              <input type="radio" name="attending_${sanitizedGuestName}" value="Joyfully Accept" required checked>
-              <span>${copy.acceptLabel}</span>
+              <input type="radio" name="attending_${idx}" value="Joyfully Accept" required>
+              <span>${escapeHtml(copy.acceptLabel)}</span>
             </label>
             <label class="radio-option">
-              <input type="radio" name="attending_${sanitizedGuestName}" value="Regretfully Decline">
-              <span>${copy.declineLabel}</span>
+              <input type="radio" name="attending_${idx}" value="Regretfully Decline">
+              <span>${escapeHtml(copy.declineLabel)}</span>
             </label>
           </div>
-        </div>
+        </fieldset>
       `;
       guestRowsContainer.insertAdjacentHTML("beforeend", rowHtml);
     });
 
-    // Switch views
+    guestRowsContainer.addEventListener(
+      "change",
+      () => {
+        if (submitError && submitError.textContent === copy.missingAttendance) {
+          submitError.style.display = "none";
+        }
+      },
+      { once: false }
+    );
+
     searchStep.style.display = "none";
     rsvpForm.style.display = "block";
+    step2Heading?.focus();
 
-    // Apply any guest/party custom note or interactive easter egg
     applyRsvpDelights({
       response,
       party,
@@ -210,10 +376,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const guestQuery = getGuestQueryFromUrl();
-  if (guestQuery && firstNameInput && lastNameInput && btnFindInvitation) {
+  if (guestQuery && firstNameInput && lastNameInput) {
     firstNameInput.value = guestQuery.first;
     lastNameInput.value = guestQuery.last;
-    btnFindInvitation.click();
+    void runInvitationLookup();
   } else {
     initRsvpPreviewIfRequested({
       locale,
@@ -221,4 +387,3 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
-

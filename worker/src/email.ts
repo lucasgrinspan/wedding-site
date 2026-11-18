@@ -26,16 +26,22 @@ const EMAIL_COPY = {
     weddingHeading: "Lucas &amp; Lianne's Wedding",
     weddingHeadingPlain: "LUCAS & LIANNE'S WEDDING",
     dateText: "Saturday, February 20, 2027",
-    timeText: "At Five O'Clock in the Evening",
-    detailsUrl: "https://lucasandlianne.com/details.html",
+    timeText: "Ceremony begins at 5:30 PM",
+    scheduleLabel: "Timeline",
+    scheduleItems: [
+      { time: "5:30 PM", event: "Ceremony" },
+      { time: "6:00 PM", event: "Cocktail Hour" },
+      { time: "7:15 PM", event: "Dinner" },
+    ],
+    detailsUrl: "https://lucasandlianne.com/#details",
     viewDetailsBtn: "View Wedding Details",
     signature: "Love, Lianne &amp; Lucas 🥭",
     signaturePlain: "With love,\nLianne & Lucas 🥭",
     rsvpUrl: "https://lucasandlianne.com/rsvp.html",
     rsvpLinkText: "RSVP page",
-    changesPrefix: "Need to update anyone in your party's response or make a change later? Simply revisit our",
-    changesSuffix: "at any time to submit an updated response.",
-    changesPlain: "Need to update anyone in your party's response or make a change later? Simply revisit our RSVP page at https://lucasandlianne.com/rsvp.html at any time to submit an updated response.",
+    changesPrefix: "Need to update anyone in your party's response or make a change? Simply revisit our",
+    changesSuffix: "by December 31, 2026 to submit an updated response.",
+    changesPlain: "Need to update anyone in your party's response or make a change? Simply revisit our RSVP page at https://lucasandlianne.com/rsvp.html by December 31, 2026 to submit an updated response.",
   },
   es: {
     subject: "Confirmación de Asistencia — Casamiento de Lucas & Lianne",
@@ -52,16 +58,22 @@ const EMAIL_COPY = {
     weddingHeading: "Casamiento de Lucas &amp; Lianne",
     weddingHeadingPlain: "CASAMIENTO DE LUCAS & LIANNE",
     dateText: "Sábado 20 de febrero de 2027",
-    timeText: "A las cinco de la tarde",
-    detailsUrl: "https://lucasandlianne.com/es/details.html",
+    timeText: "Ceremonia a las 5:30 PM",
+    scheduleLabel: "Cronograma",
+    scheduleItems: [
+      { time: "5:30 PM", event: "Ceremonia" },
+      { time: "6:00 PM", event: "Cóctel" },
+      { time: "7:15 PM", event: "Cena" },
+    ],
+    detailsUrl: "https://lucasandlianne.com/es/#details",
     viewDetailsBtn: "Ver Detalles del Casamiento",
     signature: "Con amor, Lianne &amp; Lucas 🥭",
     signaturePlain: "Con amor,\nLianne & Lucas 🥭",
     rsvpUrl: "https://lucasandlianne.com/es/rsvp.html",
     rsvpLinkText: "página de confirmación",
-    changesPrefix: "¿Necesitás actualizar la respuesta de alguien de tu grupo o hacer algún cambio más adelante? Podés volver a visitar nuestra",
-    changesSuffix: "en cualquier momento para enviar una respuesta actualizada.",
-    changesPlain: "¿Necesitás actualizar la respuesta de alguien de tu grupo o hacer algún cambio más adelante? Podés volver a visitar nuestra página de confirmación en https://lucasandlianne.com/es/rsvp.html en cualquier momento para enviar una respuesta actualizada.",
+    changesPrefix: "¿Necesitás actualizar la respuesta de alguien de tu grupo o hacer algún cambio? Podés volver a visitar nuestra",
+    changesSuffix: "hasta el 31 de diciembre de 2026 para enviar una respuesta actualizada.",
+    changesPlain: "¿Necesitás actualizar la respuesta de alguien de tu grupo o hacer algún cambio? Podés volver a visitar nuestra página de confirmación en https://lucasandlianne.com/es/rsvp.html hasta el 31 de diciembre de 2026 para enviar una respuesta actualizada.",
   },
 } as const;
 
@@ -108,6 +120,17 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
       </div>
     `
     : "";
+
+  const scheduleRowsHtml = copy.scheduleItems
+    .map(
+      (item) => `
+        <td align="center" width="33%" style="padding: 8px 6px; vertical-align: top;">
+          <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 15px; font-weight: 600; color: #8B5A2B; margin-bottom: 2px;">${item.time}</span>
+          <span style="display: block; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; color: #2C3531;">${item.event}</span>
+        </td>
+      `
+    )
+    .join("");
 
   const dietaryHtml = submission.dietary && submission.dietary.trim().length > 0
     ? `
@@ -191,6 +214,15 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
                         </tr>
                       </table>
 
+                      <div style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed rgba(46, 74, 61, 0.18);">
+                        <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #8B5A2B; margin-bottom: 6px; font-weight: 600;">${copy.scheduleLabel}</span>
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                          <tr>
+                            ${scheduleRowsHtml}
+                          </tr>
+                        </table>
+                      </div>
+
                       <div style="margin-top: 24px;">
                         <a href="${copy.detailsUrl}" target="_blank" style="display: inline-block; background-color: #2E4A3D; color: #FFFFFF; text-decoration: none; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 13px; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase; padding: 12px 28px; border-radius: 2px;">
                           ${copy.viewDetailsBtn}
@@ -239,6 +271,14 @@ export function buildConfirmationEmailText(submission: RsvpSubmissionPayload): s
     ? `\n${copy.dietaryLabel.toUpperCase()}:\n${submission.dietary.trim()}\n`
     : "";
 
+  const scheduleText = copy.scheduleItems
+    .map((item) => `  - ${item.time}: ${item.event}`)
+    .join("\n");
+
+  const dateFieldLabel = locale === "es" ? "Fecha" : "Date";
+  const locationFieldLabel = locale === "es" ? "Lugar" : "Location";
+  const detailsFieldLabel = locale === "es" ? "Detalles" : "Wedding Details";
+
   return `${copy.headerSubtitle.toUpperCase()} — ${copy.weddingHeadingPlain}
 ==================================================
 
@@ -248,9 +288,11 @@ ${copy.partyResponseLabel.toUpperCase()}:
 ${partyLines}
 ${dietarySection}
 ${copy.celebrationDetailsLabel.toUpperCase()}:
-• Date: ${copy.dateText} (${copy.timeText})
-• Location: Deering Estate (16701 SW 72nd Ave, Miami, FL 33157)
-• Wedding Details: ${copy.detailsUrl}
+• ${dateFieldLabel}: ${copy.dateText} (${copy.timeText})
+• ${locationFieldLabel}: Deering Estate (16701 SW 72nd Ave, Miami, FL 33157)
+• ${copy.scheduleLabel}:
+${scheduleText}
+• ${detailsFieldLabel}: ${copy.detailsUrl}
 
 ${copy.signaturePlain}
 
@@ -259,7 +301,11 @@ ${copy.changesPlain}
 }
 
 export function getHostNotificationEmailSubject(submission: RsvpSubmissionPayload): string {
-  const guestNames = submission.party.map((g) => g.name).join(", ") || "Guest";
+  const guestNames =
+    submission.party
+      .map((g) => g.name.replace(/[\r\n]+/g, " ").trim())
+      .filter(Boolean)
+      .join(", ") || "Guest";
   const totalCount = submission.party.length;
   const acceptingCount = submission.party.filter((g) => g.attending).length;
 
@@ -329,9 +375,16 @@ export function buildHostNotificationEmailHtml(submission: RsvpSubmissionPayload
       ? `<strong style="color: #2E4A3D;">${escapeHtml(submission.submittedBy.trim())}</strong>`
       : `<span style="color: #7A8680; font-style: italic;">Not provided</span>`;
 
+  const guestEmailNote =
+    submission.email && submission.email.trim().length > 0 && submission.emailValid === false
+      ? ` <span style="color: #8B2635; font-size: 12px;">(invalid format — confirmation skipped)</span>`
+      : "";
+
   const guestEmailHtml =
     submission.email && submission.email.trim().length > 0
-      ? `<a href="mailto:${escapeHtml(submission.email.trim())}" style="color: #2E4A3D; text-decoration: underline;">${escapeHtml(submission.email.trim())}</a>`
+      ? submission.emailValid === false
+        ? `<span>${escapeHtml(submission.email.trim())}</span>${guestEmailNote}`
+        : `<a href="mailto:${escapeHtml(submission.email.trim())}" style="color: #2E4A3D; text-decoration: underline;">${escapeHtml(submission.email.trim())}</a>`
       : `<span style="color: #7A8680; font-style: italic;">Not provided</span>`;
 
   const localeLabel = submission.lang === "es" ? "Español" : "English";

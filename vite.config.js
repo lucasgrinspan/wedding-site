@@ -15,7 +15,8 @@ const autoRedirectHeadScript = `${AUTO_REDIRECT_MARKER_START}
         var params = new URLSearchParams(location.search);
         var qLang = (params.get('locale') || params.get('lang') || '').toLowerCase();
         if (qLang === 'en') return;
-        var saved = localStorage.getItem('lang');
+        var saved = null;
+        try { saved = localStorage.getItem('lang'); } catch (e) {}
         if (qLang !== 'es' && saved === 'en') return;
         if (qLang === 'es' || saved === 'es' || /^es\\b/i.test(navigator.language || '')) {
           var p = location.pathname;
@@ -32,23 +33,24 @@ function buildLangSwitcher(fileName, locale) {
   const enHref = fileName === 'index.html' ? '/' : `/${fileName}`
   const esHref = fileName === 'index.html' ? '/es/' : `/es/${fileName}`
   const isEs = locale === 'es'
+  const navLabel = isEs ? 'Selector de idioma' : 'Language selector'
 
   if (fileName === 'journey.html') {
     return `${LANG_SWITCHER_MARKER_START}
-  <div class="lang-switcher" role="navigation" aria-label="${isEs ? 'Selector de idioma' : 'Language selector'}">
-    <a href="${enHref}" class="${!isEs ? 'active' : ''}" onclick="try{localStorage.setItem('lang','en')}catch(e){}">EN</a>
+  <div class="lang-switcher" role="navigation" aria-label="${navLabel}">
+    <a href="${enHref}" class="${!isEs ? 'active' : ''}" onclick="try{localStorage.setItem('lang','en')}catch(e){}this.href='${enHref}'+location.search+location.hash;">EN</a>
     <span class="lang-sep">|</span>
-    <a href="${esHref}" class="${isEs ? 'active' : ''}" onclick="try{localStorage.setItem('lang','es')}catch(e){}">ES</a>
+    <a href="${esHref}" class="${isEs ? 'active' : ''}" onclick="try{localStorage.setItem('lang','es')}catch(e){}this.href='${esHref}'+location.search+location.hash;">ES</a>
   </div>
 ${LANG_SWITCHER_MARKER_END}`
   }
 
   return `${LANG_SWITCHER_MARKER_START}
-  <div class="footer-lang-switcher" role="navigation" aria-label="${isEs ? 'Language selector' : 'Selector de idioma'}">
+  <div class="footer-lang-switcher" role="navigation" aria-label="${navLabel}">
     ${
       isEs
-        ? `<a href="${enHref}" onclick="try{localStorage.setItem('lang','en')}catch(e){}">Prefer English? <span>View in English</span></a>`
-        : `<a href="${esHref}" onclick="try{localStorage.setItem('lang','es')}catch(e){}">¿Hablás español? <span>Ver en español</span></a>`
+        ? `<a href="${enHref}" onclick="try{localStorage.setItem('lang','en')}catch(e){}this.href='${enHref}'+location.search+location.hash;">Prefer English? <span>View in English</span></a>`
+        : `<a href="${esHref}" onclick="try{localStorage.setItem('lang','es')}catch(e){}this.href='${esHref}'+location.search+location.hash;">¿Hablás español? <span>Ver en español</span></a>`
     }
   </div>
 ${LANG_SWITCHER_MARKER_END}`
