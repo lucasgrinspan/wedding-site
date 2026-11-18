@@ -1,21 +1,28 @@
 :root {
     --primary-color: #2e4a3d;
-    /* Forest Green */
+    --primary-dark: #1a2e24;
     --secondary-color: #8b5a2b;
-    /* Earthy Brown */
-    --accent-color: #8b2635;
-    /* Berry Red */
     --text-color: #2c3531;
-    /* Soft Dark Slate */
+    --muted: #4a5650;
+    --error: #8b2635;
     --bg-color: #ecebe9;
-    /* Soft Warm Gray / Off-white from Mockup */
+    --paper: #f4f3f0;
+    --on-dark: #f6f5f3;
+    --line: rgba(46, 74, 61, 0.18);
     --input-border-color: #5e6e66;
-    /* >= 4.8:1 non-text contrast against #ffffff and #f4f3f0 */
     --target-size: 24px;
-    --font-heading: "Playfair Display", serif;
-    --font-editorial: "Cormorant Garamond", serif;
-    /* Luxurious Serif for Names */
+
+    --font-display: "Cormorant Garamond", serif;
     --font-body: "Lato", sans-serif;
+
+    /* Cormorant runs small, so display sizes sit a step above body */
+    --step--1: 0.875rem;
+    --step-0: 1rem;
+    --step-1: 1.25rem;
+    --step-2: 1.6rem;
+    --step-3: clamp(2rem, 5vw, 2.9rem);
+    --step-4: clamp(2.3rem, 6vw, 3.4rem);
+    --caps: 0.12em;
 }
 
 @media (pointer: coarse) {
@@ -36,14 +43,16 @@ body {
     color: var(--text-color);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 h1,
 h2,
 h3 {
-    font-family: var(--font-heading);
+    font-family: var(--font-display);
+    font-weight: 500;
     color: var(--primary-color);
+    line-height: 1.2;
+    text-wrap: balance;
 }
 
 a {
@@ -55,567 +64,23 @@ a:hover {
     color: var(--primary-color);
 }
 
-/* Navigation Header Styles */
-header {
-    background-color: rgba(236, 235, 233, 0.95);
-    /* Translucent off-white matching --bg-color */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 1.2rem 3rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow:
-        0 1px 0 rgba(46, 74, 61, 0.05),
-        0 2px 10px rgba(0, 0, 0, 0.02);
-    z-index: 1000;
-    position: fixed;
-    height: 80px;
-    width: 100%;
-    top: 0;
-    box-sizing: border-box;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.site-header-home {
-    background-color: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
-    position: absolute;
-    /* Overlay layout on homepage hero */
-}
-
-header:not(.site-header-home) {
-    border-bottom: 1px solid rgba(46, 74, 61, 0.08);
-}
-
-header.centered-header {
-    justify-content: center;
-}
-
-.logo-container {
-    display: flex;
-    align-items: center;
-}
-
-.logo {
-    font-family: var(--font-editorial);
-    font-size: 1.55rem;
-    font-weight: 500;
-    color: var(--primary-color);
-    letter-spacing: 3px;
-    text-decoration: none;
-    text-transform: uppercase;
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 28px;
-    margin: 0;
-    padding: 0;
-}
-
-nav a {
-    text-decoration: none;
-    color: var(--text-color);
-    font-weight: 700;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    padding: 6px 0;
-    border-bottom: 2px solid transparent;
-    opacity: 0.85;
-}
-
-nav a:hover,
-nav a.active {
-    color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
-    opacity: 1;
-}
-
-/* Editorial Typography & Ornament Styles (Used in Hero Content) */
-.garland-placeholder {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 2.2rem;
-    --image-width: 200px;
-    gap: calc(var(--image-width) / 2);
-}
-
-.leafy-illustration {
-    width: var(--image-width);
-    height: auto;
-    opacity: 0.95;
-    mix-blend-mode: multiply;
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.leafy-flipped {
-    transform: scaleX(-1);
-}
-
-.mobile-top-bar {
-    display: none;
-}
-
-.wedding-names {
-    font-family: var(--font-editorial);
-    font-size: 3.4rem;
-    font-weight: 500;
-    color: var(--primary-color);
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    margin-bottom: 1.2rem;
-    line-height: 1.2;
-}
-
-.wedding-meta {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.wedding-date-location {
-    font-family: var(--font-editorial);
-    font-size: 1.15rem;
-    font-weight: 500;
-    color: #4a5650;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-
-.wedding-countdown {
-    font-family: var(--font-editorial);
-    font-size: 1.05rem;
-    font-weight: 600;
-    color: #7a8b82;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-
-/* Unified Hero Section */
-.hero-section {
-    position: relative;
-    width: 100%;
-    height: 92vh;
-    min-height: 650px;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
-}
-
-.hero-image-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    overflow: hidden;
-}
-
-.hero-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.hero-gradient-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2;
-    /* Positioned above background image, below text elements */
-    pointer-events: none;
-}
-
-.hero-layout-container {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-    max-width: 1500px;
-    margin: 0 auto;
-    height: 100%;
-    pointer-events: none;
-    display: flex;
-    align-items: center;
-}
-
-.hero-content-wrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    pointer-events: none;
-    box-sizing: border-box;
-}
-
-.hero-content {
-    pointer-events: auto;
-    animation: slideUpFade 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* High Contrast Light Typography inside Hero Content (Meets & Exceeds WCAG AAA Contrast against Dark Green) */
-.hero-content .wedding-names {
-    color: #f6f5f3;
-    /* Warm off-white - 7.9:1 Contrast Ratio (AAA Compliant) */
-}
-
-.hero-content .wedding-date-location {
-    color: #ecebe9;
-    /* Soft sand white - 7.9:1 Contrast Ratio (AAA Compliant) */
-    opacity: 0.95;
-}
-
-.hero-content .wedding-countdown {
-    color: #c7d5cf;
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-    font-variant-numeric: tabular-nums;
-    -webkit-font-feature-settings: "tnum";
-    font-feature-settings: "tnum";
-}
-
-.hero-content .hero-cta-container {
-    margin-top: 1.8rem;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-}
-
-.hero-content .btn-hero {
-    font-size: 0.95rem;
-    padding: 14px 38px;
-    background-color: #ecebe9;
-    /* High-contrast light button */
-    color: var(--primary-color);
-    border: 1px solid #ecebe9;
-    font-weight: 700;
-}
-
-.hero-content .btn-hero:hover {
-    background-color: transparent;
-    color: #ecebe9;
-    border-color: #ecebe9;
-}
-
-.hero-content .btn-hero.btn-hero-secondary {
-    background-color: transparent;
-    color: #ecebe9;
-    border: 1px solid rgba(236, 235, 233, 0.75);
-}
-
-.hero-content .btn-hero.btn-hero-secondary:hover {
-    background-color: rgba(236, 235, 233, 0.15);
-    color: #ffffff;
-    border-color: #ffffff;
-}
-
-.hero-rsvp-deadline {
-    margin-top: 0.85rem;
-    font-family: var(--font-editorial);
-    font-size: 1.05rem;
-    font-style: italic;
-    color: #d9e3de;
-    letter-spacing: 0.5px;
-}
-
-/* Desktop-specific alignment (Couple centered in left half of capped grid, Text centered in right half) */
-@media (min-width: 768px) {
-    .hero-image {
-        width: 130vw;
-        left: -14.3vw;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .hero-gradient-overlay {
-        background: linear-gradient(
-            to left,
-            rgba(0, 0, 0, 0.85) 0%,
-            rgba(0, 0, 0, 0.5) 35%,
-            rgba(0, 0, 0, 0) 70%
-        );
-    }
-
-    .hero-content-wrapper {
-        display: flex;
-        justify-content: flex-end;
-        /* Align content to the right half of the 1500px container */
-        padding-right: 5%;
-    }
-
-    .hero-content {
-        width: 50%;
-        max-width: 500px;
-        padding: 4.5rem 3.5rem;
-        background-color: transparent;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        border: none;
-        box-shadow: none;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-}
-
-/* For ultra-wide monitors (>= 1500px): cap spacing to 750px max by holding focal positioning */
-@media (min-width: 1500px) {
-    .hero-image {
-        left: calc(11vw - 375px);
-        /* Perfectly freezes focal coordinate at exactly (W/2 - 375px) */
-    }
-}
-
-/* Mobile-specific adaptation (Standard layout: stacked, text centered first, then padded centered image) */
-@media (max-width: 767px) {
-    header {
-        height: 70px;
-        padding: 0.8rem 1.5rem;
-        position: absolute;
-        background: transparent;
-        box-shadow: none;
-        border-bottom: none !important;
-    }
-
-    nav {
-        display: none;
-    }
-
-    .hero-section {
-        display: flex;
-        flex-direction: column;
-        height: auto;
-        min-height: auto;
-        background-color: transparent;
-        padding: 0;
-        gap: 0;
-    }
-
-    .mobile-top-bar {
-        display: block;
-        width: 100%;
-        background-color: var(--bg-color);
-        padding: 1.2rem 1.5rem;
-        text-align: center;
-        border-bottom: 1px solid rgba(46, 74, 61, 0.08);
-        order: 0;
-        box-sizing: border-box;
-    }
-
-    .mobile-top-bar .wedding-names {
-        margin: 0;
-        color: var(--primary-color);
-        font-size: clamp(1.7rem, 7.8vw, 2.35rem);
-        /* Large and beautiful, scaled dynamically to fit in a single line */
-        letter-spacing: 3px;
-        white-space: nowrap;
-        text-transform: uppercase;
-        font-family: var(--font-editorial);
-        font-weight: 500;
-        line-height: 1.2;
-    }
-
-    .hero-gradient-overlay {
-        display: none;
-        /* Hide overlay on mobile */
-    }
-
-    .hero-layout-container {
-        order: 2;
-        /* Text second */
-        width: 100%;
-        height: auto;
-        margin: 2rem 0 0 0;
-        /* Add margin spacing now that section gap is 0 */
-        pointer-events: auto;
-        display: block;
-    }
-
-    .hero-content-wrapper {
-        width: 100%;
-        height: auto;
-        display: block;
-        padding: 0;
-    }
-
-    .hero-content {
-        width: 100%;
-        max-width: 100%;
-        padding: 0 1.5rem;
-        /* Add side padding so text doesn't touch screen edges */
-        background: transparent;
-        backdrop-filter: none;
-        -webkit-backdrop-filter: none;
-        border: none;
-        box-shadow: none;
-        text-align: center;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    /* Reset typography colors back to dark primary colors since background is light off-white */
-    .hero-content .wedding-names {
-        display: none;
-        /* Hide the nested header on mobile since we use mobile-top-bar */
-    }
-
-    .hero-content .wedding-date-location {
-        color: #4a5650;
-        opacity: 1;
-        font-size: 1.35rem;
-        letter-spacing: 2px;
-        margin-bottom: 0;
-    }
-
-    .hero-content .wedding-countdown {
-        color: #7a8b82;
-        font-size: 1.2rem;
-        letter-spacing: 2px;
-    }
-
-    .hero-content .hero-cta-container {
-        display: flex;
-        margin-top: 1.4rem;
-    }
-
-    .hero-content .btn-hero {
-        background-color: var(--primary-color);
-        color: #f6f5f3;
-        border-color: var(--primary-color);
-    }
-
-    .hero-content .btn-hero:hover {
-        background-color: #1a2e24;
-        color: #ffffff;
-        border-color: #1a2e24;
-    }
-
-    .hero-content .btn-hero-secondary {
-        display: none;
-        /* Details section sits immediately below on mobile */
-    }
-
-    .hero-rsvp-deadline {
-        color: #4a5650;
-        font-size: 1.1rem;
-        margin-top: 0.65rem;
-    }
-
-    .hero-image-container {
-        order: 1;
-        /* Image first */
-        position: relative;
-        width: 100%;
-        height: auto;
-        z-index: 1;
-        overflow: hidden;
-        border-radius: 0;
-        box-shadow: none;
-        /* No frame shadow needed for edge-to-edge layout */
-    }
-
-    .hero-picture,
-    .hero-image {
-        position: relative;
-        width: 100%;
-        height: auto;
-        max-height: 85vh;
-        display: block;
-        object-fit: contain;
-        /* Respect native aspect ratio of portrait image */
-    }
-}
-
-/* Animations */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideUpFade {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.btn {
-    padding: 12px 30px;
-    background-color: var(--secondary-color);
-    color: white;
-    border-radius: 4px;
-    font-size: 1.05rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    display: inline-block;
-}
-
-.btn:hover {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.btn-dark-green {
-    background-color: var(--primary-color);
-}
-
-.btn-dark-green:hover {
-    background-color: #1a2e24;
-}
-
-.btn-outline {
-    background-color: transparent;
-    border: 1px solid var(--input-border-color);
-    color: var(--primary-color);
-    cursor: pointer;
-}
-
-.btn-outline:hover {
-    background-color: rgba(46, 74, 61, 0.08);
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-}
-
-:where(a:any-link, button, summary):focus-visible {
+:where(a:any-link, button, summary, input:not([type="radio"]), select, textarea):focus-visible {
     outline: 2px solid var(--primary-color);
     outline-offset: 2px;
 }
 
-@media (min-width: 768px) {
-    html:has(> body > header:not(.site-header-home)) {
-        scroll-padding-top: 5.5rem;
-    }
+/* Small uppercase labels: the only place caps are used outside the names */
+.editorial-subtitle,
+nav a,
+.btn,
+.editorial-inline-cta,
+.celebration-directions-link,
+.delight-note-eyebrow {
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: var(--caps);
+    text-transform: uppercase;
 }
 
 .visually-hidden:where(:not(:focus-within, :active)) {
@@ -624,31 +89,396 @@ nav a.active {
     overflow: hidden !important;
     width: 1px !important;
     height: 1px !important;
-    margin: -1px !important;
-    padding: 0 !important;
-    border: 0 !important;
     white-space: nowrap !important;
 }
 
-/* Container */
+/* Header */
+header {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    height: 80px;
+    padding: 0 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(236, 235, 233, 0.95);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+}
+
+header.centered-header {
+    justify-content: center;
+}
+
+.logo {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 28px;
+}
+
+nav a {
+    color: var(--text-color);
+    padding: 6px 0;
+    border-bottom: 2px solid transparent;
+}
+
+nav a:hover,
+nav a.active {
+    color: var(--primary-color);
+    border-bottom-color: currentColor;
+}
+
+@media (min-width: 768px) {
+    html:has(> body > header) {
+        scroll-padding-top: 5.5rem;
+    }
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 12px 30px;
+    background-color: var(--primary-color);
+    color: var(--on-dark);
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: #fff;
+}
+
+.btn-outline {
+    background-color: transparent;
+    border-color: var(--input-border-color);
+    color: var(--primary-color);
+}
+
+.btn-outline:hover {
+    background-color: rgba(46, 74, 61, 0.08);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+}
+
+/* Hero */
+.wedding-names {
+    font-size: var(--step-4);
+    letter-spacing: var(--caps);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+}
+
+.wedding-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+}
+
+.wedding-countdown {
+    font-style: italic;
+    cursor: pointer;
+    user-select: none;
+    font-variant-numeric: tabular-nums;
+}
+
+.mobile-top-bar,
+.mobile-only-header {
+    display: none;
+}
+
+.hero-section {
+    position: relative;
+    height: 92vh;
+    min-height: 650px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.hero-image-container,
+.hero-image,
+.hero-gradient-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.hero-image {
+    object-fit: cover;
+    display: block;
+}
+
+.hero-gradient-overlay {
+    z-index: 2;
+    pointer-events: none;
+}
+
+.hero-layout-container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1500px;
+    height: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.hero-content-wrapper {
+    width: 100%;
+}
+
+.hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: slideUpFade 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-content .wedding-names {
+    color: var(--on-dark);
+}
+
+.hero-content .wedding-meta {
+    color: var(--bg-color);
+}
+
+.hero-content .wedding-countdown {
+    color: #c7d5cf;
+}
+
+.hero-cta-container {
+    margin-top: 1.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+}
+
+.hero-content .btn-hero {
+    padding: 14px 38px;
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    border-color: var(--bg-color);
+}
+
+.hero-content .btn-hero:hover {
+    background-color: transparent;
+    color: var(--bg-color);
+}
+
+.hero-content .btn-hero-secondary {
+    background-color: transparent;
+    color: var(--bg-color);
+    border-color: rgba(236, 235, 233, 0.75);
+}
+
+.hero-content .btn-hero-secondary:hover {
+    background-color: rgba(236, 235, 233, 0.15);
+    border-color: #fff;
+    color: #fff;
+}
+
+.hero-rsvp-deadline {
+    margin-top: 0.85rem;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-style: italic;
+    color: #d9e3de;
+}
+
+/* Desktop: couple on the left of the photo, text centered in the right half */
+@media (min-width: 768px) {
+    .hero-image {
+        width: 130vw;
+        left: -14.3vw;
+    }
+
+    .hero-gradient-overlay {
+        background: linear-gradient(to left, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.5) 35%, transparent 70%);
+    }
+
+    .hero-content-wrapper {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 5%;
+    }
+
+    .hero-content {
+        width: 50%;
+        max-width: 500px;
+        padding: 4.5rem 3.5rem;
+    }
+}
+
+/* Past 1500px, hold the couple at a fixed offset from center */
+@media (min-width: 1500px) {
+    .hero-image {
+        left: calc(11vw - 375px);
+    }
+}
+
+/* Mobile: names bar, then photo, then text */
+@media (max-width: 767px) {
+    header {
+        position: absolute;
+        height: 70px;
+        padding: 0 1.5rem;
+        background: transparent;
+        backdrop-filter: none;
+        border-bottom: none;
+    }
+
+    nav,
+    .hero-gradient-overlay,
+    .hero-content .wedding-names,
+    .hero-content .btn-hero-secondary {
+        display: none;
+    }
+
+    .hero-section {
+        flex-direction: column;
+        height: auto;
+        min-height: 0;
+    }
+
+    .mobile-top-bar {
+        display: block;
+        width: 100%;
+        padding: 1.2rem 1.5rem;
+        text-align: center;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .mobile-top-bar .wedding-names {
+        margin: 0;
+        font-size: clamp(1.7rem, 7.8vw, 2.35rem);
+        white-space: nowrap;
+    }
+
+    .hero-image-container,
+    .hero-image {
+        position: relative;
+        height: auto;
+    }
+
+    .hero-image {
+        max-height: 85vh;
+        object-fit: contain;
+    }
+
+    .hero-layout-container {
+        height: auto;
+        margin-top: 2rem;
+    }
+
+    .hero-content {
+        padding: 0 1.5rem;
+    }
+
+    .mobile-only-header {
+        display: block;
+        margin-bottom: 0.8rem;
+    }
+
+    .mobile-getting-married {
+        font-size: var(--step-3);
+    }
+
+    .hero-content .wedding-meta {
+        color: var(--muted);
+        font-size: 1.35rem;
+    }
+
+    .hero-content .wedding-countdown {
+        color: var(--muted);
+    }
+
+    .hero-cta-container {
+        margin-top: 1.4rem;
+    }
+
+    .hero-content .btn-hero {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        color: var(--on-dark);
+    }
+
+    .hero-content .btn-hero:hover {
+        background-color: var(--primary-dark);
+        color: #fff;
+    }
+
+    .hero-rsvp-deadline {
+        color: var(--muted);
+    }
+}
+
+/* Sections */
+section {
+    text-align: center;
+}
+
 .container {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 4rem 2rem;
-}
-
-#details {
-    padding-block-start: 5.5rem;
-}
-
-#details.celebration-section-standalone {
-    padding-block-start: 7.5rem;
-}
-
-/* Section */
-section {
-    padding: 2rem 0;
-    text-align: center;
+    padding: 9rem 2rem 4rem;
+    min-height: 60vh;
 }
 
 .details-editorial-container {
@@ -657,8 +487,17 @@ section {
     padding: 4rem 2rem;
 }
 
+#details {
+    padding-top: 5.5rem;
+}
+
+#details.celebration-section-standalone,
+.page-top {
+    padding-top: 7.5rem;
+}
+
 .celebration-section {
-    padding-block-end: 2.5rem;
+    padding-bottom: 2.5rem;
 }
 
 .good-to-know-section {
@@ -666,101 +505,42 @@ section {
 }
 
 .editorial-header {
-    text-align: center;
-    margin-bottom: 3rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.celebration-header {
-    margin-bottom: 2.25rem;
-}
-
-.mobile-only-header {
-    display: none;
-}
-
-.mobile-getting-married {
-    font-family: var(--font-editorial);
-    font-size: 2.05rem;
-    font-weight: 500;
-    color: var(--primary-color);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 1.2rem;
-    text-align: center;
-    text-wrap: balance;
+    margin-bottom: 2.5rem;
 }
 
 .editorial-subtitle {
-    font-family: var(--font-body);
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: var(--secondary-color);
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    margin-bottom: 0.6rem;
     display: block;
-}
-
-.editorial-title {
-    font-family: var(--font-editorial);
-    font-size: clamp(2.15rem, 5.5vw, 3.2rem);
-    font-weight: 500;
-    color: var(--primary-color);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 1.25rem;
-    text-wrap: balance;
-}
-
-.editorial-divider {
-    width: 120px;
-    height: 1px;
-    background: linear-gradient(
-        to right,
-        rgba(74, 124, 89, 0) 0%,
-        rgba(74, 124, 89, 0.3) 50%,
-        rgba(74, 124, 89, 0) 100%
-    );
-    position: relative;
-}
-
-.editorial-divider::after {
-    content: "♦";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 0.5rem;
     color: var(--secondary-color);
-    background: var(--bg-color);
-    padding: 0 6px;
+    margin-bottom: 0.4rem;
+}
+
+.editorial-title,
+.closing-headline {
+    font-size: var(--step-3);
+}
+
+.editorial-lede {
+    max-width: 500px;
+    margin: 1rem auto 0;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    color: var(--muted);
 }
 
 .editorial-inline-cta {
     display: inline-block;
-    margin-top: 0.75rem;
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
+    margin-top: 0.65rem;
     color: var(--primary-color);
-    border-bottom: 1px solid var(--primary-color);
-    padding-bottom: 2px;
-    transition: color 0.2s ease, border-color 0.2s ease;
+    border-bottom: 1px solid currentColor;
 }
 
 .editorial-inline-cta:hover {
     color: var(--secondary-color);
-    border-bottom-color: var(--secondary-color);
 }
 
-/* Unified Celebration Essentials + Horizontal Subgrid Timeline */
+/* Celebration: date, venue, and a three-step timeline */
 .celebration-content {
-    max-inline-size: 780px;
+    max-width: 780px;
     margin-inline: auto;
     container: celebration / inline-size;
 }
@@ -769,34 +549,21 @@ section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.55rem;
-    margin-block-end: 2.5rem;
+    gap: 0.4rem;
+    margin-bottom: 2.5rem;
+    font-family: var(--font-display);
+    line-height: 1.3;
 }
 
 .celebration-date {
-    font-family: var(--font-editorial);
-    font-size: clamp(1.5rem, 4.4vw, 1.95rem);
+    font-size: var(--step-2);
     font-weight: 600;
     color: var(--primary-color);
-    letter-spacing: 1px;
-    line-height: 1.3;
-    text-wrap: balance;
-}
-
-.celebration-venue {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.2rem;
 }
 
 .celebration-venue-name {
-    font-family: var(--font-editorial);
-    font-size: clamp(1.3rem, 3.8vw, 1.55rem);
+    font-size: 1.45rem;
     font-weight: 600;
-    color: var(--text-color);
-    letter-spacing: 0.8px;
-    line-height: 1.35;
 }
 
 .celebration-venue-address {
@@ -804,42 +571,33 @@ section {
     flex-wrap: wrap;
     justify-content: center;
     align-items: baseline;
-    column-gap: 0.55rem;
-    row-gap: 0.2rem;
+    gap: 0.2rem 0.55rem;
     font-family: var(--font-body);
-    font-size: 1rem;
-    color: #4a5650;
-    line-height: 1.5;
+    color: var(--muted);
 }
 
 .celebration-sep {
-    color: rgba(46, 74, 61, 0.45);
+    opacity: 0.6;
 }
 
 .celebration-directions-link {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
     color: var(--primary-color);
+    white-space: nowrap;
     text-decoration: underline;
     text-underline-offset: 4px;
     text-decoration-color: rgba(46, 74, 61, 0.45);
-    transition: color 0.2s ease, text-decoration-color 0.2s ease;
-    white-space: nowrap;
 }
 
 .celebration-directions-link:hover {
     color: var(--secondary-color);
-    text-decoration-color: var(--secondary-color);
+    text-decoration-color: currentColor;
 }
 
 @container celebration (inline-size < 30rem) {
     .celebration-venue-address {
         flex-direction: column;
         align-items: center;
-        gap: 0.1rem;
+        gap: 0;
     }
 
     .celebration-sep {
@@ -849,131 +607,91 @@ section {
     .celebration-directions-link {
         display: inline-flex;
         align-items: center;
-        min-block-size: var(--target-size);
+        min-height: var(--target-size);
     }
 }
 
 .wedding-timeline {
     list-style: none;
-    max-inline-size: 760px;
+    max-width: 760px;
     margin-inline: auto;
-    padding: 0;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: auto auto auto;
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 4.6cqi, 1.4rem);
+    line-height: 1.25;
 }
 
 .wedding-timeline-item {
     grid-row: span 3;
     display: grid;
-    grid-template-rows: auto auto auto;
     grid-template-rows: subgrid;
     justify-items: center;
-    text-align: center;
-    padding: 0;
-    min-inline-size: 0;
+    min-width: 0;
+}
+
+.wedding-timeline-time,
+.wedding-timeline-event {
+    padding-inline: 0.25rem;
 }
 
 .wedding-timeline-time {
-    font-family: var(--font-editorial);
-    font-size: clamp(0.95rem, 4.5cqi, 1.35rem);
     font-weight: 600;
-    letter-spacing: clamp(0.4px, 0.25cqi, 1.5px);
     color: var(--secondary-color);
-    padding-inline: 0.25rem;
-    line-height: 1.25;
+}
+
+.wedding-timeline-event {
+    color: var(--primary-color);
+    text-wrap: balance;
 }
 
 .wedding-timeline-track {
     position: relative;
-    inline-size: 100%;
+    width: 100%;
     display: flex;
-    align-items: center;
     justify-content: center;
     margin-block: 0.65rem 0.75rem;
 }
 
-.wedding-timeline-item:not(:first-child) .wedding-timeline-track::before {
+.wedding-timeline-track::before {
     content: "";
     position: absolute;
-    left: 0;
-    right: 50%;
     top: 50%;
+    left: 0;
+    right: 0;
     height: 1px;
-    transform: translateY(-50%);
     background: rgba(46, 74, 61, 0.28);
 }
 
-.wedding-timeline-item:not(:last-child) .wedding-timeline-track::after {
-    content: "";
-    position: absolute;
+.wedding-timeline-item:first-child .wedding-timeline-track::before {
     left: 50%;
-    right: 0;
-    top: 50%;
-    height: 1px;
-    transform: translateY(-50%);
-    background: rgba(46, 74, 61, 0.28);
+}
+
+.wedding-timeline-item:last-child .wedding-timeline-track::before {
+    right: 50%;
 }
 
 .wedding-timeline-dot {
     position: relative;
-    z-index: 1;
     width: 10px;
     height: 10px;
-    background-color: var(--primary-color);
-    border: 2px solid var(--bg-color);
-    box-sizing: content-box;
-    transform: rotate(45deg);
-    flex-shrink: 0;
-}
-
-.wedding-timeline-event {
-    display: block;
-    font-family: var(--font-editorial);
-    font-size: clamp(1rem, 4.8cqi, 1.45rem);
-    font-weight: 500;
-    letter-spacing: clamp(0.25px, 0.2cqi, 1px);
-    color: var(--primary-color);
-    margin: 0;
-    padding-inline: 0.25rem;
-    line-height: 1.25;
-    text-wrap: balance;
-}
-
-.palette-swatches {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-top: 0.9rem;
-}
-
-.palette-swatch {
-    width: 20px;
-    height: 20px;
     border-radius: 50%;
-    display: inline-block;
-    border: 1px solid rgba(46, 74, 61, 0.2);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+    background-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--bg-color);
 }
 
-/* Good to Know: At-a-Glance Mobile Accordion (< 768px) & 2-Column Stationery Grid (>= 768px) */
+/* Good to Know: accordion on mobile, open two-column cards on desktop */
 .gtk-ledger {
-    max-inline-size: 920px;
+    max-width: 920px;
     margin-inline: auto;
-    background: #f4f3f0;
-    border: 1px solid rgba(46, 74, 61, 0.2);
-    border-radius: 2px;
-    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.025);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
     text-align: left;
 }
 
-.gtk-item {
-    border-block-end: 1px solid rgba(46, 74, 61, 0.12);
-}
-
-.gtk-item:last-child {
-    border-block-end: none;
+.gtk-item + .gtk-item {
+    border-top: 1px solid var(--line);
 }
 
 .gtk-summary {
@@ -981,97 +699,60 @@ section {
     display: flex;
     flex-wrap: wrap;
     align-items: safe center;
-    column-gap: 0.6rem;
-    row-gap: 0.25rem;
-    padding-block: 0.85rem;
-    padding-inline: 1rem;
-    min-block-size: var(--target-size);
+    gap: 0.25rem 0.6rem;
+    padding: 0.85rem 1rem;
+    min-height: var(--target-size);
     cursor: pointer;
     user-select: none;
-    -webkit-user-select: none;
-    transition: background-color 0.18s ease;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
+    line-height: 1.3;
 }
 
 .gtk-summary::-webkit-details-marker {
     display: none;
 }
 
-.gtk-summary:hover {
-    background-color: rgba(46, 74, 61, 0.035);
-}
-
-.gtk-summary:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-    border-radius: 2px;
-}
-
 .gtk-summary::before {
     content: "";
-    inline-size: 0.85rem;
-    block-size: 0.85rem;
+    width: 0.85rem;
+    height: 0.85rem;
     flex-shrink: 0;
     background-color: var(--secondary-color);
-    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round' d='M3.5 6L8 10.5L12.5 6'/%3E%3C/svg%3E") no-repeat center / contain;
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round' d='M3.5 6L8 10.5L12.5 6'/%3E%3C/svg%3E") no-repeat center / contain;
     rotate: -90deg;
-}
-
-.gtk-summary:dir(rtl)::before {
-    rotate: 90deg;
 }
 
 .gtk-item[open] > .gtk-summary::before {
     rotate: 0deg;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .gtk-summary::before {
-        transition: rotate 0.2s ease;
-    }
-}
-
 .gtk-title {
-    font-family: var(--font-editorial);
-    font-size: 1.02rem;
-    font-weight: 600;
-    letter-spacing: 1.2px;
-    text-transform: uppercase;
     color: var(--primary-color);
-    line-height: 1.3;
 }
 
 .gtk-preview {
     margin-inline-start: auto;
-    font-family: var(--font-editorial);
-    font-size: 1.06rem;
-    font-weight: 600;
-    color: var(--text-color);
     text-align: end;
-    line-height: 1.3;
-    min-inline-size: 0;
-    overflow-wrap: break-word;
+    min-width: 0;
 }
 
-.gtk-preview-swatches {
-    display: inline-flex;
-    align-items: center;
-}
-
-.gtk-summary .palette-swatches {
-    margin-top: 0;
+.palette-swatches {
+    display: flex;
     gap: 7px;
 }
 
-.gtk-summary .palette-swatch {
-    width: 17px;
-    height: 17px;
+.palette-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
 }
 
 .gtk-item::details-content {
     interpolate-size: allow-keywords;
     overflow: clip;
-    contain: layout;
 }
 
 .gtk-item:not([open])::details-content {
@@ -1079,520 +760,85 @@ section {
 }
 
 @media (prefers-reduced-motion: no-preference) {
+    .gtk-summary::before {
+        transition: rotate 0.2s ease;
+    }
+
     .gtk-item::details-content {
-        transition: block-size, content-visibility, display;
-        transition-duration: 0.28s;
-        transition-timing-function: ease-in-out;
-        transition-behavior: allow-discrete;
+        transition: block-size 0.28s ease-in-out, content-visibility 0.28s allow-discrete;
     }
 }
 
 .gtk-body {
-    padding-block: 0 1.05rem;
-    padding-inline: calc(1rem + 0.85rem + 0.6rem) 1rem;
-}
-
-.gtk-sub-detail {
-    font-family: var(--font-body);
-    font-size: 0.98rem;
-    color: #4a5650;
-    line-height: 1.58;
+    padding: 0 1rem 1rem 2.45rem;
+    color: var(--muted);
     text-wrap: pretty;
-}
-
-.gtk-body .editorial-inline-cta {
-    margin-block-start: 0.65rem;
-    font-size: 0.84rem;
 }
 
 @media (min-width: 768px) {
     .gtk-ledger {
-        background: transparent;
+        background: none;
         border: none;
-        box-shadow: none;
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 1.5rem;
     }
 
     .gtk-item {
-        background: #f4f3f0;
-        border: 1px solid rgba(46, 74, 61, 0.18);
-        border-radius: 2px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
-        padding-inline: 1.65rem;
-        padding-block: 0.25rem;
-    }
-
-    .gtk-item:last-child {
-        border: 1px solid rgba(46, 74, 61, 0.18);
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 0.25rem 1.65rem;
     }
 
     .gtk-item:last-child:nth-child(odd) {
         grid-column: 1 / -1;
-        inline-size: calc(50% - 0.75rem);
+        width: calc(50% - 0.75rem);
         justify-self: center;
     }
 
     .gtk-summary {
-        padding-inline: 0;
-        padding-block: 1rem 0.85rem;
-    }
-
-    .gtk-summary:hover {
-        background-color: transparent;
+        padding: 1rem 0 0.85rem;
     }
 
     .gtk-item[open] > .gtk-summary {
-        border-block-end: 1px dashed rgba(46, 74, 61, 0.15);
-    }
-
-    .gtk-title {
-        font-size: 1.12rem;
-    }
-
-    .gtk-preview {
-        font-size: 1.15rem;
-    }
-
-    .gtk-summary .palette-swatch {
-        width: 19px;
-        height: 19px;
+        border-bottom: 1px dashed var(--line);
     }
 
     .gtk-body {
-        padding-inline: 0;
-        padding-block: 0.85rem 1.15rem;
-    }
-
-    .gtk-sub-detail {
-        font-size: 1.02rem;
+        padding: 0.85rem 0 1.15rem;
     }
 }
 
-/* Stationery Card RSVP Form Style (Replaces Boxed RSVP card) */
+/* RSVP card and form */
 .stationery-card {
-    background: #f4f3f0;
-    /* Soft beautiful paper card stock color */
-    border: 1px solid rgba(46, 74, 61, 0.25);
-    box-shadow:
-        0 4px 20px rgba(0, 0, 0, 0.03),
-        inset 0 0 40px rgba(255, 255, 255, 0.5);
+    max-width: 600px;
+    margin: 0 auto;
     padding: 3.5rem 3rem;
-    border-radius: 2px;
-    position: relative;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    text-align: left;
     container: stationery-card / inline-size;
 }
 
-/* Double fine-line border for stationary look */
-.stationery-card::before {
-    content: "";
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-    border: 1px solid rgba(46, 74, 61, 0.1);
-    pointer-events: none;
-}
-
-/* Stationery Form Styles */
-.stationery-form .form-group {
+.form-group {
     margin-bottom: 1.75rem;
 }
 
-.stationery-form label:not(.radio-option) {
-    font-family: var(--font-editorial);
-    font-size: 1.15rem;
-    font-weight: 600;
-    letter-spacing: 1px;
-    color: var(--primary-color);
-    margin-bottom: 0.45rem;
-    text-transform: uppercase;
-}
-
-.stationery-form input[type="text"],
-.stationery-form input[type="email"],
-.stationery-form select,
-.stationery-form textarea {
-    width: 100%;
-    background: #ffffff;
-    border: 1px solid var(--input-border-color);
-    border-radius: 4px;
-    padding: 11px 14px;
-    min-block-size: var(--target-size);
-    font-family: var(--font-body);
-    font-size: max(1rem, 1.05rem);
-    color: var(--text-color);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: none;
-}
-
-.stationery-form input[type="text"]::placeholder,
-.stationery-form input[type="email"]::placeholder,
-.stationery-form textarea::placeholder {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    letter-spacing: 0.3px;
-    color: #6b7872;
-}
-
-.stationery-form input[type="text"]:focus,
-.stationery-form input[type="email"]:focus,
-.stationery-form select:focus,
-.stationery-form textarea:focus {
-    border-color: var(--primary-color);
-    background: #ffffff;
-}
-
-.stationery-form input[type="text"]:focus-visible,
-.stationery-form input[type="email"]:focus-visible,
-.stationery-form select:focus-visible,
-.stationery-form textarea:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-    border-color: var(--primary-color);
-}
-
-.stationery-form small,
-.stationery-form .form-help-text {
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    color: #4a5650;
-    margin-top: 0.4rem;
-    display: block;
-}
-
-.stationery-form select {
-    cursor: pointer;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%232E4A3D' d='M6 7.4L.6 2 2 .6 6 4.6 10 .6 11.4 2z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 12px;
-    padding-right: 34px;
-}
-
-/* Guest RSVP Attendance Fieldsets & Accessible Non-Clipping Radio Options */
-.guest-rsvp-row {
-    border: 0;
-    border-bottom: 1px dashed rgba(46, 74, 61, 0.18);
-    padding: 1.25rem 0;
-    margin: 0;
-    min-inline-size: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.guest-rsvp-row:last-of-type {
-    border-bottom: none;
-}
-
-.guest-name-label {
-    font-family: var(--font-editorial);
-    font-size: 1.4rem;
-    color: var(--primary-color);
-    font-weight: 600;
-    padding: 0;
-    margin: 0;
-    line-height: 1.3;
-    overflow-wrap: break-word;
-}
-
-.guest-options-group {
+.form-group-row {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 20px;
 }
 
-@container stationery-card (inline-size < 25rem) {
-    .guest-options-group {
-        grid-template-columns: 1fr;
-    }
-}
-
-.stationery-form .radio-group {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-top: 0.8rem;
-}
-
-.stationery-form .radio-option,
-.guest-options-group .radio-option {
-    font-family: var(--font-body);
-    font-size: 1rem;
-    font-weight: 500;
-    text-transform: none;
-    letter-spacing: normal;
-    line-height: 1.35;
-    color: var(--text-color);
-    background-color: #ffffff;
-    border: 1px solid var(--input-border-color);
-    border-radius: 4px;
-    padding: 0.7rem 0.9rem;
-    min-block-size: var(--target-size);
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    overflow-wrap: break-word;
-}
-
-.stationery-form .radio-option:hover,
-.guest-options-group .radio-option:hover {
-    border-color: var(--primary-color);
-    background-color: #faf9f6;
-}
-
-.stationery-form .radio-option:has(input[type="radio"]:checked),
-.guest-options-group .radio-option:has(input[type="radio"]:checked) {
-    border-color: var(--primary-color);
-    background-color: rgba(46, 74, 61, 0.08);
-    box-shadow: inset 0 0 0 1px var(--primary-color);
-    color: var(--primary-color);
-    font-weight: 700;
-}
-
-.stationery-form .radio-option:has(input[type="radio"]:focus-visible),
-.guest-options-group .radio-option:has(input[type="radio"]:focus-visible) {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-}
-
-.stationery-form .radio-option input[type="radio"],
-.guest-options-group .radio-option input[type="radio"] {
-    accent-color: var(--primary-color);
-    width: 1.15rem;
-    height: 1.15rem;
-    flex-shrink: 0;
-    margin: 0;
-    cursor: pointer;
-}
-
-/* Fallback for older browsers without accent-color */
-@supports not (accent-color: #2e4a3d) {
-    .stationery-form input[type="radio"],
-    .stationery-form input[type="checkbox"] {
-        position: absolute !important;
-        clip-path: inset(50%) !important;
-        overflow: hidden !important;
-        width: 1px !important;
-        height: 1px !important;
-        margin: -1px !important;
-        padding: 0 !important;
-        border: 0 !important;
-        white-space: nowrap !important;
-    }
-
-    .stationery-form input[type="radio"] + span,
-    .stationery-form input[type="checkbox"] + span {
-        position: relative;
-        padding-left: 1.75rem;
-        display: inline-block;
-    }
-
-    .stationery-form input[type="radio"] + span::before,
-    .stationery-form input[type="checkbox"] + span::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 1.15rem;
-        height: 1.15rem;
-        border: 2px solid var(--input-border-color);
-        background: #ffffff;
-        box-sizing: border-box;
-    }
-
-    .stationery-form input[type="radio"] + span::before {
-        border-radius: 50%;
-    }
-
-    .stationery-form input[type="checkbox"] + span::before {
-        border-radius: 3px;
-    }
-
-    .stationery-form input[type="radio"]:focus-visible + span::before,
-    .stationery-form input[type="checkbox"]:focus-visible + span::before {
-        outline: 2px solid var(--primary-color);
-        outline-offset: 2px;
-    }
-
-    .stationery-form input[type="radio"]:checked + span::before,
-    .stationery-form input[type="checkbox"]:checked + span::before {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-    }
-
-    .stationery-form input[type="radio"]:checked + span::after {
-        content: "";
-        position: absolute;
-        left: 0.35rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0.45rem;
-        height: 0.45rem;
-        border-radius: 50%;
-        background: #ffffff;
-    }
-
-    .stationery-form input[type="checkbox"]:checked + span::after {
-        content: "✓";
-        position: absolute;
-        left: 0.2rem;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #ffffff;
-        font-weight: bold;
-        font-size: 0.85rem;
-        line-height: 1;
-    }
-}
-
-/* Editorial Closing & Signature Styles (Replaces Boxed Footer) */
-footer {
-    text-align: center;
-}
-
-.editorial-closing {
-    padding: 1.5rem 2rem 5rem 2rem;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.editorial-closing > .editorial-divider {
-    margin-block-end: 2.75rem;
-}
-
-.closing-headline {
-    font-family: var(--font-editorial);
-    font-size: clamp(2.1rem, 5.5vw, 3.2rem);
-    font-weight: 500;
-    color: var(--primary-color);
-    letter-spacing: 2px;
-    line-height: 1.3;
-    margin-bottom: 1rem;
-    text-wrap: balance;
-}
-
-.closing-rsvp-deadline {
-    font-family: var(--font-body);
-    font-size: 1.05rem;
-    color: #4a5650;
-    margin-bottom: 1.5rem;
-}
-
-.closing-cta-wrapper {
-    margin-bottom: 2.5rem;
-}
-
-.closing-signature {
-    font-family: var(--font-editorial);
-    font-size: 1.45rem;
-    color: var(--secondary-color);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    font-weight: 500;
-    margin-top: 1rem;
-}
-
-.signature-mango {
-    text-decoration: none;
-    margin-left: 8px;
-    display: inline-block;
-}
-
-.editorial-closing-simple {
-    padding: 4rem 2rem 6rem 2rem;
-    text-align: center;
-}
-
-@media (max-width: 767px) {
-    .details-editorial-container {
-        padding: 2.25rem 1.15rem 1.25rem 1.15rem;
-    }
-
-    #details {
-        padding-block: 2.5rem 1.25rem;
-    }
-
-    #details.celebration-section-standalone {
-        padding-block-start: 5.25rem;
-    }
-
-    .editorial-header,
-    .celebration-header,
-    .good-to-know-section .editorial-header {
-        margin-bottom: 1.5rem;
-    }
-
-    .editorial-title {
-        margin-bottom: 0.9rem;
-    }
-
-    .celebration-essentials {
-        margin-block-end: 1.75rem;
-    }
-
-    .good-to-know-section {
-        padding-block: 1.5rem 1.25rem;
-    }
-
-    .editorial-closing {
-        padding: 1.5rem 1.25rem 3.5rem 1.25rem;
-    }
-
-    .editorial-closing > .editorial-divider {
-        margin-block-end: 1.75rem;
-    }
-
-    .closing-cta-wrapper {
-        margin-bottom: 1.75rem;
-    }
-
-    .mobile-only-header {
-        display: block;
-        width: 100%;
-        margin-bottom: 0.8rem;
-    }
-}
-
-@media (max-width: 600px) {
-    .stationery-card {
-        padding: 2rem 1.25rem;
-    }
-
-    .guest-options-group {
-        grid-template-columns: 1fr;
-    }
-
-    .stationery-form .radio-group {
-        flex-direction: column;
-        gap: 12px;
-    }
-}
-
-/* Form Styles */
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-label {
+label,
+.guest-name-label {
     display: block;
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.4rem;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-weight: 600;
     color: var(--primary-color);
 }
 
@@ -1601,62 +847,268 @@ input[type="email"],
 select,
 textarea {
     width: 100%;
-    padding: 10px 12px;
+    min-height: var(--target-size);
+    padding: 11px 14px;
+    background: #fff;
     border: 1px solid var(--input-border-color);
     border-radius: 4px;
-    font-family: var(--font-body);
-    font-size: max(1rem, 1.05rem);
-    transition: border-color 0.2s ease;
+    font: inherit;
+    color: var(--text-color);
 }
 
-input[type="text"]:focus,
-input[type="email"]:focus,
-select:focus,
-textarea:focus {
+:is(input, textarea):focus {
     border-color: var(--primary-color);
 }
 
-input[type="text"]:focus-visible,
-input[type="email"]:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
-    border-color: var(--primary-color);
+::placeholder {
+    color: #6b7872;
 }
 
 textarea {
     resize: vertical;
 }
 
-small {
+.form-help-text,
+.form-note {
     display: block;
-    margin-top: 0.25rem;
-    color: #666;
-    font-size: 0.9rem;
+    margin-top: 0.4rem;
+    font-size: 0.95rem;
+    color: var(--muted);
 }
 
-.radio-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.form-error {
+    margin-block: 1.5rem;
+    padding: 15px;
+    color: var(--error);
+    background-color: #f7ecee;
+    border: 1px solid rgba(139, 38, 53, 0.35);
+    border-radius: 4px;
 }
 
-.radio-option {
+.form-step-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.form-step-header h2 {
+    font-size: var(--step-2);
+    outline: none;
+}
+
+.guest-rsvp-row {
+    border: 0;
+    border-bottom: 1px dashed var(--line);
+    padding: 1.25rem 0;
+    min-width: 0;
+}
+
+.guest-rsvp-row:last-of-type {
+    border-bottom: none;
+}
+
+.guest-name-label {
+    font-size: 1.4rem;
+    margin-bottom: 0.75rem;
+    overflow-wrap: break-word;
+}
+
+.guest-options-group {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.radio-option,
+.checkbox-option {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-weight: normal;
+    margin: 0;
     cursor: pointer;
 }
 
-.radio-option input[type="radio"] {
+.radio-option {
+    min-height: var(--target-size);
+    padding: 0.7rem 0.9rem;
+    font-family: var(--font-body);
+    font-size: var(--step-0);
+    font-weight: 400;
+    color: var(--text-color);
+    background-color: #fff;
+    border: 1px solid var(--input-border-color);
+    border-radius: 4px;
+}
+
+.radio-option:hover {
+    border-color: var(--primary-color);
+}
+
+.radio-option:has(:checked) {
+    border-color: var(--primary-color);
+    background-color: rgba(46, 74, 61, 0.08);
+    box-shadow: inset 0 0 0 1px var(--primary-color);
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.radio-option:has(:focus-visible) {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+:is(.radio-option, .checkbox-option) input {
     accent-color: var(--primary-color);
     width: 1.2rem;
     height: 1.2rem;
+    flex-shrink: 0;
+    cursor: pointer;
 }
 
-/* Language Switcher Pill */
+.rsvp-actions-row {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+}
+
+@container stationery-card (inline-size < 25rem) {
+    .guest-options-group {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .stationery-card {
+        padding: 2rem 1.25rem;
+    }
+
+    .form-group-row {
+        grid-template-columns: 1fr;
+    }
+
+    .rsvp-actions-row {
+        flex-direction: column-reverse;
+    }
+
+    .rsvp-actions-row .btn {
+        width: 100%;
+    }
+}
+
+/* Personal note callout (RSVP & thank-you pages) */
+.delight-note-callout {
+    margin-bottom: 1.75rem;
+    padding: 1.25rem 1.4rem;
+    background-color: #faf8f3;
+    border: 1px solid rgba(139, 90, 43, 0.25);
+    border-left: 3px solid var(--secondary-color);
+    border-radius: 4px;
+    text-align: left;
+    animation: fadeIn 0.45s ease-out;
+}
+
+.delight-note-callout-centered {
+    max-width: 520px;
+    margin: 1.75rem auto 0.5rem;
+    text-align: center;
+    border-left-width: 1px;
+    border-top: 2px solid var(--secondary-color);
+}
+
+.delight-note-eyebrow {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.45rem;
+}
+
+.delight-note-body {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    font-style: italic;
+}
+
+/* Thank-you page */
+.thanks-received {
+    font-size: 1.35rem;
+    margin: 0.5rem 0 1.5rem;
+}
+
+.thanks-note {
+    max-width: 480px;
+    margin: 1.25rem auto 3rem;
+}
+
+.thanks-note a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* Closing & signature */
+.editorial-closing {
+    padding: 2rem 2rem 5rem;
+}
+
+.closing-headline {
+    margin-bottom: 1.5rem;
+}
+
+.closing-signature {
+    margin-top: 3rem;
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    font-style: italic;
+    color: var(--secondary-color);
+}
+
+.signature-mango {
+    margin-left: 6px;
+    font-style: normal;
+}
+
+.editorial-closing-simple {
+    padding: 2rem 2rem 6rem;
+    text-align: center;
+}
+
+@media (max-width: 767px) {
+    .details-editorial-container {
+        padding: 2.25rem 1.15rem 1.25rem;
+    }
+
+    #details {
+        padding-block: 2.5rem 1.25rem;
+    }
+
+    #details.celebration-section-standalone,
+    .page-top {
+        padding-top: 5.25rem;
+    }
+
+    .editorial-header {
+        margin-bottom: 1.5rem;
+    }
+
+    .celebration-essentials {
+        margin-bottom: 1.75rem;
+    }
+
+    .good-to-know-section {
+        padding-block: 1.5rem 1.25rem;
+    }
+
+    .editorial-closing {
+        padding: 1.5rem 1.25rem 3.5rem;
+    }
+
+    .closing-signature {
+        margin-top: 2rem;
+    }
+}
+
+/* Language switchers (injected at build time by vite.config.js) */
 .lang-switcher {
     position: fixed;
     top: 1.1rem;
@@ -1667,114 +1119,43 @@ small {
     gap: 6px;
     padding: 4px 10px;
     background-color: rgba(236, 235, 233, 0.9);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border: 1px solid rgba(46, 74, 61, 0.18);
-    border-radius: 2px;
-    font-family: var(--font-editorial);
-    font-size: 0.85rem;
-    letter-spacing: 1.5px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: var(--step--1);
+    letter-spacing: var(--caps);
     line-height: 1;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.lang-switcher a {
-    color: #5a6a62;
-    text-decoration: none;
-    font-weight: 500;
-    padding: 2px 3px;
-}
-
-.lang-switcher a:hover {
-    color: var(--primary-color);
+.lang-switcher a,
+.footer-lang-switcher a {
+    color: var(--muted);
 }
 
 .lang-switcher a.active {
     color: var(--primary-color);
     font-weight: 700;
-    border-bottom: 1px solid var(--primary-color);
+    border-bottom: 1px solid currentColor;
 }
 
 .lang-switcher .lang-sep {
-    color: rgba(46, 74, 61, 0.25);
-    font-size: 0.75rem;
-    user-select: none;
+    opacity: 0.4;
 }
 
-@media (max-width: 767px) {
-    .lang-switcher {
-        top: 0.85rem;
-        right: 0.85rem;
-        font-size: 0.78rem;
-        padding: 3px 8px;
-    }
-}
-
-/* Centered Footer Language Switcher */
 .footer-lang-switcher {
     margin-top: 2rem;
-    text-align: center;
-    font-family: var(--font-editorial);
-    font-size: 1.15rem;
-    letter-spacing: 1px;
-}
-
-.footer-lang-switcher a {
-    color: #5a6a62;
-    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
 }
 
 .footer-lang-switcher a span {
+    margin-left: 4px;
     color: var(--primary-color);
     font-weight: 600;
-    border-bottom: 1px solid rgba(46, 74, 61, 0.35);
-    padding-bottom: 1px;
-    margin-left: 4px;
+    border-bottom: 1px solid var(--line);
 }
 
-.footer-lang-switcher a:hover,
+:is(.lang-switcher, .footer-lang-switcher) a:hover,
 .footer-lang-switcher a:hover span {
     color: var(--primary-color);
-    border-bottom-color: var(--primary-color);
-}
-
-/* Custom Guest & Party Personal Note Callout (RSVP & Thank You pages) */
-.delight-note-callout {
-    margin: 0 0 1.75rem 0;
-    padding: 1.25rem 1.4rem;
-    background-color: #faf8f3;
-    border: 1px solid rgba(139, 90, 43, 0.25);
-    border-left: 3px solid var(--secondary-color);
-    border-radius: 2px;
-    box-shadow: 0 2px 10px rgba(46, 74, 61, 0.04);
-    text-align: left;
-    animation: fadeIn 0.45s ease-out;
-}
-
-.delight-note-callout-centered {
-    max-width: 520px;
-    margin: 1.75rem auto 0.5rem auto;
-    text-align: center;
-    border-left: 1px solid rgba(139, 90, 43, 0.25);
-    border-top: 2px solid var(--secondary-color);
-}
-
-.delight-note-eyebrow {
-    display: block;
-    font-family: var(--font-heading);
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--secondary-color);
-    font-weight: 700;
-    margin-bottom: 0.45rem;
-}
-
-.delight-note-body {
-    margin: 0;
-    font-family: var(--font-heading);
-    font-size: 1.05rem;
-    line-height: 1.6;
-    color: var(--text-color);
-    font-style: italic;
+    border-bottom-color: currentColor;
 }

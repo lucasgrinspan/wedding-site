@@ -24,11 +24,11 @@ export function getCurrentLocale(): Locale {
  */
 export const esStrings: Record<string, string> = {
   // Page Titles
-  'meta.homeTitle': 'Casamiento de Lucas & Lianne',
-  'meta.detailsTitle': 'Detalles - Lucas & Lianne',
-  'meta.journeyTitle': 'Nuestra Historia - Lucas & Lianne',
-  'meta.rsvpTitle': 'Confirmar Asistencia - Casamiento de Lucas & Lianne',
-  'meta.thanksTitle': '¡Gracias! - Casamiento de Lucas & Lianne',
+  'meta.homeTitle': 'Casamiento de Lianne & Lucas',
+  'meta.detailsTitle': 'Detalles - Lianne & Lucas',
+  'meta.journeyTitle': 'Nuestra Historia - Lianne & Lucas',
+  'meta.rsvpTitle': 'Confirmar Asistencia - Casamiento de Lianne & Lucas',
+  'meta.thanksTitle': '¡Gracias! - Casamiento de Lianne & Lucas',
 
   // Navigation
   'nav.home': 'Inicio',
@@ -62,7 +62,7 @@ export const esStrings: Record<string, string> = {
   'details.rsvp.main': 'Confirmar Asistencia',
   'details.rsvp.sub': 'Por favor confirmá tu asistencia antes del 31 de diciembre de 2026.',
   'details.rsvp.link': 'Responder Online \u2192',
-  'details.closingHeadline': '¡No vemos la hora de celebrar con vos!',
+  'details.closingHeadline': '¡Nos vemos en Miami!',
 
   // Timeline Section (Home & Details Page)
   'timeline.subtitle': 'La Noche',
@@ -79,8 +79,8 @@ export const esStrings: Record<string, string> = {
   'gtk.title': 'Para Tener en Cuenta',
   'gtk.dress.title': 'Vestimenta',
   'gtk.dress.main': 'Formal (Traje &amp; Corbata)',
-  'gtk.dress.summary': 'Formal (Traje y Corbata)',
-  'gtk.dress.sub': 'Traje con corbata, y vestidos largos o midi formales.',
+  'gtk.dress.summary': 'Formal',
+  'gtk.dress.sub': 'Traje (quizás con corbata), y vestidos largos o midi formales. A la noche puede refrescar, así que traé algo para abrigarte.',
   'gtk.palette.title': 'Paleta de Colores',
   'gtk.palette.main': 'Verde Oscuro &amp; Tonos Tierra',
   'gtk.palette.summarySr': 'Verdes oscuros y marrones cálidos',
@@ -89,20 +89,19 @@ export const esStrings: Record<string, string> = {
   'gtk.venue.title': 'El Lugar',
   'gtk.venue.main': 'Ceremonia sobre el Césped',
   'gtk.venue.summary': 'Césped y Patio',
-  'gtk.venue.sub': 'La ceremonia será al aire libre sobre el césped y la recepción tendrá lugar en un patio de piedra.',
+  'gtk.venue.sub': 'La ceremonia es al aire libre sobre el césped (quizás mejor evitar los tacos aguja), y el cóctel es en un patio de piedra.',
   'gtk.guests.title': 'Invitados',
   'gtk.guests.main': 'Celebración Solo para Adultos',
   'gtk.guests.summary': 'Solo Adultos',
-  'gtk.guests.sub': 'Aunque adoramos a los más chicos, nuestro casamiento será una noche exclusiva para adultos.',
+  'gtk.guests.sub': 'Es una noche solo para adultos, así que los más chicos se quedan en casa.',
   'gtk.registry.title': 'Regalos',
   'gtk.registry.main': 'Sin Lista de Regalos',
   'gtk.registry.summary': 'Donación a Audubon',
-  'gtk.registry.sub': '¡Tu presencia es el mejor regalo! No tenemos lista de regalos, más allá de la página de donaciones de la National Audubon Society.',
+  'gtk.registry.sub': 'No tenemos lista de regalos. Si querés hacernos un regalo, nos encantaría una donación a la Audubon Society.',
   'gtk.registry.link': 'Donar a Audubon \u2192',
 
   // Closing / Footer
-  'closing.headline': '¡No vemos la hora de celebrar con vos!',
-  'closing.rsvpDeadline': 'Por favor confirmá tu asistencia antes del 31 de diciembre de 2026',
+  'closing.headline': '¡Nos vemos en Miami!',
   'closing.rsvpBtn': 'Confirmar Asistencia',
   'closing.signature': 'Con amor, Lianne & Lucas <a href="/es/journey.html" class="signature-mango">🥭</a>',
 
@@ -117,22 +116,22 @@ export const esStrings: Record<string, string> = {
   'rsvp.notFoundError': 'No pudimos encontrar tu invitación. Por favor revisá cómo está escrito o probá buscando a otro integrante de tu grupo.',
   'rsvp.findBtn': 'Buscar Invitación',
   'rsvp.confirmSubtitle': 'Confirmar Asistencia',
-  'rsvp.forYourParty': 'Para tu Grupo',
-  'rsvp.updateAnytimeNote': '¿Todavía no estás seguro por todos en tu grupo o necesitás hacer un cambio más adelante? Podés volver a esta página hasta el 31 de diciembre de 2026 para enviar una respuesta actualizada.',
+  'rsvp.forYourParty': '¿Quiénes vienen?',
+  'rsvp.updateAnytimeNote': '¿Todavía no sabés quiénes vienen o necesitás cambiar algo más adelante? Volvé y envialo de nuevo.',
   'rsvp.emailLabel': 'Correo Electrónico (Opcional)',
   'rsvp.emailHelp': 'Solo si querés recibir una confirmación por mail',
   'rsvp.dietaryLabel': 'Restricciones Alimentarias o Temas Musicales',
   'rsvp.dietaryPlaceholder': 'Vegetariano, sin TACC / sin gluten, temas que no pueden faltar, etc.',
   'rsvp.backBtn': 'Volver',
   'rsvp.submitBtn': 'Enviar Confirmación',
-  'rsvp.personalNoteLabel': 'Una Nota Personal de Lucas y Lianne',
+  'rsvp.personalNoteLabel': 'Una Nota Personal de Lianne y Lucas',
 
   // Thank You Page
-  'thanks.title': '¡Muchas Gracias!',
-  'thanks.received': 'Recibimos tu confirmación de asistencia.',
+  'thanks.title': '¡Gracias!',
+  'thanks.received': 'Recibimos tu confirmación.',
   'thanks.celebrate': '¡No vemos la hora de celebrar con vos!',
-  'thanks.personalNoteLabel': 'Una Nota Personal de Lucas y Lianne',
-  'thanks.updateNote': '¿Necesitás hacer algún cambio más adelante? Podés volver a la <a href="/es/rsvp.html" style="color: var(--primary-color); text-decoration: underline;">página de confirmación</a> hasta el 31 de diciembre de 2026 para actualizar la respuesta de tu grupo.',
+  'thanks.personalNoteLabel': 'Una Nota Personal de Lianne y Lucas',
+  'thanks.updateNote': '¿Necesitás hacer algún cambio más adelante? Podés volver a la <a href="/es/rsvp.html">página de confirmación</a> hasta el 31 de diciembre de 2026 para actualizar la respuesta de tu grupo.',
   'thanks.backHome': 'Volver al Inicio',
 
   // Journey Page

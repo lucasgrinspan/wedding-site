@@ -1255,9 +1255,9 @@ async function sendConfirmationEmail(
   const hostReplyTos = parseEmailList(replyToConfig);
 
   const payload: Record<string, unknown> = {
-    from: "Lucas & Lianne <rsvp@send.lucasandlianne.com>",
+    from: "Lianne & Lucas <rsvp@send.lucasandlianne.com>",
     ...(hostReplyTos.length === 1
-      ? { reply_to: `Lucas & Lianne <${hostReplyTos[0]}>` }
+      ? { reply_to: `Lianne & Lucas <${hostReplyTos[0]}>` }
       : hostReplyTos.length > 1
       ? { reply_to: hostReplyTos }
       : {}),
@@ -1307,7 +1307,7 @@ export async function sendHostNotificationEmail(
   const canUseGuestReplyTo = isValidDeliverableEmail(submission.email);
 
   const basePayload: Record<string, unknown> = {
-    from: "Lucas & Lianne RSVP <rsvp@send.lucasandlianne.com>",
+    from: "Lianne & Lucas RSVP <rsvp@send.lucasandlianne.com>",
     to: hostRecipients,
     subject,
     html,

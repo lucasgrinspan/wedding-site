@@ -5,34 +5,34 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-i18n="meta.thanksTitle">Thank You - Lucas & Lianne's Wedding</title>
+  <title data-i18n="meta.thanksTitle">Thank You - Lianne & Lucas's Wedding</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Lato:wght@400;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="/src/style.css">
 </head>
 
 <body>
   <header class="centered-header">
-    <a href="/" class="logo" style="text-decoration: none;">Lucas & Lianne</a>
+    <a href="/" class="logo">Lianne & Lucas</a>
   </header>
 
   <main>
-    <section class="container" style="padding-top: 150px; min-height: 60vh;">
-      <h1 style="font-size: 2.4rem; margin-bottom: 0.5rem;" data-i18n="thanks.title">Thank You!</h1>
-      <p style="font-size: 1.35rem; margin-bottom: 2rem;" data-i18n="thanks.received">Your RSVP has been received.</p>
-      <p id="thanks-celebrate-msg" style="font-size: 1.15rem;" data-i18n="thanks.celebrate">We can't wait to celebrate with you!</p>
+    <section class="container">
+      <h1 class="editorial-title" data-i18n="thanks.title">Thanks!</h1>
+      <p class="thanks-received" data-i18n="thanks.received">We got your RSVP.</p>
+      <p id="thanks-celebrate-msg" data-i18n="thanks.celebrate">We can't wait to celebrate with you!</p>
 
-      <!-- Optional personal note from Lucas & Lianne (populated dynamically if configured for guest/party) -->
+      <!-- Optional personal note from Lianne & Lucas (populated dynamically if configured for guest/party) -->
       <div id="thanks-delight-note" class="delight-note-callout delight-note-callout-centered" style="display: none;">
-        <span class="delight-note-eyebrow" data-i18n="thanks.personalNoteLabel">A Personal Note from Lucas &amp; Lianne</span>
+        <span class="delight-note-eyebrow" data-i18n="thanks.personalNoteLabel">A Personal Note from Lianne &amp; Lucas</span>
         <p id="thanks-delight-note-text" class="delight-note-body"></p>
       </div>
 
-      <p style="font-size: 0.95rem; color: #5A6A62; max-width: 480px; margin: 1.25rem auto 0 auto; line-height: 1.6;" data-i18n="thanks.updateNote">Need to make a change later? You can return to the <a href="/rsvp.html" style="color: var(--primary-color); text-decoration: underline;">RSVP page</a> through December 31, 2026 to submit an updated response for your party.</p>
+      <p class="form-note thanks-note" data-i18n="thanks.updateNote">Need to make a change later? You can return to the <a href="/rsvp.html">RSVP page</a> through December 31, 2026 to submit an updated response for your party.</p>
 
-      <div style="margin-top: 3rem;">
-        <a href="/" class="btn btn-dark-green" data-i18n="thanks.backHome">Back to Home</a>
+      <div>
+        <a href="/" class="btn" data-i18n="thanks.backHome">Back to Home</a>
       </div>
     </section>
   </main>

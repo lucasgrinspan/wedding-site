@@ -29,19 +29,10 @@ export const bocaRiverEffect: EasterEggModule = {
     const fieldContainer = document.createElement("div");
     fieldContainer.className = "form-group boca-river-group";
     fieldContainer.id = "boca-river-field";
-    fieldContainer.style.marginTop = "2rem";
 
     const label = document.createElement("label");
     label.htmlFor = "boca-river-checkbox";
-    label.style.display = "flex";
-    label.style.alignItems = "center";
-    label.style.gap = "12px";
-    label.style.cursor = "pointer";
-    label.style.textTransform = "none";
-    label.style.fontFamily = "var(--font-editorial)";
-    label.style.fontSize = "1.25rem";
-    label.style.color = "var(--primary-color)";
-    label.style.marginBottom = "0";
+    label.className = "checkbox-option";
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -49,10 +40,6 @@ export const bocaRiverEffect: EasterEggModule = {
     checkbox.name = "boca_es_mas_grande";
     checkbox.value = "Sí";
     checkbox.checked = true;
-    checkbox.style.accentColor = "var(--primary-color)";
-    checkbox.style.width = "1.25rem";
-    checkbox.style.height = "1.25rem"; //https://youtube.com
-    checkbox.style.cursor = "pointer";
 
     const labelText = document.createElement("span");
     labelText.textContent = "Boca es más grande que River?";

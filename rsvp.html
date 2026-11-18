@@ -5,28 +5,27 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title data-i18n="meta.rsvpTitle">RSVP - Lucas & Lianne's Wedding</title>
+  <title data-i18n="meta.rsvpTitle">RSVP - Lianne & Lucas's Wedding</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lato:wght@300;400;700&family=Playfair+Display:wght@400;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Lato:wght@400;700&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="/src/style.css">
 </head>
 
 <body>
   <header class="centered-header">
-    <a href="/" class="logo" style="text-decoration: none;">Lucas & Lianne</a>
+    <a href="/" class="logo">Lianne & Lucas</a>
   </header>
 
   <main>
-    <section class="details-editorial-container" style="padding-top: 120px;">
+    <section class="details-editorial-container page-top">
       <div class="editorial-header">
         <span class="editorial-subtitle" data-i18n="rsvp.subtitle">Response</span>
         <h1 class="editorial-title" data-i18n="rsvp.title">Kindly Reply</h1>
-        <div class="editorial-divider"></div>
-        <p style="margin-top: 1.5rem; font-family: var(--font-editorial); font-size: 1.35rem; color: #4A5650; max-width: 500px;" data-i18n="rsvp.deadline">Please let us know if you can celebrate with us by December 31, 2026.</p>
+        <p class="editorial-lede" data-i18n="rsvp.deadline">Please let us know if you can celebrate with us by December 31, 2026.</p>
       </div>
 
-      <div class="stationery-card" style="max-width: 600px; margin: 0 auto; text-align: left;">
+      <div class="stationery-card">
         
         <!-- STEP 1: SEARCH INVITATION -->
         <search id="rsvp-search-step">
@@ -42,14 +41,14 @@
               </div>
             </div>
             
-            <div id="search-error" role="alert" style="display: none; color: #8b2635; background-color: #f7ecee; border: 1px solid rgba(139, 38, 53, 0.35); padding: 15px; border-radius: 4px; margin-bottom: 2rem; font-family: var(--font-body); font-size: 1rem;" data-i18n="rsvp.notFoundError">
+            <div id="search-error" class="form-error" role="alert" style="display: none;" data-i18n="rsvp.notFoundError">
               We couldn't find your invitation. Please check the spelling or try searching for another member of your party.
             </div>
             
-            <div style="text-align: center; margin-top: 2rem;">
-              <button type="submit" id="btn-find-invitation" class="btn btn-dark-green" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; border: 1px solid transparent;">
+            <div class="rsvp-actions-row">
+              <button type="submit" id="btn-find-invitation" class="btn btn-block">
                 <span data-i18n="rsvp.findBtn">Find Invitation</span>
-                <span class="spinner" aria-hidden="true" style="display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s linear infinite;"></span>
+                <span class="spinner" aria-hidden="true"></span>
               </button>
             </div>
           </form>
@@ -62,39 +61,39 @@
           <input type="hidden" id="rsvp-party-list" name="party_members" value="">
           <input type="hidden" id="rsvp-submitted-by" name="submitted_by" value="">
 
-          <div class="editorial-header-small" style="margin-bottom: 2rem; border-bottom: 1px solid rgba(46, 74, 61, 0.15); padding-bottom: 1rem;">
-            <span class="editorial-subtitle" style="font-size: 0.85rem; margin-bottom: 0.2rem;" data-i18n="rsvp.confirmSubtitle">Confirm Attendance</span>
-            <h2 id="rsvp-step2-heading" tabindex="-1" style="font-family: var(--font-editorial); font-size: 1.85rem; color: var(--primary-color); margin-top: 0.2rem; outline: none;" data-i18n="rsvp.forYourParty">For Your Party</h2>
-            <p style="font-family: var(--font-body); font-size: 0.95rem; color: #4A5650; margin: 0.5rem 0 0 0; line-height: 1.5;" data-i18n="rsvp.updateAnytimeNote">Not sure about everyone in your party yet, or need to make a change later? You can return to this page through December 31, 2026 to submit an updated response.</p>
+          <div class="form-step-header">
+            <span class="editorial-subtitle" data-i18n="rsvp.confirmSubtitle">Confirm Attendance</span>
+            <h2 id="rsvp-step2-heading" tabindex="-1" data-i18n="rsvp.forYourParty">Who's coming?</h2>
+            <p class="form-note" data-i18n="rsvp.updateAnytimeNote">Not sure about everyone yet, or need to change something later? Just come back and submit again.</p>
           </div>
 
-          <!-- Optional personal note from Lucas & Lianne (populated dynamically if configured for guest/party) -->
+          <!-- Optional personal note from Lianne & Lucas (populated dynamically if configured for guest/party) -->
           <div id="rsvp-delight-note" class="delight-note-callout" style="display: none;">
-            <span class="delight-note-eyebrow" data-i18n="rsvp.personalNoteLabel">A Personal Note from Lucas &amp; Lianne</span>
+            <span class="delight-note-eyebrow" data-i18n="rsvp.personalNoteLabel">A Personal Note from Lianne &amp; Lucas</span>
             <p id="rsvp-delight-note-text" class="delight-note-body"></p>
           </div>
 
           <!-- Dynamic guest RSVP rows will be injected here -->
           <div id="guest-rows-container"></div>
 
-          <div class="form-group" style="margin-top: 2.25rem;">
+          <div class="form-group">
             <label for="email" data-i18n="rsvp.emailLabel">Email Address (Optional)</label>
             <input type="email" id="email" name="email" autocomplete="email" autocorrect="off" autocapitalize="none" spellcheck="false" aria-describedby="email-help">
             <small id="email-help" class="form-help-text" data-i18n="rsvp.emailHelp">Only if you want a confirmation email</small>
           </div>
 
-          <div class="form-group" style="margin-top: 1.75rem;">
+          <div class="form-group">
             <label for="dietary" data-i18n="rsvp.dietaryLabel">Dietary Restrictions or Song Requests</label>
             <textarea id="dietary" name="message" rows="4" data-i18n-placeholder="rsvp.dietaryPlaceholder" placeholder="Vegetarian, gluten-free, song requests, etc."></textarea>
           </div>
 
-          <div id="submit-error" role="alert" style="display: none; color: #8b2635; background-color: #f7ecee; border: 1px solid rgba(139, 38, 53, 0.35); padding: 15px; border-radius: 4px; margin-top: 2rem; font-family: var(--font-body); font-size: 1rem;"></div>
+          <div id="submit-error" class="form-error" role="alert" style="display: none;"></div>
 
           <div class="rsvp-actions-row">
             <button type="button" id="btn-back-search" class="btn btn-outline" data-i18n="rsvp.backBtn">Back</button>
-            <button type="submit" id="btn-submit-rsvp" class="btn btn-dark-green" style="display: inline-flex; align-items: center; justify-content: center; gap: 12px; cursor: pointer; border: 1px solid transparent;">
+            <button type="submit" id="btn-submit-rsvp" class="btn">
               <span data-i18n="rsvp.submitBtn">Submit RSVP</span>
-              <span class="spinner" aria-hidden="true" style="display: none; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s linear infinite;"></span>
+              <span class="spinner" aria-hidden="true"></span>
             </button>
           </div>
         </form>
@@ -107,46 +106,6 @@
     <p class="closing-signature" data-i18n="closing.signature">Love, Lianne & Lucas <a href="/journey.html" class="signature-mango">🥭</a></p>
   </footer>
 
-  <style>
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    
-    .form-group-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-bottom: 0.5rem;
-    }
-
-    .form-group-row .form-group {
-      margin-bottom: 1rem;
-    }
-
-    .rsvp-actions-row {
-      text-align: center;
-      margin-top: 2.5rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      justify-content: center;
-    }
-
-    @media (max-width: 600px) {
-      .form-group-row {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-      }
-
-      .rsvp-actions-row {
-        flex-direction: column-reverse;
-      }
-
-      .rsvp-actions-row .btn {
-        width: 100%;
-      }
-    }
-  </style>
 
   <script type="module" src="/src/rsvp.ts"></script>
 </body>

@@ -12,18 +12,18 @@ function escapeHtml(str: string): string {
 
 const EMAIL_COPY = {
   en: {
-    subject: "RSVP Confirmation — Lucas & Lianne's Wedding",
-    title: "RSVP Confirmation — Lucas &amp; Lianne",
+    subject: "RSVP Confirmation — Lianne & Lucas's Wedding",
+    title: "RSVP Confirmation — Lianne &amp; Lucas",
     acceptStatus: "✓ Joyfully Accepts",
     declineStatus: "✕ Regretfully Declines",
-    personalNoteLabel: "A Personal Note from Lucas & Lianne",
+    personalNoteLabel: "A Personal Note from Lianne & Lucas",
     dietaryLabel: "Dietary Restrictions or Requests",
     headerTitle: "Kindly Reply",
     headerSubtitle: "RSVP Confirmation",
     thankYouIntro: "Thank you for your response! We have received your RSVP for our wedding celebration.",
     partyResponseLabel: "Your Party's Response",
     celebrationDetailsLabel: "Celebration Details",
-    weddingHeading: "Lucas &amp; Lianne's Wedding",
+    weddingHeading: "Lianne &amp; Lucas's Wedding",
     weddingHeadingPlain: "LUCAS & LIANNE'S WEDDING",
     dateText: "Saturday, February 20, 2027",
     timeText: "Ceremony begins at 5:30 PM",
@@ -44,18 +44,18 @@ const EMAIL_COPY = {
     changesPlain: "Need to update anyone in your party's response or make a change? Simply revisit our RSVP page at https://lucasandlianne.com/rsvp.html by December 31, 2026 to submit an updated response.",
   },
   es: {
-    subject: "Confirmación de Asistencia — Casamiento de Lucas & Lianne",
-    title: "Confirmación de Asistencia — Lucas &amp; Lianne",
+    subject: "Confirmación de Asistencia — Casamiento de Lianne & Lucas",
+    title: "Confirmación de Asistencia — Lianne &amp; Lucas",
     acceptStatus: "✓ Asistirá con alegría",
     declineStatus: "✕ No podrá asistir",
-    personalNoteLabel: "Una Nota Personal de Lucas y Lianne",
+    personalNoteLabel: "Una Nota Personal de Lianne y Lucas",
     dietaryLabel: "Restricciones Alimentarias o Pedidos Especiales",
     headerTitle: "Confirmación",
     headerSubtitle: "Confirmación de Asistencia",
     thankYouIntro: "¡Muchas gracias por responder! Recibimos tu confirmación para nuestro casamiento.",
     partyResponseLabel: "Respuesta de tu Grupo",
     celebrationDetailsLabel: "Detalles de la Celebración",
-    weddingHeading: "Casamiento de Lucas &amp; Lianne",
+    weddingHeading: "Casamiento de Lianne &amp; Lucas",
     weddingHeadingPlain: "CASAMIENTO DE LUCAS & LIANNE",
     dateText: "Sábado 20 de febrero de 2027",
     timeText: "Ceremonia a las 5:30 PM",
@@ -168,7 +168,7 @@ export function buildConfirmationEmailHtml(submission: RsvpSubmissionPayload): s
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                       <tr>
                         <td align="center">
-                          <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; color: #8B5A2B; margin-bottom: 8px;">Lucas &amp; Lianne</span>
+                          <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; color: #8B5A2B; margin-bottom: 8px;">Lianne &amp; Lucas</span>
                           <h1 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 30px; font-weight: normal; color: #2E4A3D; letter-spacing: 1px;">${copy.headerTitle}</h1>
                           <div style="width: 48px; height: 1px; background-color: #2E4A3D; margin: 18px auto 20px auto;"></div>
                           <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: #2E4A3D; margin-bottom: 12px; font-weight: 600;">${copy.headerSubtitle}</span>
@@ -420,7 +420,7 @@ export function buildHostNotificationEmailHtml(submission: RsvpSubmissionPayload
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New RSVP Submission — Lucas &amp; Lianne</title>
+  <title>New RSVP Submission — Lianne &amp; Lucas</title>
 </head>
 <body style="margin: 0; padding: 0; background-color: #ECEBE9; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2C3531; -webkit-font-smoothing: antialiased;">
   <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #ECEBE9; padding: 40px 16px;">
@@ -435,7 +435,7 @@ export function buildHostNotificationEmailHtml(submission: RsvpSubmissionPayload
                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                       <tr>
                         <td align="center">
-                          <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; color: #8B5A2B; margin-bottom: 8px;">Lucas &amp; Lianne</span>
+                          <span style="display: block; font-family: 'Playfair Display', Georgia, serif; font-size: 12px; letter-spacing: 4px; text-transform: uppercase; color: #8B5A2B; margin-bottom: 8px;">Lianne &amp; Lucas</span>
                           <h1 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: normal; color: #2E4A3D; letter-spacing: 1px;">New RSVP Received</h1>
                           <div style="width: 48px; height: 1px; background-color: #2E4A3D; margin: 16px auto 18px auto;"></div>
                           <p style="margin: 0 0 20px 0; font-family: 'Lato', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; color: #4A5650;">

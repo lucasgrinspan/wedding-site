@@ -29,19 +29,10 @@ export const threesTourneyEffect: EasterEggModule = {
     const fieldContainer = document.createElement("div");
     fieldContainer.className = "form-group threes-tourney-group";
     fieldContainer.id = "threes-tourney-field";
-    fieldContainer.style.marginTop = "2rem";
 
     const label = document.createElement("label");
     label.htmlFor = "threes-tourney-checkbox";
-    label.style.display = "flex";
-    label.style.alignItems = "center";
-    label.style.gap = "12px";
-    label.style.cursor = "pointer";
-    label.style.textTransform = "none";
-    label.style.fontFamily = "var(--font-editorial)";
-    label.style.fontSize = "1.25rem";
-    label.style.color = "var(--primary-color)";
-    label.style.marginBottom = "0";
+    label.className = "checkbox-option";
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -49,10 +40,6 @@ export const threesTourneyEffect: EasterEggModule = {
     checkbox.name = "threes_tourney_next_weekend";
     checkbox.value = "Yes";
     checkbox.checked = false;
-    checkbox.style.accentColor = "var(--primary-color)";
-    checkbox.style.width = "1.25rem";
-    checkbox.style.height = "1.25rem";
-    checkbox.style.cursor = "pointer";
 
     const labelText = document.createElement("span");
     labelText.textContent = "3s tourney next weekend?";
