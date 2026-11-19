@@ -839,6 +839,7 @@ label,
     font-family: var(--font-display);
     font-size: var(--step-1);
     font-weight: 600;
+    line-height: 1.3;
     color: var(--primary-color);
 }
 
@@ -896,20 +897,28 @@ textarea {
     outline: none;
 }
 
+#guest-rows-container {
+    margin-bottom: 2rem;
+}
+
 .guest-rsvp-row {
     border: 0;
     border-bottom: 1px dashed var(--line);
-    padding: 1.25rem 0;
+    padding: 0 0 1.4rem;
     min-width: 0;
+}
+
+.guest-rsvp-row + .guest-rsvp-row {
+    margin-top: 1.4rem;
 }
 
 .guest-rsvp-row:last-of-type {
     border-bottom: none;
+    padding-bottom: 0;
 }
 
 .guest-name-label {
     font-size: 1.4rem;
-    margin-bottom: 0.75rem;
     overflow-wrap: break-word;
 }
 
@@ -976,6 +985,7 @@ textarea {
 @container stationery-card (inline-size < 25rem) {
     .guest-options-group {
         grid-template-columns: 1fr;
+        gap: 10px;
     }
 }
 
