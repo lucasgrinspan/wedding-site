@@ -34,7 +34,7 @@ export const greekRestaurantGuyEffect: EasterEggModule = {
     }
 
     const copy = dynamicCopy[ctx.locale].rsvp;
-    const guestName = "the guy from the greek restaurant";
+    const guestName = "the guy from the greek restaurant 😉";
     const fieldName = "the_guy_from_the_greek_restaurant";
 
     const fieldset = document.createElement("fieldset");
