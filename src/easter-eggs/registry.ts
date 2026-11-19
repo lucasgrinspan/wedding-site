@@ -1,5 +1,6 @@
 import { bocaRiverEffect } from "./effects/boca-river";
 import { chickenNuggetsEffect } from "./effects/chicken-nuggets";
+import { greekRestaurantGuyEffect } from "./effects/greek-restaurant-guy";
 import { runawayButtonEffect } from "./effects/runaway-button";
 import { threesTourneyEffect } from "./effects/threes-tourney";
 import type { EasterEggModule } from "./types";
@@ -20,5 +21,6 @@ export const EASTER_EGG_REGISTRY: EasterEggModule[] = [
   runawayButtonEffect,
   bocaRiverEffect,
   threesTourneyEffect,
-  chickenNuggetsEffect
+  chickenNuggetsEffect,
+  greekRestaurantGuyEffect,
 ];
